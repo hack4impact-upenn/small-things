@@ -24,4 +24,9 @@ const getInviteByEmail = async (email: string) => {
   return invite;
 };
 
-export { createInvite, getInviteByEmail };
+const getInviteByToken = async (token: string) => {
+  const invite = await Invite.findOne({ verificationToken: token }).exec();
+  return invite;
+};
+
+export { createInvite, getInviteByEmail, getInviteByToken };

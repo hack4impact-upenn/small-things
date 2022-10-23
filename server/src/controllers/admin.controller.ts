@@ -13,7 +13,11 @@ import {
   getAllUsersFromDB,
   deleteUserById,
 } from '../services/user.service';
-import { createInvite, getInviteByEmail } from '../services/invite.service';
+import {
+  createInvite,
+  getInviteByEmail,
+  getInviteByToken,
+} from '../services/invite.service';
 import { emailInviteLink } from '../services/mail.service';
 import { IInvite } from '../models/invite.model';
 
@@ -154,4 +158,23 @@ const inviteUser = async (
   }
 };
 
-export { getAllUsers, upgradePrivilege, deleteUser, inviteUser };
+const verifyToken = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { token } = req.params;
+  getInviteByToken(token)
+    .then((invite) => {
+      if (invite) {
+        res.status(StatusCode.OK).send(invite);
+      } else {
+        next(ApiError.notFound('Unable to retrieve invite'));
+      }
+    })
+    .catch(() => {
+      next(ApiError.internal('Error retrieving invite'));
+    });
+};
+
+export { getAllUsers, upgradePrivilege, deleteUser, inviteUser, verifyToken };

@@ -9,6 +9,7 @@ import {
   upgradePrivilege,
   deleteUser,
   inviteUser,
+  verifyToken,
 } from '../controllers/admin.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import { approve } from '../controllers/auth.controller';
@@ -35,6 +36,8 @@ router.get('/adminstatus', isAuthenticated, isAdmin, approve);
  * - email (string) - The email of the user to be promoted
  */
 router.put('/promote', isAuthenticated, isAdmin, upgradePrivilege);
+
+router.get('/invite/:token', verifyToken);
 
 /**
  * A POST route to invite a new user
