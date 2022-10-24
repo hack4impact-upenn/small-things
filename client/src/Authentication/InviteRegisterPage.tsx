@@ -8,7 +8,7 @@ import {
   nameRegex,
   passwordRegex,
 } from '../util/inputvalidation';
-import { register } from './api';
+import { registerInvite } from './api';
 import AlertDialog from '../components/AlertDialog';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import ScreenGrid from '../components/ScreenGrid';
@@ -57,7 +57,7 @@ function InviteRegisterPage() {
   const [alertTitle, setAlertTitle] = useState('Error');
   const [isRegistered, setRegistered] = useState(false);
   const [validToken, setValidToken] = useState(true);
-  const [email, setEmail] = useState();
+  const [email, setEmail] = useState('');
 
   // Helper functions for changing only one field in a state object
   const setValue = (field: string, value: string) => {
@@ -84,6 +84,7 @@ function InviteRegisterPage() {
       setValidToken(false);
     } else {
       setEmail(invite?.data?.email);
+      setValue('email', invite?.data?.email);
     }
   }, [invite]);
 
@@ -143,13 +144,19 @@ function InviteRegisterPage() {
   };
 
   async function handleSubmit() {
-    if (validateInputs()) {
-      register(values.firstName, values.lastName, values.email, values.password)
+    if (validateInputs() && token) {
+      registerInvite(
+        values.firstName,
+        values.lastName,
+        values.email,
+        values.password,
+        token,
+      )
         .then(() => {
           setShowError('alert', true);
           setAlertTitle('');
           setRegistered(true);
-          setErrorMessage('alert', 'Check email to verify account');
+          setErrorMessage('alert', 'Account created, please log in');
         })
         .catch((e) => {
           setShowError('alert', true);
@@ -179,6 +186,7 @@ function InviteRegisterPage() {
               size="small"
               type="text"
               required
+              label="Email"
               value={email}
               disabled
             />

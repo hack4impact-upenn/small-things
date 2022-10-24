@@ -29,4 +29,11 @@ const getInviteByToken = async (token: string) => {
   return invite;
 };
 
-export { createInvite, getInviteByEmail, getInviteByToken };
+const removeInviteToken = async (token: string) => {
+  const invite = await Invite.findOneAndDelete({
+    verificationToken: token,
+  }).exec();
+  return invite;
+};
+
+export { createInvite, getInviteByEmail, getInviteByToken, removeInviteToken };

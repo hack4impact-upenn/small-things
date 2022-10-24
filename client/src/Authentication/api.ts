@@ -92,10 +92,31 @@ async function resetPassword(password: string, token: string) {
   }
 }
 
+async function registerInvite(
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string,
+  inviteToken: string,
+) {
+  const lowercaseEmail = email.toLowerCase();
+  const res = await postData('auth/register-invite', {
+    firstName,
+    lastName,
+    email: lowercaseEmail,
+    password,
+    inviteToken,
+  });
+  if (res.error) {
+    throw Error(res.error.message);
+  }
+}
+
 export {
   register,
   loginUser,
   verifyAccount,
   sendResetPasswordEmail,
   resetPassword,
+  registerInvite,
 };
