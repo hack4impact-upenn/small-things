@@ -150,12 +150,6 @@ const updateUserStatus = async (
     return;
   }
 
-  const { status } = req.body;
-  if (!status) {
-    next(ApiError.missingFields(['status']));
-    return;
-  }
-
   const user: IUser | null = await getUserByEmail(email);
   if (!user) {
     next(ApiError.notFound(`User with email ${email} does not exist`));
