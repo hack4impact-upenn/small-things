@@ -8,6 +8,8 @@ import {
   getAllUsers,
   upgradePrivilege,
   deleteUser,
+  inviteUser,
+  verifyToken,
 } from '../controllers/admin.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import { approve } from '../controllers/auth.controller';
@@ -34,6 +36,15 @@ router.get('/adminstatus', isAuthenticated, isAdmin, approve);
  * - email (string) - The email of the user to be promoted
  */
 router.put('/promote', isAuthenticated, isAdmin, upgradePrivilege);
+
+router.get('/invite/:token', verifyToken);
+
+/**
+ * A POST route to invite a new user
+ * Expects a JSON body with the following fields:
+ * - email (string) - The email to invite the user from
+ */
+router.post('/invite', isAuthenticated, isAdmin, inviteUser);
 
 /**
  * A PUT route to upgrade a user's privilege

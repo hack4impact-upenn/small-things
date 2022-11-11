@@ -2,6 +2,7 @@ import React from 'react';
 import { Typography, Grid } from '@mui/material';
 import ScreenGrid from '../components/ScreenGrid';
 import UserTable from './UserTable';
+import InviteUserButton from './InviteUserButton';
 
 /**
  * A page only accessible to admins that displays all users in a table and allows
@@ -21,6 +22,7 @@ function AdminDashboardPage() {
         <div style={{ height: '60vh', width: '60vw' }}>
           <UserTable />
         </div>
+        <InviteUserButton />
       </Grid>
     </ScreenGrid>
   );
