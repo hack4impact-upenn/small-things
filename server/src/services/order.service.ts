@@ -41,4 +41,25 @@ const getOrderByTimeSlot = async (pickup: Date) => {
   return user;
 };
 
-export { createNewOrder, getOrderByTimeSlot };
+const getOrderById = async (id: string) => {
+  const order = await Order.findById(id).exec();
+  return order;
+};
+
+const getAllOrders = async () => {
+  const orders = await Order.find({}).exec();
+  return orders;
+};
+
+const getAllOrdersForOrganization = async (org: string) => {
+  const orders = await Order.find({ organization: org }).exec();
+  return orders;
+};
+
+export {
+  createNewOrder,
+  getOrderByTimeSlot,
+  getAllOrders,
+  getAllOrdersForOrganization,
+  getOrderById,
+};

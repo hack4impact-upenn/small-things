@@ -6,7 +6,13 @@ import ApiError from '../util/apiError';
 import { IOrder } from '../models/order.model';
 import StatusCode from '../util/statusCode';
 import { IUser } from '../models/user.model';
-import { createNewOrder, getOrderByTimeSlot } from '../services/order.service';
+import {
+  createNewOrder,
+  getOrderByTimeSlot,
+  getAllOrders,
+  getAllOrdersForOrganization,
+  getOrderById,
+} from '../services/order.service';
 import { getUserByOrganization } from '../services/user.service';
 
 /**
@@ -67,5 +73,54 @@ const createOrder = async (
   }
 };
 
-// eslint-disable-next-line import/prefer-default-export
-export { createOrder };
+const fetchAllOrders = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  try {
+    const orders: IOrder[] = await getAllOrders();
+    res.status(StatusCode.OK).send(orders);
+  } catch (err) {
+    next(ApiError.internal('Unable to fetch all orders.'));
+  }
+};
+
+const fetchOrdersByOrganization = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { org } = req.params;
+  try {
+    const orders: IOrder[] = await getAllOrdersForOrganization(org);
+    res.status(StatusCode.OK).send(orders);
+  } catch (err) {
+    next(ApiError.internal(`Unable to fetch all orders for ${org}.`));
+  }
+};
+
+const fetchOrderById = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  try {
+    const order: IOrder | null = await getOrderById(id);
+    if (!order) {
+      next(ApiError.notFound('Order not found'));
+      return;
+    }
+    res.status(StatusCode.OK).send(order);
+  } catch (err) {
+    next(ApiError.internal('Unable to fetch order'));
+  }
+};
+
+export {
+  createOrder,
+  fetchAllOrders,
+  fetchOrdersByOrganization,
+  fetchOrderById,
+};
