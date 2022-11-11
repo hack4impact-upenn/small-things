@@ -131,6 +131,13 @@ const upgradeUserToAdmin = async (id: string) => {
   return user;
 };
 
+const getUserByOrganization = async (organization: string) => {
+  const user = await User.findOne({ organization })
+    .select(removeSensitiveDataQuery)
+    .exec();
+  return user;
+};
+
 /**
  * A function that deletes a user from the database.
  * @param id The id of the user to delete.
@@ -152,4 +159,5 @@ export {
   getAllUsersFromDB,
   upgradeUserToAdmin,
   deleteUserById,
+  getUserByOrganization,
 };
