@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
 import Switch from '@mui/material/Switch';
-import Button from '@mui/material/Button';
-import { upgradePrivilege } from './api';
-import LoadingButton from '../components/buttons/LoadingButton';
-import ConfirmationModal from '../components/ConfirmationModal';
 
 interface EnableUserSwitchProps {
   admin: boolean;
@@ -21,14 +17,16 @@ interface EnableUserSwitchProps {
  * upon successfully deletion of user from the database.
  */
 function EnableUserSwitch({ admin, email, enableUser }: EnableUserSwitchProps) {
-  const [checked, setChecked] = React.useState(true);
+  const [checked, setChecked] = useState(true);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
+    enableUser(email);
   };
 
   return (
     <Switch
+      disabled={admin}
       checked={checked}
       onChange={handleChange}
       inputProps={{ 'aria-label': 'controlled' }}

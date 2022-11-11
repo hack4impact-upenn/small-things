@@ -4,8 +4,6 @@
  */
 import React, { useEffect, useState } from 'react';
 
-import Switch from '@mui/material/Switch';
-
 import CircularProgress from '@mui/material/CircularProgress';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import DeleteUserButton from './DeleteUserButton';
