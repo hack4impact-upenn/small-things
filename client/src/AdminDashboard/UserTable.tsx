@@ -7,6 +7,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import DeleteUserButton from './DeleteUserButton';
 import PromoteUserButton from './PromoteUserButton';
+import EnableUserSwitch from './EnableUserSwitch';
 import { useData } from '../util/api';
 import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
@@ -19,6 +20,7 @@ interface AdminDashboardRow {
   email: string;
   promote: React.ReactElement;
   remove: React.ReactElement;
+  enable: React.ReactElement;
 }
 
 /**
@@ -33,6 +35,7 @@ function UserTable() {
     { id: 'email', label: 'Email' },
     { id: 'promote', label: 'Promote to Admin' },
     { id: 'remove', label: 'Remove User' },
+    { id: 'enable', label: 'Enable User' },
   ];
 
   // Used to create the data type to create a row in the table
@@ -40,6 +43,7 @@ function UserTable() {
     user: IUser,
     promote: React.ReactElement,
     remove: React.ReactElement,
+    enable: React.ReactElement,
   ): AdminDashboardRow {
     const { _id, firstName, lastName, email } = user;
     return {
@@ -49,6 +53,7 @@ function UserTable() {
       email,
       promote,
       remove,
+      enable,
     };
   }
 
@@ -67,6 +72,15 @@ function UserTable() {
 
   // update state of userlist to remove a user from  the frontend representation of the data
   const removeUser = (user: IUser) => {
+    setUserList(
+      userList.filter(
+        (entry: IUser) => entry && entry.email && entry.email !== user.email,
+      ),
+    );
+  };
+
+  // update state of userlist to remove a user from  the frontend representation of the data
+  const updateEnable = (user: IUser) => {
     setUserList(
       userList.filter(
         (entry: IUser) => entry && entry.email && entry.email !== user.email,
@@ -109,6 +123,11 @@ function UserTable() {
             admin={user.admin}
             email={user.email}
             updateAdmin={updateAdmin}
+          />,
+          <EnableUserSwitch
+            enabled={user.enabled}
+            email={user.email}
+            updateEnable={() => updateEnable(user)}
           />,
         ),
       )}

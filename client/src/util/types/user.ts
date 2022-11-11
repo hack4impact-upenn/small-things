@@ -7,6 +7,7 @@ interface IUser {
   lastName: string;
   email: string;
   admin: boolean;
+  enabled: boolean;
 }
 
 export default IUser;
