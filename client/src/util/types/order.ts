@@ -1,14 +1,25 @@
 /**
  * Interface for the order data type return from the backend
  */
+
+interface IMenuItem {
+  amount: number;
+  comment?: string;
+}
+
+interface IRetailRescueItem {
+  item: string;
+  comment?: string;
+}
+
 interface IOrder {
   _id: string;
   organization: string;
-  produce: menuItem;
-  meat: menuItem;
-  vito: menuItem;
-  dry: menuItem;
-  retailRescue: Array<retailRescueItem>;
+  produce: IMenuItem;
+  meat: IMenuItem;
+  vito: IMenuItem;
+  dry: IMenuItem;
+  retailRescue: Array<IRetailRescueItem>;
   status: string;
   pickup: Date;
 }

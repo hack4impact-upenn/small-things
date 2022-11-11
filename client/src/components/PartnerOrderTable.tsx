@@ -46,10 +46,10 @@ function PartnerOrderTable() {
       pickupDate: pickup.toLocaleDateString(),
       pickupTime: pickup.toLocaleTimeString(),
       status,
-      produce: produce.count,
-      meat: meat.count,
-      dry: dry.count,
-      vito: vito.count,
+      produce: produce.amount,
+      meat: meat.amount,
+      dry: dry.amount,
+      vito: vito.amount,
       retail: retailRescue.length,
     };
   }
