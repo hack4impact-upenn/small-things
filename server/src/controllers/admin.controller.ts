@@ -145,6 +145,7 @@ const updateUserStatus = async (
   next: express.NextFunction,
 ) => {
   const { email } = req.body;
+  const { status } = req.body;
   if (!email) {
     next(ApiError.missingFields(['email']));
     return;
@@ -156,7 +157,7 @@ const updateUserStatus = async (
     return;
   }
 
-  updateUserById(user._id, false)
+  updateUserById(user._id, !status)
     .then(() => {
       res.sendStatus(StatusCode.OK);
     })
