@@ -3,10 +3,14 @@
  * in the AdminDashboardPage.
  */
 import React, { useEffect, useState } from 'react';
+
 import CircularProgress from '@mui/material/CircularProgress';
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import DeleteUserButton from './DeleteUserButton';
 import PromoteUserButton from './PromoteUserButton';
+
+import EnableUserSwitch from './EnableUserSwitch';
+
 import { useData } from '../util/api';
 import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
@@ -19,6 +23,7 @@ interface AdminDashboardRow {
   email: string;
   promote: React.ReactElement;
   remove: React.ReactElement;
+  enable: React.ReactElement;
 }
 
 /**
@@ -33,6 +38,7 @@ function UserTable() {
     { id: 'email', label: 'Email' },
     { id: 'promote', label: 'Promote to Admin' },
     { id: 'remove', label: 'Remove User' },
+    { id: 'enable', label: 'Enabled' },
   ];
 
   // Used to create the data type to create a row in the table
@@ -40,8 +46,9 @@ function UserTable() {
     user: IUser,
     promote: React.ReactElement,
     remove: React.ReactElement,
+    enable: React.ReactElement,
   ): AdminDashboardRow {
-    const { _id, firstName, lastName, email } = user;
+    const { _id, firstName, lastName, email, enabled } = user;
     return {
       key: _id,
       first: firstName,
@@ -49,6 +56,7 @@ function UserTable() {
       email,
       promote,
       remove,
+      enable,
     };
   }
 
@@ -73,6 +81,7 @@ function UserTable() {
       ),
     );
   };
+
   // update state of userlist to promote a user on the frontend representation
   const updateAdmin = (email: string) => {
     setUserList(
@@ -82,6 +91,20 @@ function UserTable() {
         }
         const newEntry = entry;
         newEntry.admin = true;
+        return newEntry;
+      }),
+    );
+  };
+
+  const enableUser = (email: string) => {
+    setUserList(
+      userList.map((entry) => {
+        if (entry.email !== email) {
+          return entry;
+        }
+        const newEntry = entry;
+        const alreadyEnabled = entry.enabled;
+        newEntry.enabled = !alreadyEnabled;
         return newEntry;
       }),
     );
@@ -109,6 +132,11 @@ function UserTable() {
             admin={user.admin}
             email={user.email}
             updateAdmin={updateAdmin}
+          />,
+          <EnableUserSwitch
+            admin={user.admin}
+            email={user.email}
+            enableUser={enableUser}
           />,
         ),
       )}
