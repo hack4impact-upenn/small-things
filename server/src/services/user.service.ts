@@ -31,6 +31,7 @@ const createUser = async (
   lastName: string,
   email: string,
   password: string,
+  organization: string,
 ) => {
   const hashedPassword = await hash(password, passwordHashSaltRounds);
   if (!hashedPassword) {
@@ -42,6 +43,7 @@ const createUser = async (
     email,
     password: hashedPassword,
     admin: false,
+    organization,
   });
   const user = await newUser.save();
   return user;
