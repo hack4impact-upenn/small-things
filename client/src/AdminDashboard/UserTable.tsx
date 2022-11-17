@@ -18,6 +18,7 @@ import IUser from '../util/types/user';
 
 interface AdminDashboardRow {
   key: string;
+  org: string;
   first: string;
   last: string;
   email: string;
@@ -33,6 +34,7 @@ interface AdminDashboardRow {
 function UserTable() {
   // define columns for the table
   const columns: TColumn[] = [
+    { id: 'org', label: 'Organization' },
     { id: 'first', label: 'First Name' },
     { id: 'last', label: 'Last Name' },
     { id: 'email', label: 'Email' },
@@ -48,9 +50,10 @@ function UserTable() {
     remove: React.ReactElement,
     enable: React.ReactElement,
   ): AdminDashboardRow {
-    const { _id, firstName, lastName, email, enabled } = user;
+    const { _id, firstName, lastName, organization, email, enabled } = user;
     return {
       key: _id,
+      org: organization || ' ',
       first: firstName,
       last: lastName,
       email,

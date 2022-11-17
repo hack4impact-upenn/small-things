@@ -28,6 +28,7 @@ function InviteRegisterPage() {
   const defaultValues = {
     firstName: '',
     lastName: '',
+    organization: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -35,6 +36,7 @@ function InviteRegisterPage() {
   const defaultShowErrors = {
     firstName: false,
     lastName: false,
+    organization: false,
     email: false,
     password: false,
     confirmPassword: false,
@@ -43,6 +45,7 @@ function InviteRegisterPage() {
   const defaultErrorMessages = {
     firstName: '',
     lastName: '',
+    organization: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -124,6 +127,11 @@ function InviteRegisterPage() {
       setShowError('lastName', true);
       isValid = false;
     }
+    if (!values.organization.match(nameRegex)) {
+      setErrorMessage('organization', InputErrorMessage.INVALID_ORGANIZATION);
+      setShowError('organization', true);
+      isValid = false;
+    }
     if (!values.email.match(emailRegex)) {
       setErrorMessage('email', InputErrorMessage.INVALID_EMAIL);
       setShowError('email', true);
@@ -148,6 +156,7 @@ function InviteRegisterPage() {
       registerInvite(
         values.firstName,
         values.lastName,
+        values.organization,
         values.email,
         values.password,
         token,
@@ -219,7 +228,19 @@ function InviteRegisterPage() {
               />
             </Grid>
           </FormRow>
-
+          <FormRow>
+            <Grid item width="1">
+              <TextField
+                fullWidth
+                size="small"
+                type="text"
+                required
+                label="Organization"
+                value={values.organization}
+                onChange={(e) => setValue('organization', e.target.value)}
+              />
+            </Grid>
+          </FormRow>
           <FormRow>
             <Grid item width=".5">
               <TextField
