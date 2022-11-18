@@ -18,6 +18,10 @@ const UserSchema = new mongoose.Schema({
     match:
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/g,
   },
+  organization: {
+    type: String,
+    required: true,
+  },
   password: {
     type: String,
     required: true,
@@ -60,7 +64,7 @@ interface IUser extends mongoose.Document {
   firstName: string;
   lastName: string;
   email: string;
-  organization?: string;
+  organization: string;
   password: string;
   verified: boolean;
   verificationToken: string | null | undefined;

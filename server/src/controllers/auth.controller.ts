@@ -107,10 +107,16 @@ const register = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, email, password, organization } = req.body;
   if (!firstName || !lastName || !email || !password) {
     next(
-      ApiError.missingFields(['firstName', 'lastName', 'email', 'password']),
+      ApiError.missingFields([
+        'firstName',
+        'lastName',
+        'email',
+        'password',
+        'organization',
+      ]),
     );
     return;
   }
@@ -125,7 +131,8 @@ const register = async (
     !email.match(emailRegex) ||
     !password.match(passwordRegex) ||
     !firstName.match(nameRegex) ||
-    !lastName.match(nameRegex)
+    !lastName.match(nameRegex) ||
+    !organization.match(nameRegex)
   ) {
     next(ApiError.badRequest('Invalid email, password, or name.'));
     return;
@@ -154,6 +161,7 @@ const register = async (
       lastName,
       lowercaseEmail,
       password,
+      organization,
     );
     // Don't need verification email if testing
     if (process.env.NODE_ENV === 'test') {
@@ -300,14 +308,16 @@ const registerInvite = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { firstName, lastName, email, password, inviteToken } = req.body;
-  if (!firstName || !lastName || !email || !password) {
+  const { firstName, lastName, email, password, organization, inviteToken } =
+    req.body;
+  if (!firstName || !lastName || !email || !password || !organization) {
     next(
       ApiError.missingFields([
         'firstName',
         'lastName',
         'email',
         'password',
+        'organization',
         'inviteToken',
       ]),
     );
@@ -361,6 +371,7 @@ const registerInvite = async (
       lastName,
       lowercaseEmail,
       password,
+      organization,
     );
     user!.verified = true;
     await user?.save();
