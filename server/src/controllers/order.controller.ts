@@ -12,6 +12,7 @@ import {
   getAllOrders,
   getAllOrdersForOrganization,
   getOrderById,
+  updateOrderById,
 } from '../services/order.service';
 import { getUserByOrganization } from '../services/user.service';
 
@@ -118,9 +119,66 @@ const fetchOrderById = async (
   }
 };
 
+const updateOrder = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  const {
+    organization,
+    produce,
+    meat,
+    vito,
+    dry,
+    status,
+    pickup,
+    retailRescue,
+  } = req.body;
+  if (
+    !organization ||
+    !produce ||
+    !meat ||
+    !vito ||
+    !dry ||
+    !status ||
+    !pickup
+  ) {
+    next(
+      ApiError.missingFields([
+        'organization',
+        'produce',
+        'meat',
+        'vito',
+        'dry',
+        'status',
+        'pickup',
+      ]),
+    );
+  }
+  updateOrderById(
+    id,
+    organization,
+    produce,
+    meat,
+    vito,
+    dry,
+    retailRescue,
+    status,
+    pickup,
+  )
+    .then(() => {
+      res.sendStatus(StatusCode.OK);
+    })
+    .catch(() => {
+      next(ApiError.internal('Unable to update order.'));
+    });
+};
+
 export {
   createOrder,
   fetchAllOrders,
   fetchOrdersByOrganization,
   fetchOrderById,
+  updateOrder,
 };

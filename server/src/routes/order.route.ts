@@ -11,6 +11,7 @@ import {
   fetchAllOrders,
   fetchOrdersByOrganization,
   fetchOrderById,
+  updateOrder,
 } from '../controllers/order.controller';
 
 const router = express.Router();
@@ -31,8 +32,13 @@ router.get('/all', isAuthenticated, isAdmin, fetchAllOrders);
 router.get('/:org/all', isAdminOrInOrg, fetchOrdersByOrganization);
 
 /**
- * A GET request to a specific ordder by id.
+ * A GET request to a specific order by id.
  */
 router.get('/:id', isAdminOrInOrg, fetchOrderById);
+
+/**
+ * A PUT request to update a new order by id.
+ */
+router.put('/:id', isAuthenticated, updateOrder);
 
 export default router;
