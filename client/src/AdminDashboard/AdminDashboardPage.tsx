@@ -11,10 +11,24 @@ import BasicTabs from '../components/PartnerTabs';
  */
 function AdminDashboardPage() {
   return (
-    <>
-      <BasicTabs />
-      <div />
-    </>
+    <ScreenGrid>
+      <Grid
+        item
+        direction="column"
+        justifyContent="flex-start"
+        alignItems="stretch"
+      >
+        <Typography variant="h2">Welcome to the Admin Dashboard</Typography>
+
+        <div style={{ height: '60vh', width: '60vw' }}>
+          <UserTable />
+        </div>
+        <InviteUserButton />
+        <div style={{ height: '60vh', width: '60vw' }}>
+          <BasicTabs />
+        </div>
+      </Grid>
+    </ScreenGrid>
   );
 }
 

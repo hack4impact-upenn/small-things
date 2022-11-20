@@ -9,6 +9,10 @@ import { PaginationTable, TColumn } from './PaginationTable';
 import { useData } from '../util/api';
 import IOrder from '../util/types/order';
 
+interface PartnerOrderTableProps {
+  propStatus: string;
+}
+
 interface PartnerOrderTableRow {
   key: string;
   pickupDate: string;
@@ -25,8 +29,11 @@ interface PartnerOrderTableRow {
  * The standalone table component for holding information about the orders in
  * the database and allowing organizations to view orders themselves.
  */
-function PartnerOrderTable() {
+function PartnerOrderTable({ propStatus }: PartnerOrderTableProps) {
+  console.log(propStatus);
   // define columns for the table
+  const allOrders = useData('order/all');
+  console.log(allOrders?.data);
   const columns: TColumn[] = [
     { id: 'pickupDate', label: 'Pick-up Date' },
     { id: 'pickupTime', label: 'Pick-up Time' },
@@ -42,20 +49,31 @@ function PartnerOrderTable() {
   function createPartnerOrderTableRow(order: IOrder): PartnerOrderTableRow {
     const { _id, pickup, status, produce, meat, dry, vito, retailRescue } =
       order;
+    const myDate = new Date(pickup);
+    console.log('ORDER');
+    console.log(order);
     return {
       key: _id,
-      pickupDate: pickup.toLocaleDateString(),
-      pickupTime: pickup.toLocaleTimeString(),
+      pickupDate: myDate.toDateString(),
+      pickupTime: myDate.toLocaleTimeString(),
       status,
-      produce: produce.amount,
-      meat: meat.amount,
-      dry: dry.amount,
-      vito: vito.amount,
+      produce: produce.count,
+      meat: meat.count,
+      dry: dry.count,
+      vito: vito.count,
       retail: retailRescue.length,
     };
   }
 
   const [orderList, setOrderList] = useState<IOrder[]>([]);
+  useEffect(() => {
+    // allOrders?.data.sortBy((o: IOrder) => {
+    //   return new Date(o.pickup);
+    // });
+    setOrderList(
+      allOrders?.data.filter((order: IOrder) => order.status === propStatus),
+    );
+  }, [allOrders, propStatus]);
 
   // need to create the viewOrderButton as well
   // if the orderlist is not yet populated, display a loading spinner

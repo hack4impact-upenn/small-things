@@ -131,7 +131,8 @@ const register = async (
     !email.match(emailRegex) ||
     !password.match(passwordRegex) ||
     !firstName.match(nameRegex) ||
-    !lastName.match(nameRegex)
+    !lastName.match(nameRegex) ||
+    !organization.match(nameRegex)
   ) {
     next(ApiError.badRequest('Invalid email, password, or name.'));
     return;

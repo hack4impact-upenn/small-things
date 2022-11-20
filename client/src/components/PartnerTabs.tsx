@@ -52,19 +52,19 @@ export default function BasicTabs() {
       <h1 style={{"paddingLeft": "40px"}}>Orders</h1>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
-          <Tab label="Pending" {...a11yProps(0)} sx={{ width: '100%' }}/>
-          <Tab label="Approved" {...a11yProps(1)} sx={{ width: '100%' }} />
-          <Tab label="Released" {...a11yProps(2)} sx={{ width: '100%' }} />
+          <Tab label="Pending" {...a11yProps(0)} />
+          <Tab label="Approved" {...a11yProps(1)} />
+          <Tab label="Released" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <PartnerOrderTable />
+        <PartnerOrderTable propStatus='PENDING'/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-      <PartnerOrderTable />
+      <PartnerOrderTable propStatus='APPROVED'/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-      <PartnerOrderTable />
+      <PartnerOrderTable propStatus='RELEASED'/>
       </TabPanel>
     </Box>
   );
