@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import PartnerOrderTable from './PartnerOrderTable';
 
-
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -49,22 +48,27 @@ export default function BasicTabs() {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <h1 style={{"paddingLeft": "40px"}}>Orders</h1>
+      <h1 style={{ paddingLeft: '40px' }}>Orders</h1>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" centered>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="basic tabs example"
+          centered
+        >
           <Tab label="Pending" {...a11yProps(0)} />
           <Tab label="Approved" {...a11yProps(1)} />
           <Tab label="Released" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <PartnerOrderTable propStatus='PENDING'/>
+        <PartnerOrderTable propStatus="PENDING" />
       </TabPanel>
       <TabPanel value={value} index={1}>
-      <PartnerOrderTable propStatus='APPROVED'/>
+        <PartnerOrderTable propStatus="APPROVED" />
       </TabPanel>
       <TabPanel value={value} index={2}>
-      <PartnerOrderTable propStatus='RELEASED'/>
+        <PartnerOrderTable propStatus="RELEASED" />
       </TabPanel>
     </Box>
   );
