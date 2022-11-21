@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 import {
   TextField,
@@ -8,8 +9,13 @@ import {
   InputLabel,
   MenuItem,
   SelectChangeEvent,
+  Button,
 } from '@mui/material';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import dayjs, { Dayjs } from 'dayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useAppDispatch } from '../util/redux/hooks';
 import { login as loginRedux } from '../util/redux/userSlice';
 import FormGrid from './form/FormGrid';
@@ -19,6 +25,11 @@ import { emailRegex, InputErrorMessage } from '../util/inputvalidation';
 import AlertDialog from './AlertDialog';
 import PrimaryButton from './buttons/PrimaryButton';
 import ScreenGrid from './ScreenGrid';
+
+interface RetailItem {
+  name: string;
+  comments: string;
+}
 
 function NewOrderForm() {
   const defaultValues = {
@@ -34,6 +45,36 @@ function NewOrderForm() {
 
   const [values, setValueState] = useState(defaultValues);
 
+  const [retailItems, setRetailItems] = useState<RetailItem[]>([]);
+
+  const [orderComments, setOrderComments] = useState('');
+
+  const [date, setDate] = React.useState<Dayjs | null>(dayjs());
+
+  const handleDateChange = (newValue: Dayjs | null) => {
+    setDate(newValue);
+  };
+
+  const addRetailItem = () => {
+    setRetailItems([...retailItems, { name: '', comments: '' }]);
+  };
+
+  const removeRetailItem = (index: number) => {
+    setRetailItems(retailItems.filter((item, i) => i !== index));
+  };
+
+  const updateRetailItemName = (index: number, value: string) => {
+    const newRetailItems = [...retailItems];
+    newRetailItems[index].name = value;
+    setRetailItems(newRetailItems);
+  };
+
+  const updateRetailItemComments = (index: number, value: string) => {
+    const newRetailItems = [...retailItems];
+    newRetailItems[index].comments = value;
+    setRetailItems(newRetailItems);
+  };
+
   // Helper functions for changing only one field in a state object
   const setValue = (field: string, value: string) => {
     setValueState((prevState) => ({
@@ -41,6 +82,8 @@ function NewOrderForm() {
       ...{ [field]: value },
     }));
   };
+
+  console.log(retailItems);
 
   return (
     <ScreenGrid>
@@ -162,6 +205,80 @@ function NewOrderForm() {
                 onChange={(e) => setValue('dryGoodsComments', e.target.value)}
               />
             </Grid>
+          </FormRow>
+          <FormRow>
+            <Grid item container justifyContent="center">
+              <Typography>Retail Items</Typography>
+            </Grid>
+          </FormRow>
+          {retailItems.map((item, index) => (
+            <FormRow>
+              <Grid item width=".2">
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={retailItems[index].name}
+                  label="Vito Pallets"
+                  onChange={(e) => updateRetailItemName(index, e.target.value)}
+                >
+                  <MenuItem value={10}>1</MenuItem>
+                  <MenuItem value={20}>2</MenuItem>
+                  <MenuItem value={30}>3</MenuItem>
+                </Select>
+              </Grid>
+              <Grid item width=".6">
+                <TextField
+                  fullWidth
+                  // error={showError.lastName}
+                  // helperText={errorMessage.lastName}
+                  size="small"
+                  type="text"
+                  required
+                  label="Comments"
+                  onChange={(e) =>
+                    updateRetailItemComments(index, e.target.value)
+                  }
+                />
+              </Grid>
+              <Grid item width=".2">
+                <Button onClick={() => removeRetailItem(index)}>Remove</Button>
+              </Grid>
+            </FormRow>
+          ))}
+          <FormRow>
+            <Button onClick={addRetailItem}>Add Retail Item</Button>
+          </FormRow>
+          <FormRow>
+            <Grid item container justifyContent="center">
+              <Typography>Order Comments</Typography>
+            </Grid>
+          </FormRow>
+          <FormRow>
+            <Grid item width="1">
+              <TextField
+                fullWidth
+                id="outlined-multiline-static"
+                multiline
+                rows={4}
+                onChange={(e) => setOrderComments(e.target.value)}
+              />
+            </Grid>
+          </FormRow>
+          <FormRow>
+            <Grid item container justifyContent="center">
+              <Typography>Pickup</Typography>
+            </Grid>
+          </FormRow>
+          <FormRow>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DesktopDatePicker
+                label="Date desktop"
+                inputFormat="MM/DD/YYYY"
+                value={date}
+                onChange={handleDateChange}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
           </FormRow>
           {/* <Grid item width="1">
             <TextField
