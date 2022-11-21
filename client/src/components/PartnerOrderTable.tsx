@@ -4,6 +4,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
+import Button from '@mui/material/Button';
 
 import { PaginationTable, TColumn } from './PaginationTable';
 import { useData } from '../util/api';
@@ -23,6 +24,7 @@ interface PartnerOrderTableRow {
   dry: number;
   vito: number;
   retail: number;
+  view: JSX.Element;
 }
 
 /**
@@ -30,10 +32,8 @@ interface PartnerOrderTableRow {
  * the database and allowing organizations to view orders themselves.
  */
 function PartnerOrderTable({ propStatus }: PartnerOrderTableProps) {
-  console.log(propStatus);
   // define columns for the table
   const allOrders = useData('order/all');
-  console.log(allOrders?.data);
   const columns: TColumn[] = [
     { id: 'pickupDate', label: 'Pick-up Date' },
     { id: 'pickupTime', label: 'Pick-up Time' },
@@ -43,6 +43,7 @@ function PartnerOrderTable({ propStatus }: PartnerOrderTableProps) {
     { id: 'dry', label: 'Dry' },
     { id: 'vito', label: 'Vito' },
     { id: 'retail', label: 'RR' },
+    { id: 'view', label: 'View Order' },
   ];
 
   // Used to create the data type to create a row in the table
@@ -50,8 +51,6 @@ function PartnerOrderTable({ propStatus }: PartnerOrderTableProps) {
     const { _id, pickup, status, produce, meat, dry, vito, retailRescue } =
       order;
     const myDate = new Date(pickup);
-    console.log('ORDER');
-    console.log(order);
     return {
       key: _id,
       pickupDate: myDate.toDateString(),
@@ -62,14 +61,12 @@ function PartnerOrderTable({ propStatus }: PartnerOrderTableProps) {
       dry: dry.count,
       vito: vito.count,
       retail: retailRescue.length,
+      view: <Button variant="contained">View Order</Button>,
     };
   }
 
   const [orderList, setOrderList] = useState<IOrder[]>([]);
   useEffect(() => {
-    // allOrders?.data.sortBy((o: IOrder) => {
-    //   return new Date(o.pickup);
-    // });
     setOrderList(
       allOrders?.data.filter((order: IOrder) => order.status === propStatus),
     );
