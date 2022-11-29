@@ -4,7 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import PartnerOrderTable from './PartnerOrderTable';
+import AdminOrderTable from './AdminOrderTable';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -34,12 +34,12 @@ function TabPanel(props: TabPanelProps) {
 
 function a11yProps(index: number) {
   return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    id: `order-tab-${index}`,
+    'aria-controls': `order-tabpanel-${index}`,
   };
 }
 
-export default function BasicTabs() {
+function AdminOrderTabs() {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -48,12 +48,11 @@ export default function BasicTabs() {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <h1 style={{ paddingLeft: '40px' }}>Orders</h1>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={value}
           onChange={handleChange}
-          aria-label="basic tabs example"
+          aria-label="order tabs"
           centered
         >
           <Tab label="Pending" {...a11yProps(0)} />
@@ -62,14 +61,16 @@ export default function BasicTabs() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <PartnerOrderTable propStatus="PENDING" />
+        <AdminOrderTable propStatus="PENDING" />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <PartnerOrderTable propStatus="APPROVED" />
+        <AdminOrderTable propStatus="APPROVED" />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <PartnerOrderTable propStatus="RELEASED" />
+        <AdminOrderTable propStatus="RELEASED" />
       </TabPanel>
     </Box>
   );
 }
+
+export default AdminOrderTabs;
