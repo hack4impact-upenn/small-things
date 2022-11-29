@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import LoadingButton from '@mui/lab/LoadingButton';
+// import LoadingButton from '@mui/lab/LoadingButton';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -69,9 +69,9 @@ function InviteUserButton() {
           <Button disabled={loading} onClick={handleClose}>
             Cancel
           </Button>
-          <LoadingButton loading={loading} onClick={handleInvite}>
+          {/* <LoadingButton loading={loading} onClick={handleInvite}>
             Invite
-          </LoadingButton>
+          </LoadingButton> */}
         </DialogActions>
       </Dialog>
     </div>

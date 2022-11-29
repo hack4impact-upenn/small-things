@@ -21,6 +21,7 @@ import LoginPage from './Authentication/LoginPage';
 import EmailResetPasswordPage from './Authentication/EmailResetPasswordPage';
 import ResetPasswordPage from './Authentication/ResetPasswordPage';
 import InviteRegisterPage from './Authentication/InviteRegisterPage';
+import AdminSettingsPage from './AdminSettings/AdminSettingsPage';
 
 function App() {
   return (
@@ -58,6 +59,9 @@ function App() {
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
+                  </Route>
+                  <Route element={<AdminRoutesWrapper />}>
+                    <Route path="/settings" element={<AdminSettingsPage />} />
                   </Route>
 
                   {/* Route which redirects to a different page depending on if the user is an authenticated or not by utilizing the DynamicRedirect component */}
