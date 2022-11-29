@@ -3,7 +3,7 @@
  */
 
 interface IMenuItem {
-  amount: number;
+  count: number;
   comment?: string;
 }
 
