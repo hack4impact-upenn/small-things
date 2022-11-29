@@ -11,6 +11,7 @@ import {
   getUserByEmail,
   getAllUsersFromDB,
   deleteUserById,
+  updateSettingsInDB,
 } from '../services/user.service';
 
 /**
@@ -107,4 +108,30 @@ const deleteUser = async (
     });
 };
 
-export { getAllUsers, upgradePrivilege, deleteUser };
+const updateSettings = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const settings = req.body;
+  if (!settings) {
+    next(ApiError.missingFields(['email']));
+  }
+
+  updateSettingsInDB(settings)
+    .then((newSettings) => {
+      res.status(StatusCode.OK).send(newSettings);
+    })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .catch((e) => {
+      next(ApiError.internal('Unable to update settings'));
+    });
+};
+/*
+  use findOneAndUpdate() - look at docs (pass in empty filter)
+  go to user.service.ts aand look at updateSettings
+  send status 200 - send to the front end that settings have been updated
+  if fails send failed
+  */
+
+export { getAllUsers, upgradePrivilege, deleteUser, updateSettings };

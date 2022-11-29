@@ -2,6 +2,7 @@
  * All the functions for interacting with user data in the MongoDB database
  */
 import { hash } from 'bcrypt';
+import { ISettings, Settings } from '../models/settings.model';
 import { User } from '../models/user.model';
 
 const passwordHashSaltRounds = 10;
@@ -141,6 +142,11 @@ const deleteUserById = async (id: string) => {
   return user;
 };
 
+const updateSettingsInDB = async (newSettings: ISettings) => {
+  const settings = await Settings.findOneAndUpdate({}, newSettings);
+  return settings;
+};
+
 export {
   passwordHashSaltRounds,
   createUser,
@@ -152,4 +158,5 @@ export {
   getAllUsersFromDB,
   upgradeUserToAdmin,
   deleteUserById,
+  updateSettingsInDB,
 };

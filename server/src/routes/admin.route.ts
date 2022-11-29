@@ -8,6 +8,7 @@ import {
   getAllUsers,
   upgradePrivilege,
   deleteUser,
+  updateSettings,
 } from '../controllers/admin.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import { approve } from '../controllers/auth.controller';
@@ -50,5 +51,12 @@ router.put('/autopromote', upgradePrivilege);
  * email (string) - The email of the user to be deleted
  */
 router.delete('/:email', isAuthenticated, isAdmin, deleteUser);
+
+/**
+ * A PUT route to update settings.
+ * Checks firsst if the requester is an authenticated admin
+ * Expects a settings object as defined in the ISettings interface in settings.model.ts
+ */
+router.put('/settings', updateSettings);
 
 export default router;
