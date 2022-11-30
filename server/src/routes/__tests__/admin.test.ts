@@ -31,12 +31,15 @@ const testEmail = 'example@gmail.com';
 const testPassword = '123456';
 const testFirstName = 'testFirst';
 const testLastName = 'testLast';
+const testOrg = 'Test4Impact';
 const user1 = {
   email: testEmail,
   firstName: testFirstName,
   lastName: testLastName,
+  organization: testOrg,
   admin: true,
   verified: true,
+  enabled: true,
 };
 
 const testEmail2 = 'testemail2@gmail.com';
@@ -47,8 +50,10 @@ const user2 = {
   email: testEmail2,
   firstName: testFirstName2,
   lastName: testLastName2,
+  organization: testOrg,
   admin: false,
   verified: true,
+  enabled: true,
 };
 
 const testEmail3 = 'testemail3@gmail.com';
@@ -59,8 +64,10 @@ const user3 = {
   email: testEmail3,
   firstName: testFirstName3,
   lastName: testLastName3,
+  organization: testOrg,
   admin: true,
   verified: true,
+  enabled: true,
 };
 
 const testEmail4 = 'testemail4@gmail.com';
@@ -71,8 +78,10 @@ const user4 = {
   email: testEmail4,
   firstName: testFirstName4,
   lastName: testLastName4,
+  organization: testOrg,
   admin: false,
   verified: true,
+  enabled: true,
 };
 
 beforeAll(async () => {
@@ -106,6 +115,7 @@ describe('testing admin routes', () => {
         password: testPassword,
         firstName: testFirstName,
         lastName: testLastName,
+        organization: testOrg,
       });
       expect(response.status).toBe(StatusCode.CREATED);
       expect(await User.findOne({ email: testEmail })).toBeTruthy();
@@ -116,6 +126,7 @@ describe('testing admin routes', () => {
         password: testPassword2,
         firstName: testFirstName2,
         lastName: testLastName2,
+        organization: testOrg,
       });
       expect(response.status).toBe(StatusCode.CREATED);
       expect(await User.findOne({ email: testEmail2 })).toBeTruthy();
@@ -126,6 +137,7 @@ describe('testing admin routes', () => {
         password: testPassword3,
         firstName: testFirstName3,
         lastName: testLastName3,
+        organization: testOrg,
       });
       expect(response.status).toBe(StatusCode.CREATED);
       expect(await User.findOne({ email: testEmail3 })).toBeTruthy();
@@ -136,6 +148,7 @@ describe('testing admin routes', () => {
         password: testPassword4,
         firstName: testFirstName4,
         lastName: testLastName4,
+        organization: testOrg,
       });
       expect(response.status).toBe(StatusCode.CREATED);
       expect(await User.findOne({ email: testEmail4 })).toBeTruthy();
@@ -306,6 +319,7 @@ describe('testing admin routes', () => {
         password: testPassword,
         firstName: testFirstName,
         lastName: testLastName,
+        organization: testOrg,
       });
       expect(response.status).toBe(StatusCode.CREATED);
       expect(await User.findOne({ email: testEmail })).toBeTruthy();
@@ -316,6 +330,7 @@ describe('testing admin routes', () => {
         password: testPassword2,
         firstName: testFirstName2,
         lastName: testLastName2,
+        organization: testOrg,
       });
       expect(response.status).toBe(StatusCode.CREATED);
       expect(await User.findOne({ email: testEmail2 })).toBeTruthy();
@@ -326,6 +341,7 @@ describe('testing admin routes', () => {
         password: testPassword3,
         firstName: testFirstName3,
         lastName: testLastName3,
+        organization: testOrg,
       });
       expect(response.status).toBe(StatusCode.CREATED);
       expect(await User.findOne({ email: testEmail3 })).toBeTruthy();
@@ -336,6 +352,7 @@ describe('testing admin routes', () => {
         password: testPassword4,
         firstName: testFirstName4,
         lastName: testLastName4,
+        organization: testOrg,
       });
       expect(response.status).toBe(StatusCode.CREATED);
       expect(await User.findOne({ email: testEmail4 })).toBeTruthy();
