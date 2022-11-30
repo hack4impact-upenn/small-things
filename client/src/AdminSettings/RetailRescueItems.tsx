@@ -13,7 +13,7 @@ const ListItem = styled('li')(({ theme }) => ({
   margin: theme.spacing(0.5),
 }));
 
-export default function RetailRescueChips() {
+export default function RetailRescueItems() {
   const [input, setInput] = React.useState('');
   const [chipData, setChipData] = React.useState<readonly ChipData[]>([
     { key: 0, label: 'Beverages' },
@@ -62,7 +62,10 @@ export default function RetailRescueChips() {
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={(ev) => {
             if (ev.key === 'Enter') {
-              setChipData((items) => items.concat([{ key: 0, label: input }]));
+              setChipData((items) =>
+                items.concat([{ key: chipData.length, label: input }]),
+              );
+              setInput('');
               ev.preventDefault();
             }
           }}
