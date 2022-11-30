@@ -12,7 +12,7 @@ import {
   Stack,
 } from '@mui/material';
 import ScreenGrid from '../components/ScreenGrid';
-import RetailRescueChips from './RetailRescueChips';
+import RetailRescueItems from './RetailRescueItems';
 
 /**
  * A page only accessible to admins that displays a control panel allowing
@@ -21,7 +21,13 @@ import RetailRescueChips from './RetailRescueChips';
  * retail rescue items.
  */
 
-const SETTING_MAXIMUMS = [10, 10, 10, 10, 10];
+const SETTING_MAXIMUMS = {
+  dryGoods: 10,
+  produce: 10,
+  vito: 10,
+  meat: 10,
+  leadTime: 10,
+};
 
 function AdminSettingsPage() {
   const [dryGoodsMax, setDryGoodsMax] = React.useState(0);
@@ -63,7 +69,7 @@ function AdminSettingsPage() {
         label="Dry Goods"
         onChange={handleDryGoodsChange}
       >
-        {Array.from(Array(SETTING_MAXIMUMS[0] + 1).keys()).map((x, i) => (
+        {Array.from(Array(SETTING_MAXIMUMS.dryGoods + 1).keys()).map((x, i) => (
           <MenuItem value={x}>{x}</MenuItem>
         ))}
       </Select>
@@ -77,7 +83,7 @@ function AdminSettingsPage() {
         label="Produce"
         onChange={handleProduceChange}
       >
-        {Array.from(Array(SETTING_MAXIMUMS[1] + 1).keys()).map((x, i) => (
+        {Array.from(Array(SETTING_MAXIMUMS.produce + 1).keys()).map((x, i) => (
           <MenuItem value={x}>{x}</MenuItem>
         ))}
       </Select>
@@ -91,7 +97,7 @@ function AdminSettingsPage() {
         label="Vito"
         onChange={handleVitoChange}
       >
-        {Array.from(Array(SETTING_MAXIMUMS[2] + 1).keys()).map((x, i) => (
+        {Array.from(Array(SETTING_MAXIMUMS.vito + 1).keys()).map((x, i) => (
           <MenuItem value={x}>{x}</MenuItem>
         ))}
       </Select>
@@ -105,7 +111,7 @@ function AdminSettingsPage() {
         label="Meat"
         onChange={handleMeatChange}
       >
-        {Array.from(Array(SETTING_MAXIMUMS[3] + 1).keys()).map((x, i) => (
+        {Array.from(Array(SETTING_MAXIMUMS.meat + 1).keys()).map((x, i) => (
           <MenuItem value={x}>{x}</MenuItem>
         ))}
       </Select>
@@ -119,14 +125,15 @@ function AdminSettingsPage() {
         label="Lead Time"
         onChange={handleLeadTimeChange}
       >
-        {Array.from(Array(SETTING_MAXIMUMS[4] + 1).keys()).map((x, i) => (
+        {Array.from(Array(SETTING_MAXIMUMS.leadTime + 1).keys()).map((x, i) => (
           <MenuItem value={x}>{x}</MenuItem>
         ))}
       </Select>
       <FormHelperText>Days</FormHelperText>
 
       <Typography variant="h2">Retail Rescue</Typography>
-      <RetailRescueChips />
+
+      <RetailRescueItems />
     </FormControl>
   );
 }
