@@ -8,6 +8,10 @@ import {
   getAllUsers,
   upgradePrivilege,
   deleteUser,
+  getUserStatus,
+  updateUserStatus,
+  inviteUser,
+  verifyToken,
 } from '../controllers/admin.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import { approve } from '../controllers/auth.controller';
@@ -35,6 +39,15 @@ router.get('/adminstatus', isAuthenticated, isAdmin, approve);
  */
 router.put('/promote', isAuthenticated, isAdmin, upgradePrivilege);
 
+router.get('/invite/:token', verifyToken);
+
+/**
+ * A POST route to invite a new user
+ * Expects a JSON body with the following fields:
+ * - email (string) - The email to invite the user from
+ */
+router.post('/invite', isAuthenticated, isAdmin, inviteUser);
+
 /**
  * A PUT route to upgrade a user's privilege
  * Expects a JSON body with the following fields:
@@ -50,5 +63,21 @@ router.put('/autopromote', upgradePrivilege);
  * email (string) - The email of the user to be deleted
  */
 router.delete('/:email', isAuthenticated, isAdmin, deleteUser);
+
+/**
+ * A GET route to get status of user by id. Checks first if the requestor is a
+ * authenticated and is an admin.
+ * Expects the following fields in the URL:
+ * _id (string) - The id of the user to be updated
+ */
+router.get('/status/:id', isAuthenticated, isAdmin, getUserStatus);
+
+/**
+ * A POST route to update the enabled field
+ * Expects a JSON body with the following fields:
+ * - email (string) - The email of the user to be updated
+ * - status (boolean) - The new value of enable
+ */
+router.post('/updatestatus', isAuthenticated, isAdmin, updateUserStatus);
 
 export default router;

@@ -31,6 +31,7 @@ const createUser = async (
   lastName: string,
   email: string,
   password: string,
+  organization: string,
 ) => {
   const hashedPassword = await hash(password, passwordHashSaltRounds);
   if (!hashedPassword) {
@@ -42,6 +43,8 @@ const createUser = async (
     email,
     password: hashedPassword,
     admin: false,
+    organization,
+    enabled: true,
   });
   const user = await newUser.save();
   return user;
@@ -131,6 +134,13 @@ const upgradeUserToAdmin = async (id: string) => {
   return user;
 };
 
+const getUserByOrganization = async (organization: string) => {
+  const user = await User.findOne({ organization })
+    .select(removeSensitiveDataQuery)
+    .exec();
+  return user;
+};
+
 /**
  * A function that deletes a user from the database.
  * @param id The id of the user to delete.
@@ -138,6 +148,19 @@ const upgradeUserToAdmin = async (id: string) => {
  */
 const deleteUserById = async (id: string) => {
   const user = await User.findByIdAndDelete(id).exec();
+  return user;
+};
+
+/**
+ * A function that updates a user's status.
+ * @param id The id of the user to update.
+ * @param status The new status.
+ * @returns The updated {@link User}
+ */
+const updateUserById = async (id: string, status: boolean) => {
+  const user = await User.findByIdAndUpdate(id, [
+    { $set: { enabled: { $eq: [status, '$enabled'] } } },
+  ]).exec();
   return user;
 };
 
@@ -152,4 +175,6 @@ export {
   getAllUsersFromDB,
   upgradeUserToAdmin,
   deleteUserById,
+  updateUserById,
+  getUserByOrganization,
 };

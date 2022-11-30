@@ -1,7 +1,7 @@
 /**
  * A file containing all the api calls for the admin dashboard.
  */
-import { deleteData, putData } from '../util/api';
+import { deleteData, putData, postData } from '../util/api';
 
 /**
  * Sends a request to the server to delete a user
@@ -24,4 +24,8 @@ async function upgradePrivilege(email: string) {
   return true;
 }
 
-export { deleteUser, upgradePrivilege };
+function createInvite(email: string) {
+  return postData('admin/invite', { email });
+}
+
+export { deleteUser, upgradePrivilege, createInvite };

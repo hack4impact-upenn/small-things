@@ -3,6 +3,7 @@
  * admin users such as getting all users, deleting users and upgrading users.
  */
 import express from 'express';
+import crypto from 'crypto';
 import ApiError from '../util/apiError';
 import StatusCode from '../util/statusCode';
 import { IUser } from '../models/user.model';
@@ -11,7 +12,16 @@ import {
   getUserByEmail,
   getAllUsersFromDB,
   deleteUserById,
+  getUserById,
+  updateUserById,
 } from '../services/user.service';
+import {
+  createInvite,
+  getInviteByEmail,
+  getInviteByToken,
+} from '../services/invite.service';
+import { emailInviteLink } from '../services/mail.service';
+import { IInvite } from '../models/invite.model';
 
 /**
  * Get all users from the database. Upon success, send the a list of all users in the res body with 200 OK status code.
@@ -107,4 +117,134 @@ const deleteUser = async (
     });
 };
 
-export { getAllUsers, upgradePrivilege, deleteUser };
+const inviteUser = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { email } = req.body;
+  const emailRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/g;
+  if (!email.match(emailRegex)) {
+    next(ApiError.badRequest('Invalid email'));
+  }
+  const lowercaseEmail = email.toLowerCase();
+  const existingUser: IUser | null = await getUserByEmail(lowercaseEmail);
+  if (existingUser) {
+    next(
+      ApiError.badRequest(
+        `An account with email ${lowercaseEmail} already exists.`,
+      ),
+    );
+    return;
+  }
+
+  const existingInvite: IInvite | null = await getInviteByEmail(lowercaseEmail);
+
+  if (existingInvite) {
+    next(
+      ApiError.badRequest(
+        `An invite for email ${lowercaseEmail} already exists.`,
+      ),
+    );
+    return;
+  }
+
+  try {
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    await createInvite(lowercaseEmail, verificationToken);
+    await emailInviteLink(lowercaseEmail, verificationToken);
+    res.sendStatus(StatusCode.CREATED);
+  } catch (err) {
+    next(ApiError.internal('Unable to invite user.'));
+  }
+};
+
+const verifyToken = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { token } = req.params;
+  getInviteByToken(token)
+    .then((invite) => {
+      if (invite) {
+        res.status(StatusCode.OK).send(invite);
+      } else {
+        next(ApiError.notFound('Unable to retrieve invite'));
+      }
+    })
+    .catch(() => {
+      next(ApiError.internal('Error retrieving invite'));
+    });
+};
+
+/**
+ * Get status of a user. Upon success, send the value of enabled in the res body with 200 OK status code.
+carolineychen8 marked this conversation as resolved.
+Show resolved
+ */
+const getUserStatus = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  if (!id) {
+    next(ApiError.missingFields(['id']));
+    return;
+  }
+
+  const user: IUser | null = await getUserById(id);
+  if (!user) {
+    next(ApiError.notFound(`User with id ${id} does not exist`));
+    return;
+  }
+
+  if (user != null) {
+    res.send(user.enabled);
+  } else {
+    ApiError.internal('Unable to get user status.');
+  }
+};
+
+/**
+ * Update status of a user. Upon success, send the user in the res body with 200 OK status code.
+ */
+const updateUserStatus = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { email } = req.body;
+  const { status } = req.body;
+  if (!email) {
+    next(ApiError.missingFields(['email']));
+    return;
+  }
+
+  const user: IUser | null = await getUserByEmail(email);
+  if (!user) {
+    next(ApiError.notFound(`User with email ${email} does not exist`));
+    return;
+  }
+
+  updateUserById(user._id, !status)
+    .then(() => {
+      res.sendStatus(StatusCode.OK);
+    })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .catch((e) => {
+      next(ApiError.internal('Unable to update user status.'));
+    });
+};
+
+export {
+  getAllUsers,
+  upgradePrivilege,
+  deleteUser,
+  inviteUser,
+  verifyToken,
+  updateUserStatus,
+  getUserStatus,
+};

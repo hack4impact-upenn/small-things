@@ -21,6 +21,7 @@ const testEmail = 'example@gmail.com';
 const testPassword = '123456';
 const testFirstName = 'testFirst';
 const testLastName = 'testLast';
+const testOrg = 'Test4Impact';
 
 beforeAll(async () => {
   // connects to an in memory database since this is a testing environment
@@ -52,6 +53,7 @@ describe('testing authentication routes', () => {
           password: testPassword,
           firstName: testFirstName,
           lastName: testLastName,
+          organization: testOrg,
         });
         expect(response.status).toBe(StatusCode.CREATED);
         expect(await Session.countDocuments()).toBe(0);
@@ -91,6 +93,7 @@ describe('testing authentication routes', () => {
         password: testPassword,
         firstName: testFirstName,
         lastName: testLastName,
+        organization: testOrg,
       });
       expect(response.status).toBe(StatusCode.CREATED);
       expect(await User.findOne({ email: testEmail })).toBeTruthy();
@@ -114,6 +117,7 @@ describe('testing authentication routes', () => {
         password: 'differentThanTestPassword',
         firstName: testFirstName,
         lastName: testLastName,
+        organization: testOrg,
       });
       expect(response.status).toBe(StatusCode.BAD_REQUEST);
       expect(await Session.countDocuments()).toBe(0);
@@ -145,6 +149,7 @@ describe('testing authentication routes', () => {
         password: testPassword,
         firstName: testFirstName,
         lastName: testLastName,
+        organization: testOrg,
       });
       expect(response.status).toBe(StatusCode.CREATED);
       expect(await User.findOne({ email: testEmail })).toBeTruthy();
@@ -175,6 +180,7 @@ describe('testing authentication routes', () => {
         password: testPassword,
         firstName: testFirstName,
         lastName: testLastName,
+        organization: testOrg,
       });
       expect(response.status).toBe(StatusCode.BAD_REQUEST);
       expect(await User.findOne({ email: testEmail })).toBeTruthy();
@@ -215,6 +221,7 @@ describe('testing authentication routes', () => {
         password: testPassword,
         firstName: testFirstName,
         lastName: testLastName,
+        organization: testOrg,
       });
       expect(response.status).toBe(StatusCode.CREATED);
       expect(await Session.countDocuments()).toBe(0);
