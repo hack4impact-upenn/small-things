@@ -2,28 +2,21 @@
 import React, { useState } from 'react';
 import {
   TextField,
-  Link,
   Typography,
   Grid,
   Select,
   InputLabel,
   MenuItem,
-  SelectChangeEvent,
   Button,
+  FormControl,
 } from '@mui/material';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { useAppDispatch } from '../util/redux/hooks';
-import { login as loginRedux } from '../util/redux/userSlice';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import FormGrid from './form/FormGrid';
 import FormCol from './form/FormCol';
 import FormRow from './form/FormRow';
-import { emailRegex, InputErrorMessage } from '../util/inputvalidation';
-import AlertDialog from './AlertDialog';
-import PrimaryButton from './buttons/PrimaryButton';
 import ScreenGrid from './ScreenGrid';
 
 interface RetailItem {
@@ -83,7 +76,13 @@ function NewOrderForm() {
     }));
   };
 
-  console.log(retailItems);
+  const MAX_ITEM = 5;
+
+  const dropDownOptions = Array.from(Array(MAX_ITEM + 1).keys()).map((x) => (
+    <MenuItem key={x} value={x}>
+      {x}
+    </MenuItem>
+  ));
 
   return (
     <ScreenGrid>
@@ -92,36 +91,29 @@ function NewOrderForm() {
           <Grid item container justifyContent="center">
             <Typography variant="h2">New Order Form</Typography>
           </Grid>
-          <FormRow>
-            <Grid item width=".25">
+          <Grid
+            justifyContent="flex-start"
+            alignItems="center"
+            spacing={2}
+            direction="row"
+            container
+          >
+            <Grid xs={2} item>
               <InputLabel id="demo-simple-select-label">Meat</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={values.meat}
                 label="Meat"
+                autoWidth
                 onChange={(e) => setValue('meat', e.target.value as string)}
               >
-                <MenuItem value={10}>1</MenuItem>
-                <MenuItem value={20}>2</MenuItem>
-                <MenuItem value={30}>3</MenuItem>
+                {dropDownOptions}
               </Select>
             </Grid>
-            <Grid item width=".7">
-              <TextField
-                fullWidth
-                // error={showError.lastName}
-                // helperText={errorMessage.lastName}
-                size="small"
-                type="text"
-                required
-                label="Comments"
-                onChange={(e) => setValue('lastName', e.target.value)}
-              />
-            </Grid>
-          </FormRow>
+          </Grid>
           <FormRow>
-            <Grid item width=".25">
+            <Grid xs={2} item>
               <InputLabel id="demo-simple-select-label">Dry Goods</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -130,22 +122,8 @@ function NewOrderForm() {
                 label="Dry Goods"
                 onChange={(e) => setValue('dryGoods', e.target.value)}
               >
-                <MenuItem value={10}>1</MenuItem>
-                <MenuItem value={20}>2</MenuItem>
-                <MenuItem value={30}>3</MenuItem>
+                {dropDownOptions}
               </Select>
-            </Grid>
-            <Grid item width=".7">
-              <TextField
-                fullWidth
-                // error={showError.lastName}
-                // helperText={errorMessage.lastName}
-                size="small"
-                type="text"
-                required
-                label="Comments"
-                onChange={(e) => setValue('dryGoodsComments', e.target.value)}
-              />
             </Grid>
           </FormRow>
           <FormRow>
@@ -158,29 +136,13 @@ function NewOrderForm() {
                 label="Produce"
                 onChange={(e) => setValue('produce', e.target.value)}
               >
-                <MenuItem value={10}>1</MenuItem>
-                <MenuItem value={20}>2</MenuItem>
-                <MenuItem value={30}>3</MenuItem>
+                {dropDownOptions}
               </Select>
-            </Grid>
-            <Grid item width=".7">
-              <TextField
-                fullWidth
-                // error={showError.lastName}
-                // helperText={errorMessage.lastName}
-                size="small"
-                type="text"
-                required
-                label="Comments"
-                onChange={(e) => setValue('produceComments', e.target.value)}
-              />
             </Grid>
           </FormRow>
           <FormRow>
-            <Grid item width=".25">
-              <InputLabel id="demo-simple-select-label">
-                Vito Pallets
-              </InputLabel>
+            <Grid item>
+              <InputLabel id="demo-simple-select-label">Vito</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -188,65 +150,69 @@ function NewOrderForm() {
                 label="Vito Pallets"
                 onChange={(e) => setValue('vitoPallets', e.target.value)}
               >
-                <MenuItem value={10}>1</MenuItem>
-                <MenuItem value={20}>2</MenuItem>
-                <MenuItem value={30}>3</MenuItem>
+                {dropDownOptions}
               </Select>
-            </Grid>
-            <Grid item width=".7">
-              <TextField
-                fullWidth
-                // error={showError.lastName}
-                // helperText={errorMessage.lastName}
-                size="small"
-                type="text"
-                required
-                label="Comments"
-                onChange={(e) => setValue('dryGoodsComments', e.target.value)}
-              />
             </Grid>
           </FormRow>
           <FormRow>
             <Grid item container justifyContent="center">
-              <Typography>Retail Items</Typography>
+              <Typography>Retail Rescue Items</Typography>
             </Grid>
           </FormRow>
           {retailItems.map((item, index) => (
             <FormRow>
-              <Grid item width=".2">
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={retailItems[index].name}
-                  label="Vito Pallets"
-                  onChange={(e) => updateRetailItemName(index, e.target.value)}
-                >
-                  <MenuItem value={10}>1</MenuItem>
-                  <MenuItem value={20}>2</MenuItem>
-                  <MenuItem value={30}>3</MenuItem>
-                </Select>
-              </Grid>
-              <Grid item width=".6">
-                <TextField
-                  fullWidth
-                  // error={showError.lastName}
-                  // helperText={errorMessage.lastName}
-                  size="small"
-                  type="text"
-                  required
-                  label="Comments"
-                  onChange={(e) =>
-                    updateRetailItemComments(index, e.target.value)
-                  }
-                />
-              </Grid>
-              <Grid item width=".2">
-                <Button onClick={() => removeRetailItem(index)}>Remove</Button>
+              <Grid
+                spacing={1}
+                container
+                justifyContent="flex-start"
+                alignItems="center"
+              >
+                <Grid xs={6} item>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Retail Rescure Item
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      label="Retail Rescure Item"
+                      value={retailItems[index].name}
+                      placeholder="Select"
+                      onChange={(e) =>
+                        updateRetailItemName(index, e.target.value)
+                      }
+                    >
+                      <MenuItem value={10}>Dairy</MenuItem>
+                      <MenuItem value={20}>Cereal</MenuItem>
+                      <MenuItem value={30}>Cleaning Products</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid xs={4} item>
+                  <TextField
+                    fullWidth
+                    size="medium"
+                    type="text"
+                    label="Comments"
+                    onChange={(e) =>
+                      updateRetailItemComments(index, e.target.value)
+                    }
+                  />
+                </Grid>
+                <Grid xs={2} item>
+                  <Button
+                    size="large"
+                    variant="contained"
+                    onClick={() => removeRetailItem(index)}
+                  >
+                    Remove
+                  </Button>
+                </Grid>
               </Grid>
             </FormRow>
           ))}
           <FormRow>
-            <Button onClick={addRetailItem}>Add Retail Item</Button>
+            <Button onClick={addRetailItem}>Add Retail Rescue Item</Button>
           </FormRow>
           <FormRow>
             <Grid item container justifyContent="center">
@@ -260,6 +226,8 @@ function NewOrderForm() {
                 id="outlined-multiline-static"
                 multiline
                 rows={4}
+                placeholder="Type order comments here"
+                value={orderComments}
                 onChange={(e) => setOrderComments(e.target.value)}
               />
             </Grid>
@@ -271,84 +239,27 @@ function NewOrderForm() {
           </FormRow>
           <FormRow>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DesktopDatePicker
-                label="Date desktop"
-                inputFormat="MM/DD/YYYY"
+              <DateTimePicker
+                label="Schedule Pick-up"
                 value={date}
                 onChange={handleDateChange}
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
           </FormRow>
-          {/* <Grid item width="1">
-            <TextField
-              fullWidth
-              error={showError.email}
-              helperText={errorMessage.email}
-              size="small"
-              type="text"
-              required
-              label="Email"
-              value={values.email}
-              onChange={(e) => setValue('email', e.target.value)}
-            />
-          </Grid>
           <FormRow>
-            <Grid item width=".5">
-              <TextField
+            <Grid>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
                 fullWidth
-                error={showError.password}
-                helperText={errorMessage.password}
-                size="small"
-                type="password"
-                required
-                label="Password"
-                value={values.password}
-                onChange={(e) => setValue('password', e.target.value)}
-              />
-            </Grid>
-            <Grid item container width=".5">
-              <TextField
-                fullWidth
-                error={showError.confirmPassword}
-                helperText={errorMessage.confirmPassword}
-                size="small"
-                type="password"
-                required
-                label=" Confirm Password"
-                value={values.confirmPassword}
-                onChange={(e) => setValue('confirmPassword', e.target.value)}
-              />
+              >
+                Submit
+              </Button>
             </Grid>
           </FormRow>
-          <Grid item container justifyContent="center">
-            <PrimaryButton
-              fullWidth
-              type="submit"
-              variant="contained"
-              color="primary"
-              onClick={() => handleSubmit()}
-            >
-              Register
-            </PrimaryButton>
-          </Grid>
-          <FormRow>
-            <Grid container justifyContent="center">
-              <Link component={RouterLink} to="../">
-                Back to Login
-              </Link>
-            </Grid>
-          </FormRow> */}
         </FormCol>
-        {/* The alert that pops up */}
-        {/* <Grid item>
-          <AlertDialog
-            showAlert={showError.alert}
-            title={alertTitle}
-            message={errorMessage.alert}
-            onClose={handleAlertClose}
-          />
-        </Grid> */}
       </FormGrid>
     </ScreenGrid>
   );
