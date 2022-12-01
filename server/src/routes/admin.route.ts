@@ -93,6 +93,6 @@ router.post('/updatestatus', isAuthenticated, isAdmin, updateUserStatus);
  * A GET route to get current settings. Checks first if the requestor is a
  * authenticated and is an admin.
  */
-router.get('/settings', getSettings);
+router.get('/settings', isAuthenticated, isAdmin, getSettings);
 
 export default router;
