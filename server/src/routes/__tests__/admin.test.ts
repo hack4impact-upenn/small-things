@@ -117,7 +117,7 @@ describe('testing admin routes', () => {
         lastName: testLastName,
         organization: testOrg,
       });
-      // expect(response.status).toBe(StatusCode.CREATED);
+      expect(response.status).toBe(StatusCode.CREATED);
       expect(await User.findOne({ email: testEmail })).toBeTruthy();
       expect(await Session.countDocuments()).toBe(0);
 
