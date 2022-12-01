@@ -125,24 +125,18 @@ const updateSettings = async (
 ) => {
   const settings = req.body;
   if (!settings) {
-    next(ApiError.missingFields(['email']));
+    next(ApiError.missingFields(['settings']));
   }
 
   updateSettingsInDB(settings)
-    .then((newSettings) => {
-      res.status(StatusCode.OK).send(newSettings);
+    .then(() => {
+      res.status(StatusCode.OK);
     })
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .catch((e) => {
       next(ApiError.internal('Unable to update settings'));
     });
 };
-/*
-  use findOneAndUpdate() - look at docs (pass in empty filter)
-  go to user.service.ts aand look at updateSettings
-  send status 200 - send to the front end that settings have been updated
-  if fails send failed
-  */
 
 const inviteUser = async (
   req: express.Request,
@@ -206,11 +200,6 @@ const verifyToken = async (
     });
 };
 
-/**
-   * Get status of a user. Upon success, send the value of enabled in the res body with 200 OK status code.
-  carolineychen8 marked this conversation as resolved.
-  Show resolved
-   */
 const getUserStatus = async (
   req: express.Request,
   res: express.Response,
