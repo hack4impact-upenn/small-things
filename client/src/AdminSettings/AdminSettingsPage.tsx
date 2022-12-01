@@ -1,18 +1,16 @@
 import React from 'react';
 import {
   Typography,
-  Grid,
   FormControl,
-  InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
   FormHelperText,
-  Chip,
-  Stack,
+  Grid,
+  Button,
 } from '@mui/material';
-import ScreenGrid from '../components/ScreenGrid';
 import RetailRescueItems from './RetailRescueItems';
+import ScreenGrid from '../components/ScreenGrid';
 
 /**
  * A page only accessible to admins that displays a control panel allowing
@@ -58,83 +56,124 @@ function AdminSettingsPage() {
   };
 
   return (
-    <FormControl sx={{ maxWidth: 240 }}>
-      <Typography variant="h3">Settings</Typography>
-
-      <Typography variant="h2">Dry Goods</Typography>
-      <Select
-        labelId="dry-goods-label"
-        id="dry-goods-select"
-        value={String(dryGoodsMax)}
-        label="Dry Goods"
-        onChange={handleDryGoodsChange}
-      >
-        {Array.from(Array(SETTING_MAXIMUMS.dryGoods + 1).keys()).map((x, i) => (
-          <MenuItem value={x}>{x}</MenuItem>
-        ))}
-      </Select>
-      <FormHelperText>Maximum Pallets</FormHelperText>
-
-      <Typography variant="h2">Produce</Typography>
-      <Select
-        labelId="product-label"
-        id="product-select"
-        value={String(produceMax)}
-        label="Produce"
-        onChange={handleProduceChange}
-      >
-        {Array.from(Array(SETTING_MAXIMUMS.produce + 1).keys()).map((x, i) => (
-          <MenuItem value={x}>{x}</MenuItem>
-        ))}
-      </Select>
-      <FormHelperText>Maximum Pallets</FormHelperText>
-
-      <Typography variant="h2">Vito</Typography>
-      <Select
-        labelId="vito-label"
-        id="vito-select"
-        value={String(vitoMax)}
-        label="Vito"
-        onChange={handleVitoChange}
-      >
-        {Array.from(Array(SETTING_MAXIMUMS.vito + 1).keys()).map((x, i) => (
-          <MenuItem value={x}>{x}</MenuItem>
-        ))}
-      </Select>
-      <FormHelperText>Maximum Pallets</FormHelperText>
-
-      <Typography variant="h2">Meat</Typography>
-      <Select
-        labelId="meat-label"
-        id="meat-select"
-        value={String(meatMax)}
-        label="Meat"
-        onChange={handleMeatChange}
-      >
-        {Array.from(Array(SETTING_MAXIMUMS.meat + 1).keys()).map((x, i) => (
-          <MenuItem value={x}>{x}</MenuItem>
-        ))}
-      </Select>
-      <FormHelperText>Maximum Pallets</FormHelperText>
-
-      <Typography variant="h2">Lead Time</Typography>
-      <Select
-        labelId="lead-time-label"
-        id="lead-time-select"
-        value={String(leadTime)}
-        label="Lead Time"
-        onChange={handleLeadTimeChange}
-      >
-        {Array.from(Array(SETTING_MAXIMUMS.leadTime + 1).keys()).map((x, i) => (
-          <MenuItem value={x}>{x}</MenuItem>
-        ))}
-      </Select>
-      <FormHelperText>Days</FormHelperText>
-
-      <Typography variant="h2">Retail Rescue</Typography>
-
-      <RetailRescueItems />
-    </FormControl>
+    <ScreenGrid>
+      <FormControl>
+        <Grid container item spacing={2}>
+          <Grid item>
+            <Typography variant="h2">Dry Goods</Typography>
+          </Grid>
+          <Grid item>
+            <Select
+              labelId="dry-goods-label"
+              id="dry-goods-select"
+              value={String(dryGoodsMax)}
+              label="Dry Goods"
+              onChange={handleDryGoodsChange}
+            >
+              {Array.from(Array(SETTING_MAXIMUMS.dryGoods + 1).keys()).map(
+                (x) => (
+                  <MenuItem value={x}>{x}</MenuItem>
+                ),
+              )}
+            </Select>
+            <FormHelperText>Maximum Pallets</FormHelperText>
+          </Grid>
+        </Grid>
+        <Grid item container spacing={2}>
+          <Grid item>
+            <Typography variant="h2">Produce</Typography>
+          </Grid>
+          <Grid item>
+            <Select
+              labelId="product-label"
+              id="product-select"
+              value={String(produceMax)}
+              label="Produce"
+              onChange={handleProduceChange}
+            >
+              {Array.from(Array(SETTING_MAXIMUMS.produce + 1).keys()).map(
+                (x) => (
+                  <MenuItem value={x}>{x}</MenuItem>
+                ),
+              )}
+            </Select>
+            <FormHelperText>Maximum Pallets</FormHelperText>
+          </Grid>
+        </Grid>
+        <Grid item container spacing={2}>
+          <Grid item>
+            <Typography variant="h2">Vito</Typography>
+          </Grid>
+          <Grid item>
+            <Select
+              labelId="vito-label"
+              id="vito-select"
+              value={String(vitoMax)}
+              label="Vito"
+              onChange={handleVitoChange}
+            >
+              {Array.from(Array(SETTING_MAXIMUMS.vito + 1).keys()).map((x) => (
+                <MenuItem value={x}>{x}</MenuItem>
+              ))}
+            </Select>
+            <FormHelperText>Maximum Pallets</FormHelperText>
+          </Grid>
+        </Grid>
+        <Grid item container spacing={2}>
+          <Grid item>
+            <Typography variant="h2">Meat</Typography>
+          </Grid>
+          <Grid item>
+            <Select
+              labelId="meat-label"
+              id="meat-select"
+              value={String(meatMax)}
+              label="Meat"
+              onChange={handleMeatChange}
+            >
+              {Array.from(Array(SETTING_MAXIMUMS.meat + 1).keys()).map((x) => (
+                <MenuItem value={x}>{x}</MenuItem>
+              ))}
+            </Select>
+            <FormHelperText>Maximum Pallets</FormHelperText>
+          </Grid>
+        </Grid>
+        <Grid item container spacing={2}>
+          <Grid item>
+            <Typography variant="h2">Lead Time</Typography>
+          </Grid>
+          <Grid item>
+            <Select
+              labelId="lead-time-label"
+              id="lead-time-select"
+              value={String(leadTime)}
+              label="Lead Time"
+              onChange={handleLeadTimeChange}
+            >
+              {Array.from(Array(SETTING_MAXIMUMS.leadTime + 1).keys()).map(
+                (x) => (
+                  <MenuItem value={x}>{x}</MenuItem>
+                ),
+              )}
+            </Select>
+            <FormHelperText>Days</FormHelperText>
+          </Grid>
+        </Grid>
+        <Grid item container direction="column">
+          <Grid item>
+            <Typography variant="h2">Retail Rescue</Typography>
+          </Grid>
+          <Grid item>
+            <RetailRescueItems />
+          </Grid>
+        </Grid>
+        <Grid item container direction="row" justifyContent="flex-end">
+          <Grid item>
+            <Button variant="contained">Save</Button>
+          </Grid>
+        </Grid>
+      </FormControl>
+    </ScreenGrid>
   );
 }
 
