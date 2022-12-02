@@ -16,6 +16,7 @@ const COLORS = {
   neutral: '#8c8c8c', // Gray
   lightGray: '#ebeff2', // Gray-subsection
   actionBlue: '#155da1', // Action button
+  smallThingsGreen: '#029B8F',
 
   // Other colors:
 };

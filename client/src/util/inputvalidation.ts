@@ -8,6 +8,7 @@ export enum InputErrorMessage {
   INVALID_PASSWORD = 'Password must have 6-61 characters',
   INVALID_EMAIL = 'Invalid email addresss',
   INVALID_NAME = 'Invalid name',
+  INVALID_ORGANIZATION = 'Invalid organization name',
   PASSWORD_MISMATCH = 'Passwords do not match',
   MISSING_INPUT = 'Missing input',
 }

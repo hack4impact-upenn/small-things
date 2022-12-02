@@ -1,19 +1,17 @@
 import React from 'react';
 import { Typography, Grid } from '@mui/material';
 import ScreenGrid from '../components/ScreenGrid';
-import UserTable from './UserTable';
-import InviteUserButton from './InviteUserButton';
+import AdminOrderTabs from './AdminOrderTabs';
 import Navbar from '../components/NavBar';
 
 /**
  * A page only accessible to admins that displays all users in a table and allows
  * Admin to delete users from admin and promote users to admin.
  */
-function AdminDashboardPage() {
+function AdminOrdersPage() {
   return (
     <>
       <Navbar />
-
       <ScreenGrid>
         <Grid
           item
@@ -21,16 +19,14 @@ function AdminDashboardPage() {
           justifyContent="flex-start"
           alignItems="stretch"
         >
-          <Typography variant="h2">Welcome to the Admin Dashboard</Typography>
-
+          <Typography variant="h2">Orders</Typography>
           <div style={{ height: '60vh', width: '60vw' }}>
-            <UserTable />
+            <AdminOrderTabs />
           </div>
-          <InviteUserButton />
         </Grid>
       </ScreenGrid>
     </>
   );
 }
 
-export default AdminDashboardPage;
+export default AdminOrdersPage;

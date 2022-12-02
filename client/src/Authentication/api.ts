@@ -95,6 +95,7 @@ async function resetPassword(password: string, token: string) {
 async function registerInvite(
   firstName: string,
   lastName: string,
+  organization: string,
   email: string,
   password: string,
   inviteToken: string,
@@ -103,6 +104,7 @@ async function registerInvite(
   const res = await postData('auth/register-invite', {
     firstName,
     lastName,
+    organization,
     email: lowercaseEmail,
     password,
     inviteToken,

@@ -47,7 +47,7 @@ const getOrderById = async (id: string) => {
 };
 
 const getAllOrders = async () => {
-  const orders = await Order.find({}).exec();
+  const orders = await Order.find({}).sort({ pickup: -1 }).exec();
   return orders;
 };
 
