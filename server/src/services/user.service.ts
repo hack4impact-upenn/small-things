@@ -153,7 +153,7 @@ const deleteUserById = async (id: string) => {
 };
 
 const updateSettingsInDB = async (newSettings: ISettings) => {
-  const settings = await Settings.findOneAndUpdate({}, newSettings);
+  const settings = await Settings.findOneAndUpdate({}, newSettings).exec();
   return settings;
 };
 /**

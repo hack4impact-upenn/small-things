@@ -130,7 +130,7 @@ const updateSettings = async (
 
   updateSettingsInDB(settings)
     .then(() => {
-      res.status(StatusCode.OK);
+      res.sendStatus(StatusCode.OK);
     })
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .catch((e) => {
