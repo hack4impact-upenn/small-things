@@ -172,7 +172,7 @@ const updateUserById = async (id: string, status: boolean) => {
 };
 
 const updateSettingsInDB = async (newSettings: ISettings) => {
-  const settings = await Settings.findOneAndUpdate({}, newSettings);
+  const settings = await Settings.findOneAndUpdate({}, newSettings).exec();
   return settings;
 };
 
@@ -181,9 +181,7 @@ const updateSettingsInDB = async (newSettings: ISettings) => {
  * @returns The updated {@link Settings}
  */
 const getSettingsFromDB = async () => {
-  const settings = await Settings.find({})
-    .select(removeSensitiveDataQuery)
-    .exec();
+  const settings = await Settings.findOne({}).exec();
   return settings;
 };
 
