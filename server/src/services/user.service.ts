@@ -2,6 +2,7 @@
  * All the functions for interacting with user data in the MongoDB database
  */
 import { hash } from 'bcrypt';
+import { ISettings, Settings } from '../models/settings.model';
 import { User } from '../models/user.model';
 
 const passwordHashSaltRounds = 10;
@@ -151,6 +152,10 @@ const deleteUserById = async (id: string) => {
   return user;
 };
 
+const updateSettingsInDB = async (newSettings: ISettings) => {
+  const settings = await Settings.findOneAndUpdate({}, newSettings).exec();
+  return settings;
+};
 /**
  * A function that updates a user's status.
  * @param id The id of the user to update.
@@ -175,6 +180,7 @@ export {
   getAllUsersFromDB,
   upgradeUserToAdmin,
   deleteUserById,
+  updateSettingsInDB,
   updateUserById,
   getUserByOrganization,
 };
