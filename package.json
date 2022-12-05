@@ -1,5 +1,5 @@
 {
-  "name": "boilerplate-s2022",
+  "name": "small-things-f22",
   "version": "1.0.0",
   "repository": "https://github.com/hack4impact-upenn/boilerplate-s2022.git",
   "license": "MIT",
@@ -25,12 +25,11 @@
   "dependencies": {
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
-    "@mui/material": "^5.10.11",
+    "@mui/material": "^5.4.1",
     "@mui/system": "^5.5.1",
     "axios": "^1.1.2",
     "concurrently": "^7.0.0",
     "cross-env": "^7.0.3",
-    "mongoose": "^6.7.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.2.2",

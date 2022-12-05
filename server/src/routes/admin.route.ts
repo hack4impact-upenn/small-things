@@ -71,7 +71,13 @@ router.delete('/:email', isAuthenticated, isAdmin, deleteUser);
  * Checks firsst if the requester is an authenticated admin
  * Expects a settings object as defined in the ISettings interface in settings.model.ts
  */
-router.put('/settings', updateSettings);
+router.put('/settings', isAuthenticated, isAdmin, updateSettings);
+
+/**
+ * A GET route to get current settings. Checks first if the requestor is a
+ * authenticated and is an admin.
+ */
+router.get('/settings', isAuthenticated, isAdmin, getSettings);
 
 /**
  * A GET route to get status of user by id. Checks first if the requestor is a
@@ -88,11 +94,5 @@ router.get('/status/:id', isAuthenticated, isAdmin, getUserStatus);
  * - status (boolean) - The new value of enable
  */
 router.post('/updatestatus', isAuthenticated, isAdmin, updateUserStatus);
-
-/**
- * A GET route to get current settings. Checks first if the requestor is a
- * authenticated and is an admin.
- */
-router.get('/settings', isAuthenticated, isAdmin, getSettings);
 
 export default router;

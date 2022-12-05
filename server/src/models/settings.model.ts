@@ -23,7 +23,7 @@ const SettingsSchema = new mongoose.Schema({
     required: true,
   },
   retailRescueItems: {
-    type: Array,
+    type: [String],
     required: true,
   },
 });
