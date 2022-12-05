@@ -88,4 +88,4 @@ interface IOrder extends mongoose.Document {
 
 const Order = mongoose.model<IOrder>('Order', OrderSchema);
 
-export { IOrder, Order, menuItem, retailRescueItem };
+export { IOrder, Order, retailRescueItem, menuItem };
