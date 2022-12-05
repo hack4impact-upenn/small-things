@@ -9,7 +9,7 @@ yarn-error.log
 .env.test.local
 .env.production.local
 
-.vscode/*
+/.vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
