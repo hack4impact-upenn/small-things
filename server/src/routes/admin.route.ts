@@ -13,6 +13,7 @@ import {
   updateUserStatus,
   inviteUser,
   verifyToken,
+  getSettings,
 } from '../controllers/admin.controller';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import { approve } from '../controllers/auth.controller';
@@ -71,6 +72,12 @@ router.delete('/:email', isAuthenticated, isAdmin, deleteUser);
  * Expects a settings object as defined in the ISettings interface in settings.model.ts
  */
 router.put('/settings', isAuthenticated, isAdmin, updateSettings);
+
+/**
+ * A GET route to get current settings. Checks first if the requestor is a
+ * authenticated and is an admin.
+ */
+router.get('/settings', isAuthenticated, isAdmin, getSettings);
 
 /**
  * A GET route to get status of user by id. Checks first if the requestor is a

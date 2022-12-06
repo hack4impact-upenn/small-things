@@ -152,21 +152,37 @@ const deleteUserById = async (id: string) => {
   return user;
 };
 
-const updateSettingsInDB = async (newSettings: ISettings) => {
-  const settings = await Settings.findOneAndUpdate({}, newSettings).exec();
-  return settings;
-};
 /**
  * A function that updates a user's status.
  * @param id The id of the user to update.
  * @param status The new status.
  * @returns The updated {@link User}
  */
+
 const updateUserById = async (id: string, status: boolean) => {
   const user = await User.findByIdAndUpdate(id, [
     { $set: { enabled: { $eq: [status, '$enabled'] } } },
   ]).exec();
   return user;
+  /**
+   * A function that updates a user's status.
+   * @param newSettings The new settings.
+   * @returns status code.
+   */
+};
+
+const updateSettingsInDB = async (newSettings: ISettings) => {
+  const settings = await Settings.findOneAndUpdate({}, newSettings).exec();
+  return settings;
+};
+
+/**
+ * A function that gets the settings
+ * @returns The updated {@link Settings}
+ */
+const getSettingsFromDB = async () => {
+  const settings = await Settings.findOne({}).exec();
+  return settings;
 };
 
 export {
@@ -183,4 +199,5 @@ export {
   updateSettingsInDB,
   updateUserById,
   getUserByOrganization,
+  getSettingsFromDB,
 };
