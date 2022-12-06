@@ -14,6 +14,8 @@ import {
   deleteUserById,
   getUserById,
   updateUserById,
+  updateSettingsInDB,
+  getSettingsFromDB,
 } from '../services/user.service';
 import {
   createInvite,
@@ -117,6 +119,26 @@ const deleteUser = async (
     });
 };
 
+const updateSettings = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const settings = req.body;
+  if (!settings) {
+    next(ApiError.missingFields(['settings']));
+  }
+
+  updateSettingsInDB(settings)
+    .then(() => {
+      res.sendStatus(StatusCode.OK);
+    })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .catch((e) => {
+      next(ApiError.internal('Unable to update settings'));
+    });
+};
+
 const inviteUser = async (
   req: express.Request,
   res: express.Response,
@@ -181,8 +203,6 @@ const verifyToken = async (
 
 /**
  * Get status of a user. Upon success, send the value of enabled in the res body with 200 OK status code.
-carolineychen8 marked this conversation as resolved.
-Show resolved
  */
 const getUserStatus = async (
   req: express.Request,
@@ -239,12 +259,34 @@ const updateUserStatus = async (
     });
 };
 
+/**
+ * Get current settings. Upon success, send the settings in the res body with 200 OK status code.
+ */
+const getSettings = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  return (
+    getSettingsFromDB()
+      .then((settings) => {
+        res.status(StatusCode.OK).send(settings);
+      })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .catch((e) => {
+        next(ApiError.internal('Unable to retrieve settings'));
+      })
+  );
+};
+
 export {
   getAllUsers,
   upgradePrivilege,
   deleteUser,
+  updateSettings,
   inviteUser,
   verifyToken,
   updateUserStatus,
   getUserStatus,
+  getSettings,
 };

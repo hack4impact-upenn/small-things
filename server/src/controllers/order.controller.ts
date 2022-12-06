@@ -12,6 +12,7 @@ import {
   getAllOrders,
   getAllOrdersForOrganization,
   getOrderById,
+  updateOrderById,
 } from '../services/order.service';
 import { getUserByOrganization } from '../services/user.service';
 
@@ -118,9 +119,39 @@ const fetchOrderById = async (
   }
 };
 
+const updateOrder = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  const order = req.body;
+  if (!order) {
+    next(
+      ApiError.missingFields([
+        'organization',
+        'produce',
+        'meat',
+        'vito',
+        'dry',
+        'status',
+        'pickup',
+      ]),
+    );
+  }
+  updateOrderById(id, order)
+    .then(() => {
+      res.sendStatus(StatusCode.OK);
+    })
+    .catch(() => {
+      next(ApiError.internal('Unable to update order.'));
+    });
+};
+
 export {
   createOrder,
   fetchAllOrders,
   fetchOrdersByOrganization,
   fetchOrderById,
+  updateOrder,
 };

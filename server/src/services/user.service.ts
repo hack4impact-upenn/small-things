@@ -2,6 +2,7 @@
  * All the functions for interacting with user data in the MongoDB database
  */
 import { hash } from 'bcrypt';
+import { ISettings, Settings } from '../models/settings.model';
 import { User } from '../models/user.model';
 
 const passwordHashSaltRounds = 10;
@@ -157,11 +158,31 @@ const deleteUserById = async (id: string) => {
  * @param status The new status.
  * @returns The updated {@link User}
  */
+
 const updateUserById = async (id: string, status: boolean) => {
   const user = await User.findByIdAndUpdate(id, [
     { $set: { enabled: { $eq: [status, '$enabled'] } } },
   ]).exec();
   return user;
+  /**
+   * A function that updates a user's status.
+   * @param newSettings The new settings.
+   * @returns status code.
+   */
+};
+
+const updateSettingsInDB = async (newSettings: ISettings) => {
+  const settings = await Settings.findOneAndUpdate({}, newSettings).exec();
+  return settings;
+};
+
+/**
+ * A function that gets the settings
+ * @returns The updated {@link Settings}
+ */
+const getSettingsFromDB = async () => {
+  const settings = await Settings.findOne({}).exec();
+  return settings;
 };
 
 export {
@@ -175,6 +196,8 @@ export {
   getAllUsersFromDB,
   upgradeUserToAdmin,
   deleteUserById,
+  updateSettingsInDB,
   updateUserById,
   getUserByOrganization,
+  getSettingsFromDB,
 };
