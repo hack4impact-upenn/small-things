@@ -9,22 +9,30 @@ interface ChipData {
   label: string;
 }
 
+interface RetailRescueItemsProps {
+  itemArray?: string[];
+  parentCallback: (itemArray: string[]) => void;
+}
+
 const ListItem = styled('li')(({ theme }) => ({
   margin: theme.spacing(0.5),
 }));
 
-export default function RetailRescueItems() {
+export default function RetailRescueItems(props: RetailRescueItemsProps) {
+  const { itemArray, parentCallback } = props;
   const [input, setInput] = React.useState('');
-  const [chipData, setChipData] = React.useState<readonly ChipData[]>([
-    { key: 0, label: 'Beverages' },
-    { key: 1, label: 'Milk' },
-    { key: 2, label: 'Wipes' },
-  ]);
+  const [chipData, setChipData] = React.useState<readonly ChipData[]>(
+    itemArray
+      ? itemArray.map((item, index) => ({ key: index, label: item }))
+      : [],
+  );
 
   const handleDelete = (chipToDelete: ChipData) => () => {
+    console.log(chipData);
     setChipData((chips) =>
       chips.filter((chip) => chip.key !== chipToDelete.key),
     );
+    parentCallback(chipData.map((chip) => chip.label));
   };
 
   return (
@@ -72,6 +80,9 @@ export default function RetailRescueItems() {
                   setChipData((items) =>
                     items.concat([{ key: chipData.length, label: input }]),
                   );
+                  console.log(chipData);
+                  console.log(chipData.map((chip) => chip.label));
+                  parentCallback(chipData.map((chip) => chip.label));
                   setInput('');
                 }
 
