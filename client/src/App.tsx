@@ -23,6 +23,7 @@ import EmailResetPasswordPage from './Authentication/EmailResetPasswordPage';
 import ResetPasswordPage from './Authentication/ResetPasswordPage';
 import InviteRegisterPage from './Authentication/InviteRegisterPage';
 import AdminSettingsPage from './AdminSettings/AdminSettingsPage';
+import NewOrderFormPage from './NewOrderForm/NewOrderFormPage';
 
 function App() {
   return (
@@ -57,6 +58,9 @@ function App() {
                   {/* Routes accessed only if user is authenticated */}
                   <Route element={<ProtectedRoutesWrapper />}>
                     <Route path="/home" element={<HomePage />} />
+                  </Route>
+                  <Route element={<ProtectedRoutesWrapper />}>
+                    <Route path="/order/new" element={<NewOrderFormPage />} />
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
