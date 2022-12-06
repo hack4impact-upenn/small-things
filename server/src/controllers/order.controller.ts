@@ -125,25 +125,8 @@ const updateOrder = async (
   next: express.NextFunction,
 ) => {
   const { id } = req.params;
-  const {
-    organization,
-    produce,
-    meat,
-    vito,
-    dry,
-    status,
-    pickup,
-    retailRescue,
-  } = req.body;
-  if (
-    !organization ||
-    !produce ||
-    !meat ||
-    !vito ||
-    !dry ||
-    !status ||
-    !pickup
-  ) {
+  const order = req.body;
+  if (!order) {
     next(
       ApiError.missingFields([
         'organization',
@@ -156,17 +139,7 @@ const updateOrder = async (
       ]),
     );
   }
-  updateOrderById(
-    id,
-    organization,
-    produce,
-    meat,
-    vito,
-    dry,
-    retailRescue,
-    status,
-    pickup,
-  )
+  updateOrderById(id, order)
     .then(() => {
       res.sendStatus(StatusCode.OK);
     })

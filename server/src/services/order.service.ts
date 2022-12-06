@@ -1,4 +1,9 @@
-import { menuItem, Order, retailRescueItem } from '../models/order.model';
+import {
+  IOrder,
+  menuItem,
+  Order,
+  retailRescueItem,
+} from '../models/order.model';
 
 /**
  * Creates a new order in the database.
@@ -69,27 +74,7 @@ const getAllOrdersForOrganization = async (org: string) => {
  * @param pickup - Datetime of when the order is schedueld to be picked-up
  * @returns The updated {@link User}
  */
-const updateOrderById = async (
-  id: string,
-  organization: string,
-  produce: menuItem,
-  meat: menuItem,
-  vito: menuItem,
-  dry: menuItem,
-  retailRescue: Array<retailRescueItem>,
-  status: string,
-  pickup: Date,
-) => {
-  const newOrder = new Order({
-    organization,
-    produce,
-    meat,
-    vito,
-    dry,
-    retailRescue,
-    status,
-    pickup,
-  });
+const updateOrderById = async (id: string, newOrder: IOrder) => {
   const order = await Order.findByIdAndUpdate(id, newOrder).exec();
   return order;
 };

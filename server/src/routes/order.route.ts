@@ -39,6 +39,6 @@ router.get('/:id', isAdminOrInOrg, fetchOrderById);
 /**
  * A PUT request to update a new order by id.
  */
-router.put('/:id', isAuthenticated, updateOrder);
+router.put('/:id', isAdminOrInOrg, updateOrder);
 
 export default router;
