@@ -12,7 +12,6 @@ import {
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FormLabel from '@mui/material/FormLabel';
 import Navbar from '../components/NavBar';
 import ScreenGrid from '../components/ScreenGrid';
 import RetailRescueItems from './RetailRescueItems';
@@ -268,25 +267,6 @@ function AdminSettingsPage() {
                 Save
               </Button>
             </Grid>
-          </Grid>
-          <Grid container item spacing={2}>
-            <RadioGroup
-              aria-labelledby="demo-controlled-radio-buttons-group"
-              name="controlled-radio-buttons-group"
-              value={advancedSettings}
-              onChange={handleAdvancedSettingsChange}
-            >
-              <FormControlLabel
-                value="basic"
-                control={<Radio />}
-                label="Basic"
-              />
-              <FormControlLabel
-                value="advanced"
-                control={<Radio />}
-                label="Advanced"
-              />
-            </RadioGroup>
           </Grid>
         </FormControl>
       </ScreenGrid>
