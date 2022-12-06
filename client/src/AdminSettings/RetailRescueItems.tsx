@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
@@ -9,22 +9,30 @@ interface ChipData {
   label: string;
 }
 
+interface RetailRescueItemsProps {
+  itemArray?: string[];
+  parentCallback: (itemArray: string[]) => void;
+}
+
 const ListItem = styled('li')(({ theme }) => ({
   margin: theme.spacing(0.5),
 }));
 
-export default function RetailRescueItems() {
-  const [input, setInput] = React.useState('');
-  const [chipData, setChipData] = React.useState<readonly ChipData[]>([
-    { key: 0, label: 'Beverages' },
-    { key: 1, label: 'Milk' },
-    { key: 2, label: 'Wipes' },
-  ]);
+export default function RetailRescueItems(props: RetailRescueItemsProps) {
+  const { itemArray, parentCallback } = props;
+  const [input, setInput] = useState('');
+  const [chipData, setChipData] = useState<ChipData[]>(
+    itemArray
+      ? itemArray.map((item, index) => ({ key: index, label: item }))
+      : [],
+  );
 
   const handleDelete = (chipToDelete: ChipData) => () => {
-    setChipData((chips) =>
-      chips.filter((chip) => chip.key !== chipToDelete.key),
+    const updatedChipData = chipData.filter(
+      (chip) => chip.key !== chipToDelete.key,
     );
+    setChipData(updatedChipData);
+    parentCallback(updatedChipData.map((chip) => chip.label));
   };
 
   return (
@@ -38,20 +46,18 @@ export default function RetailRescueItems() {
             listStyle: 'none',
             p: 0.5,
             m: 0,
+            minHeight: '50px',
           }}
           component="ul"
         >
           {chipData.map((data) => {
             let icon;
-
             return (
               <ListItem key={data.key}>
                 <Chip
                   icon={icon}
                   label={data.label}
-                  onDelete={
-                    data.label === 'React' ? undefined : handleDelete(data)
-                  }
+                  onDelete={handleDelete(data)}
                 />
               </ListItem>
             );
@@ -69,12 +75,14 @@ export default function RetailRescueItems() {
             onKeyPress={(ev) => {
               if (ev.key === 'Enter') {
                 if (input !== '') {
-                  setChipData((items) =>
-                    items.concat([{ key: chipData.length, label: input }]),
-                  );
+                  const updatedChipData = [
+                    ...chipData,
+                    { key: chipData.length, label: input },
+                  ];
+                  setChipData(updatedChipData);
+                  parentCallback(updatedChipData.map((chip) => chip.label));
                   setInput('');
                 }
-
                 ev.preventDefault();
               }
             }}

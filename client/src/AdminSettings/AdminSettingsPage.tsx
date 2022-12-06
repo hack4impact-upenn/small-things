@@ -8,10 +8,13 @@ import {
   FormHelperText,
   Grid,
   Button,
+  FormLabel,
 } from '@mui/material';
-import RetailRescueItems from './RetailRescueItems';
-import ScreenGrid from '../components/ScreenGrid';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Navbar from '../components/NavBar';
+import RetailRescueItems from './RetailRescueItems';
 
 /**
  * A page only accessible to admins that displays a control panel allowing
@@ -29,12 +32,21 @@ const SETTING_MAXIMUMS = {
 };
 
 function AdminSettingsPage() {
+  // add state for the advancedSettings as a boolean
+  const [advancedSettings, setAdvancedSettings] = React.useState('basic');
   const [dryGoodsMax, setDryGoodsMax] = React.useState(0);
+  const [dryGoodsAdvanced, setDryGoodsAdvanced] = React.useState<string[]>([]);
   const [produceMax, setProduceMax] = React.useState(0);
   const [vitoMax, setVitoMax] = React.useState(0);
+  const [vitoAdvanced, setVitoAdvanced] = React.useState<string[]>([]);
   const [meatMax, setMeatMax] = React.useState(0);
+  const [meatAdvanced, setMeatAdvanced] = React.useState<string[]>([]);
   const [leadTime, setLeadTime] = React.useState(0);
-  const [rescueItems, setRescueItems] = React.useState([]);
+  const [rescueItems, setRescueItems] = React.useState<string[]>([]);
+
+  const handleAdvancedSettingsChange = (event: SelectChangeEvent) => {
+    setAdvancedSettings(event.target.value);
+  };
 
   const handleDryGoodsChange = (event: SelectChangeEvent) => {
     setDryGoodsMax(Number(event.target.value));
@@ -56,105 +68,180 @@ function AdminSettingsPage() {
     setLeadTime(Number(event.target.value));
   };
 
+  const handleSave = () => {
+    console.log(dryGoodsAdvanced);
+    console.log(vitoAdvanced);
+    console.log(meatAdvanced);
+    console.log(rescueItems);
+  };
+
   return (
     <>
       <Navbar />
-      <ScreenGrid>
+
+      <Grid
+        item
+        container
+        sx={{
+          overflow: 'flex',
+          paddingTop: '30px',
+          paddingBottom: '30px',
+        }}
+        justifyContent="space-evenly"
+        alignItems="center"
+      >
         <FormControl>
-          <Grid container item spacing={2}>
+          <Grid item>
+            <Typography variant="h2">Admin Settings</Typography>
+          </Grid>
+          <Grid item>
+            <FormLabel>Ordering Type</FormLabel>
+            <RadioGroup
+              value={advancedSettings}
+              onChange={handleAdvancedSettingsChange}
+            >
+              <FormControlLabel
+                value="basic"
+                control={<Radio />}
+                label="Basic"
+              />
+              <FormControlLabel
+                value="advanced"
+                control={<Radio />}
+                label="Advanced"
+              />
+            </RadioGroup>
+          </Grid>
+          <Grid item>
+            <Typography variant="h2">Order Maximums</Typography>
+          </Grid>
+          <Grid container item direction="column">
             <Grid item>
-              <Typography variant="h2">Dry Goods</Typography>
+              <FormLabel>Produce</FormLabel>
             </Grid>
             <Grid item>
-              <Select
-                labelId="dry-goods-label"
-                id="dry-goods-select"
-                value={String(dryGoodsMax)}
-                label="Dry Goods"
-                onChange={handleDryGoodsChange}
-              >
-                {Array.from(Array(SETTING_MAXIMUMS.dryGoods + 1).keys()).map(
-                  (x) => (
-                    <MenuItem value={x}>{x}</MenuItem>
-                  ),
-                )}
-              </Select>
+              <FormControl>
+                <Select
+                  labelId="select-small"
+                  id="select-small"
+                  value={String(produceMax)}
+                  onChange={handleProduceChange}
+                >
+                  {Array.from(Array(SETTING_MAXIMUMS.produce + 1).keys()).map(
+                    (x) => (
+                      <MenuItem value={x}>{x}</MenuItem>
+                    ),
+                  )}
+                </Select>
+              </FormControl>
               <FormHelperText>Maximum Pallets</FormHelperText>
             </Grid>
-          </Grid>
-          <Grid item container spacing={2}>
-            <Grid item>
-              <Typography variant="h2">Produce</Typography>
-            </Grid>
-            <Grid item>
-              <Select
-                labelId="product-label"
-                id="product-select"
-                value={String(produceMax)}
-                label="Produce"
-                onChange={handleProduceChange}
-              >
-                {Array.from(Array(SETTING_MAXIMUMS.produce + 1).keys()).map(
-                  (x) => (
-                    <MenuItem value={x}>{x}</MenuItem>
-                  ),
-                )}
-              </Select>
-              <FormHelperText>Maximum Pallets</FormHelperText>
-            </Grid>
-          </Grid>
-          <Grid item container spacing={2}>
-            <Grid item>
-              <Typography variant="h2">Vito</Typography>
-            </Grid>
-            <Grid item>
-              <Select
-                labelId="vito-label"
-                id="vito-select"
-                value={String(vitoMax)}
-                label="Vito"
-                onChange={handleVitoChange}
-              >
-                {Array.from(Array(SETTING_MAXIMUMS.vito + 1).keys()).map(
-                  (x) => (
-                    <MenuItem value={x}>{x}</MenuItem>
-                  ),
-                )}
-              </Select>
-              <FormHelperText>Maximum Pallets</FormHelperText>
+            <Grid container item direction="column">
+              <Grid item>
+                <FormLabel>Dry Goods</FormLabel>
+              </Grid>
+              {advancedSettings === 'basic' ? (
+                <Grid item>
+                  <FormControl>
+                    <Select
+                      labelId="select-small"
+                      id="select-small"
+                      value={String(dryGoodsMax)}
+                      onChange={handleDryGoodsChange}
+                    >
+                      {Array.from(
+                        Array(SETTING_MAXIMUMS.dryGoods + 1).keys(),
+                      ).map((x) => (
+                        <MenuItem value={x}>{x}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormHelperText>Maximum Pallets</FormHelperText>
+                </Grid>
+              ) : (
+                <Grid item>
+                  <RetailRescueItems
+                    itemArray={dryGoodsAdvanced}
+                    parentCallback={setDryGoodsAdvanced}
+                  />
+                </Grid>
+              )}
             </Grid>
           </Grid>
-          <Grid item container spacing={2}>
+
+          <Grid container item direction="column">
             <Grid item>
-              <Typography variant="h2">Meat</Typography>
+              <FormLabel>Vito</FormLabel>
             </Grid>
-            <Grid item>
-              <Select
-                labelId="meat-label"
-                id="meat-select"
-                value={String(meatMax)}
-                label="Meat"
-                onChange={handleMeatChange}
-              >
-                {Array.from(Array(SETTING_MAXIMUMS.meat + 1).keys()).map(
-                  (x) => (
-                    <MenuItem value={x}>{x}</MenuItem>
-                  ),
-                )}
-              </Select>
-              <FormHelperText>Maximum Pallets</FormHelperText>
-            </Grid>
+            {advancedSettings === 'basic' ? (
+              <Grid item>
+                <FormControl>
+                  <Select
+                    labelId="select-small"
+                    id="select-small"
+                    value={String(vitoMax)}
+                    onChange={handleVitoChange}
+                  >
+                    {Array.from(Array(SETTING_MAXIMUMS.vito + 1).keys()).map(
+                      (x) => (
+                        <MenuItem value={x}>{x}</MenuItem>
+                      ),
+                    )}
+                  </Select>
+                </FormControl>
+                <FormHelperText>Maximum Pallets</FormHelperText>
+              </Grid>
+            ) : (
+              <Grid item>
+                <RetailRescueItems
+                  itemArray={vitoAdvanced}
+                  parentCallback={setVitoAdvanced}
+                />
+              </Grid>
+            )}
           </Grid>
-          <Grid item container spacing={2}>
+
+          <Grid container item direction="column">
             <Grid item>
-              <Typography variant="h2">Lead Time</Typography>
+              <FormLabel>Meat</FormLabel>
+            </Grid>
+            {advancedSettings === 'basic' ? (
+              <Grid item>
+                <FormControl>
+                  <Select
+                    labelId="select-small"
+                    id="select-small"
+                    value={String(meatMax)}
+                    onChange={handleMeatChange}
+                  >
+                    {Array.from(Array(SETTING_MAXIMUMS.meat + 1).keys()).map(
+                      (x) => (
+                        <MenuItem value={x}>{x}</MenuItem>
+                      ),
+                    )}
+                  </Select>
+                </FormControl>
+                <FormHelperText>Maximum Pallets</FormHelperText>
+              </Grid>
+            ) : (
+              <Grid item>
+                <RetailRescueItems
+                  itemArray={meatAdvanced}
+                  parentCallback={setMeatAdvanced}
+                />
+              </Grid>
+            )}
+          </Grid>
+
+          <Grid container item direction="column">
+            <Grid item>
+              <FormLabel>Lead Time</FormLabel>
             </Grid>
             <Grid item>
               <Select
                 labelId="lead-time-label"
                 id="lead-time-select"
                 value={String(leadTime)}
-                label="Lead Time"
                 onChange={handleLeadTimeChange}
               >
                 {Array.from(Array(SETTING_MAXIMUMS.leadTime + 1).keys()).map(
@@ -168,19 +255,24 @@ function AdminSettingsPage() {
           </Grid>
           <Grid item container direction="column">
             <Grid item>
-              <Typography variant="h2">Retail Rescue</Typography>
+              <FormLabel>Retail Rescue Items</FormLabel>
             </Grid>
             <Grid item>
-              <RetailRescueItems />
+              <RetailRescueItems
+                itemArray={rescueItems}
+                parentCallback={setRescueItems}
+              />
             </Grid>
           </Grid>
           <Grid item container direction="row" justifyContent="flex-end">
             <Grid item>
-              <Button variant="contained">Save</Button>
+              <Button variant="contained" onClick={handleSave}>
+                Save
+              </Button>
             </Grid>
           </Grid>
         </FormControl>
-      </ScreenGrid>
+      </Grid>
     </>
   );
 }
