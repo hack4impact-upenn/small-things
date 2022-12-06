@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
@@ -21,26 +21,19 @@ const ListItem = styled('li')(({ theme }) => ({
 export default function RetailRescueItems(props: RetailRescueItemsProps) {
   const { itemArray, parentCallback } = props;
   const [input, setInput] = useState('');
-  const [chipData, setChipData] = useState<readonly ChipData[]>(
+  const [chipData, setChipData] = useState<ChipData[]>(
     itemArray
       ? itemArray.map((item, index) => ({ key: index, label: item }))
       : [],
   );
 
   const handleDelete = (chipToDelete: ChipData) => () => {
-    parentCallback(
-      chipData
-        .filter((chip) => chip.key !== chipToDelete.key)
-        .map((chip) => chip.label),
+    const updatedChipData = chipData.filter(
+      (chip) => chip.key !== chipToDelete.key,
     );
-    setChipData((chips) =>
-      chips.filter((chip) => chip.key !== chipToDelete.key),
-    );
+    setChipData(updatedChipData);
+    parentCallback(updatedChipData.map((chip) => chip.label));
   };
-
-  useCallback(() => {
-    parentCallback(chipData.map((chip) => chip.label));
-  }, [chipData, parentCallback]);
 
   return (
     <Grid container direction="column" width="75vh" spacing={2}>
@@ -53,6 +46,7 @@ export default function RetailRescueItems(props: RetailRescueItemsProps) {
             listStyle: 'none',
             p: 0.5,
             m: 0,
+            minHeight: '50px',
           }}
           component="ul"
         >
@@ -81,15 +75,12 @@ export default function RetailRescueItems(props: RetailRescueItemsProps) {
             onKeyPress={(ev) => {
               if (ev.key === 'Enter') {
                 if (input !== '') {
-                  parentCallback(
-                    [...chipData, { key: chipData.length, label: input }].map(
-                      (item) => item.label,
-                    ),
-                  );
-                  setChipData([
+                  const updatedChipData = [
                     ...chipData,
                     { key: chipData.length, label: input },
-                  ]);
+                  ];
+                  setChipData(updatedChipData);
+                  parentCallback(updatedChipData.map((chip) => chip.label));
                   setInput('');
                 }
                 ev.preventDefault();

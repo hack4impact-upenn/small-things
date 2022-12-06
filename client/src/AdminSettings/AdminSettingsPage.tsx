@@ -8,12 +8,12 @@ import {
   FormHelperText,
   Grid,
   Button,
+  FormLabel,
 } from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Navbar from '../components/NavBar';
-import ScreenGrid from '../components/ScreenGrid';
 import RetailRescueItems from './RetailRescueItems';
 
 /**
@@ -78,15 +78,25 @@ function AdminSettingsPage() {
   return (
     <>
       <Navbar />
-      <ScreenGrid>
+
+      <Grid
+        item
+        container
+        sx={{
+          overflow: 'flex',
+          paddingTop: '30px',
+          paddingBottom: '30px',
+        }}
+        justifyContent="space-evenly"
+        alignItems="center"
+      >
         <FormControl>
           <Grid item>
-            <Typography variant="h2">Ordering Type</Typography>
+            <Typography variant="h2">Admin Settings</Typography>
           </Grid>
-          <Grid container item spacing={2}>
+          <Grid item>
+            <FormLabel>Ordering Type</FormLabel>
             <RadioGroup
-              aria-labelledby="demo-controlled-radio-buttons-group"
-              name="controlled-radio-buttons-group"
               value={advancedSettings}
               onChange={handleAdvancedSettingsChange}
             >
@@ -102,143 +112,136 @@ function AdminSettingsPage() {
               />
             </RadioGroup>
           </Grid>
-          {advancedSettings === 'basic' ? (
-            <Grid container item spacing={2}>
-              <Grid item>
-                <Typography variant="h2">Dry Goods</Typography>
-              </Grid>
-              <Grid item>
+          <Grid item>
+            <Typography variant="h2">Order Maximums</Typography>
+          </Grid>
+          <Grid container item direction="column">
+            <Grid item>
+              <FormLabel>Produce</FormLabel>
+            </Grid>
+            <Grid item>
+              <FormControl>
                 <Select
-                  labelId="dry-goods-label"
-                  id="dry-goods-select"
-                  value={String(dryGoodsMax)}
-                  label="Dry Goods"
-                  onChange={handleDryGoodsChange}
+                  labelId="select-small"
+                  id="select-small"
+                  value={String(produceMax)}
+                  onChange={handleProduceChange}
                 >
-                  {Array.from(Array(SETTING_MAXIMUMS.dryGoods + 1).keys()).map(
+                  {Array.from(Array(SETTING_MAXIMUMS.produce + 1).keys()).map(
                     (x) => (
                       <MenuItem value={x}>{x}</MenuItem>
                     ),
                   )}
                 </Select>
-                <FormHelperText>Maximum Pallets</FormHelperText>
-              </Grid>
-            </Grid>
-          ) : (
-            <Grid item container direction="column">
-              <Grid item>
-                <Typography variant="h2">Dry Goods</Typography>
-              </Grid>
-              <Grid item>
-                <RetailRescueItems
-                  itemArray={dryGoodsAdvanced}
-                  parentCallback={setDryGoodsAdvanced}
-                />
-              </Grid>
-            </Grid>
-          )}
-          <Grid item container spacing={2}>
-            <Grid item>
-              <Typography variant="h2">Produce</Typography>
-            </Grid>
-            <Grid item>
-              <Select
-                labelId="product-label"
-                id="product-select"
-                value={String(produceMax)}
-                label="Produce"
-                onChange={handleProduceChange}
-              >
-                {Array.from(Array(SETTING_MAXIMUMS.produce + 1).keys()).map(
-                  (x) => (
-                    <MenuItem value={x}>{x}</MenuItem>
-                  ),
-                )}
-              </Select>
+              </FormControl>
               <FormHelperText>Maximum Pallets</FormHelperText>
             </Grid>
-          </Grid>
-          {advancedSettings === 'basic' ? (
-            <Grid item container spacing={2}>
+            <Grid container item direction="column">
               <Grid item>
-                <Typography variant="h2">Vito</Typography>
+                <FormLabel>Dry Goods</FormLabel>
               </Grid>
+              {advancedSettings === 'basic' ? (
+                <Grid item>
+                  <FormControl>
+                    <Select
+                      labelId="select-small"
+                      id="select-small"
+                      value={String(dryGoodsMax)}
+                      onChange={handleDryGoodsChange}
+                    >
+                      {Array.from(
+                        Array(SETTING_MAXIMUMS.dryGoods + 1).keys(),
+                      ).map((x) => (
+                        <MenuItem value={x}>{x}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormHelperText>Maximum Pallets</FormHelperText>
+                </Grid>
+              ) : (
+                <Grid item>
+                  <RetailRescueItems
+                    itemArray={dryGoodsAdvanced}
+                    parentCallback={setDryGoodsAdvanced}
+                  />
+                </Grid>
+              )}
+            </Grid>
+          </Grid>
+
+          <Grid container item direction="column">
+            <Grid item>
+              <FormLabel>Vito</FormLabel>
+            </Grid>
+            {advancedSettings === 'basic' ? (
               <Grid item>
-                <Select
-                  labelId="vito-label"
-                  id="vito-select"
-                  value={String(vitoMax)}
-                  label="Vito"
-                  onChange={handleVitoChange}
-                >
-                  {Array.from(Array(SETTING_MAXIMUMS.vito + 1).keys()).map(
-                    (x) => (
-                      <MenuItem value={x}>{x}</MenuItem>
-                    ),
-                  )}
-                </Select>
+                <FormControl>
+                  <Select
+                    labelId="select-small"
+                    id="select-small"
+                    value={String(vitoMax)}
+                    onChange={handleVitoChange}
+                  >
+                    {Array.from(Array(SETTING_MAXIMUMS.vito + 1).keys()).map(
+                      (x) => (
+                        <MenuItem value={x}>{x}</MenuItem>
+                      ),
+                    )}
+                  </Select>
+                </FormControl>
                 <FormHelperText>Maximum Pallets</FormHelperText>
               </Grid>
-            </Grid>
-          ) : (
-            <Grid item container direction="column">
-              <Grid item>
-                <Typography variant="h2">Vito</Typography>
-              </Grid>
+            ) : (
               <Grid item>
                 <RetailRescueItems
                   itemArray={vitoAdvanced}
                   parentCallback={setVitoAdvanced}
                 />
               </Grid>
+            )}
+          </Grid>
+
+          <Grid container item direction="column">
+            <Grid item>
+              <FormLabel>Meat</FormLabel>
             </Grid>
-          )}
-          {advancedSettings === 'basic' ? (
-            <Grid item container spacing={2}>
+            {advancedSettings === 'basic' ? (
               <Grid item>
-                <Typography variant="h2">Meat</Typography>
-              </Grid>
-              <Grid item>
-                <Select
-                  labelId="meat-label"
-                  id="meat-select"
-                  value={String(meatMax)}
-                  label="Meat"
-                  onChange={handleMeatChange}
-                >
-                  {Array.from(Array(SETTING_MAXIMUMS.meat + 1).keys()).map(
-                    (x) => (
-                      <MenuItem value={x}>{x}</MenuItem>
-                    ),
-                  )}
-                </Select>
+                <FormControl>
+                  <Select
+                    labelId="select-small"
+                    id="select-small"
+                    value={String(meatMax)}
+                    onChange={handleMeatChange}
+                  >
+                    {Array.from(Array(SETTING_MAXIMUMS.meat + 1).keys()).map(
+                      (x) => (
+                        <MenuItem value={x}>{x}</MenuItem>
+                      ),
+                    )}
+                  </Select>
+                </FormControl>
                 <FormHelperText>Maximum Pallets</FormHelperText>
               </Grid>
-            </Grid>
-          ) : (
-            <Grid item container direction="column">
-              <Grid item>
-                <Typography variant="h2">Meat</Typography>
-              </Grid>
+            ) : (
               <Grid item>
                 <RetailRescueItems
                   itemArray={meatAdvanced}
                   parentCallback={setMeatAdvanced}
                 />
               </Grid>
-            </Grid>
-          )}
+            )}
+          </Grid>
 
-          <Grid item container spacing={2}>
+          <Grid container item direction="column">
             <Grid item>
-              <Typography variant="h2">Lead Time</Typography>
+              <FormLabel>Lead Time</FormLabel>
             </Grid>
             <Grid item>
               <Select
                 labelId="lead-time-label"
                 id="lead-time-select"
                 value={String(leadTime)}
-                label="Lead Time"
                 onChange={handleLeadTimeChange}
               >
                 {Array.from(Array(SETTING_MAXIMUMS.leadTime + 1).keys()).map(
@@ -252,7 +255,7 @@ function AdminSettingsPage() {
           </Grid>
           <Grid item container direction="column">
             <Grid item>
-              <Typography variant="h2">Retail Rescue</Typography>
+              <FormLabel>Retail Rescue Items</FormLabel>
             </Grid>
             <Grid item>
               <RetailRescueItems
@@ -269,7 +272,7 @@ function AdminSettingsPage() {
             </Grid>
           </Grid>
         </FormControl>
-      </ScreenGrid>
+      </Grid>
     </>
   );
 }
