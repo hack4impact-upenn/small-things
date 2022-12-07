@@ -20,6 +20,7 @@ interface IOrder {
   vito: IMenuItem;
   dry: IMenuItem;
   retailRescue: Array<IRetailRescueItem>;
+  comment: string;
   status: string;
   pickup: Date;
 }

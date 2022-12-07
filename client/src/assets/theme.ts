@@ -15,7 +15,7 @@ const theme = createTheme({
       main: COLORS.smallThingsGreen,
     },
     secondary: {
-      main: COLORS.secondarySeafoam,
+      main: COLORS.lightGray,
     },
     // Used by `getContrastText()` to maximize the contrast between
     // the background and the text.
