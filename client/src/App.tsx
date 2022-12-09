@@ -25,6 +25,7 @@ import InviteRegisterPage from './Authentication/InviteRegisterPage';
 import AdminSettingsPage from './AdminSettings/AdminSettingsPage';
 import NewOrderFormPage from './NewOrderForm/NewOrderFormPage';
 import OrderPage from './OrderPage/OrderPage';
+import PartnerOrderPage from './PartnerOrderPage/PartnerOrderPage';
 
 function App() {
   return (
@@ -65,6 +66,9 @@ function App() {
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>
                     <Route path="/order/:id" element={<OrderPage />} />
+                  </Route>
+                  <Route element={<ProtectedRoutesWrapper />}>
+                    <Route path="/partner" element={<PartnerOrderPage />} />
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />

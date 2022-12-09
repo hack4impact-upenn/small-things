@@ -2,12 +2,15 @@
  * A file that contains all the components and logic for the table of users
  * in the AdminDashboardPage.
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 
 import { PaginationTable, TColumn } from './PaginationTable';
 import IOrder from '../util/types/order';
+
+import { useData } from '../util/api';
+import AdminOrdersPage from '../AdminOrders/AdminOrdersPage';
 
 interface PartnerOrderTableRow {
   key: string;
@@ -55,11 +58,21 @@ function PartnerOrderTable() {
       dry: dry.count,
       vito: vito.count,
       retail: retailRescue.length,
-      view: <Button variant="contained">View Order</Button>,
+      view: <div />, // <Button variant="contained" href={`/order/${_id}`}>View Order</Button>,
     };
   }
 
   const [orderList, setOrderList] = useState<IOrder[]>([]);
+  const orders = useData('order/Hack4Impact/all');
+
+  useEffect(() => {
+    setOrderList(
+      orders?.data.filter(
+        (entry: IOrder) => entry && entry.organization,
+        // Need to check for entry.organization == self.organization (not yet able to fetch)
+      ),
+    );
+  }, [orders]);
 
   // need to create the viewOrderButton as well
   // if the orderlist is not yet populated, display a loading spinner
