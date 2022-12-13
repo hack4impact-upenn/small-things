@@ -256,10 +256,19 @@ function NewOrderForm() {
         <FormRow>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateTimePicker
+              minTime={dayjs('2018-01-01T07:00')}
+              maxTime={dayjs('2018-01-01T11:00')}
               label="Schedule Pick-up"
               value={date}
               onChange={handleDateChange}
               renderInput={(params) => <TextField {...params} />}
+              shouldDisableTime={(timeValue, clockType) => {
+                if (clockType === 'minutes' && timeValue % 30) {
+                  return true;
+                }
+
+                return false;
+              }}
             />
           </LocalizationProvider>
         </FormRow>
