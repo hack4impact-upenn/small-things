@@ -43,8 +43,8 @@ router.get('/:id', isAdminOrInOrg, fetchOrderById);
 router.put('/:id', isAdminOrInOrg, updateOrder);
 
 /**
- * A GET request to get times
+ * A GET request to get avalible times to schedule an order.
  */
-router.get('/test/times', isAdminOrInOrg, fetchUsedTimes);
+router.get('/settings/times', fetchUsedTimes);
 
 export default router;

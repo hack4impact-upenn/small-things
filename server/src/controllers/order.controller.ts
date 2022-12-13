@@ -199,10 +199,9 @@ const fetchUsedTimes = async (
         times.push(order.pickup.toLocaleTimeString());
       }
     });
-
-    res.status(StatusCode.OK).send(possibleTimes);
+    res.status(StatusCode.OK).send(Object.fromEntries(possibleTimes));
   } catch (err) {
-    next(ApiError.internal('Unable to fetch all orders.'));
+    next(ApiError.internal('Unable to fetch times.'));
   }
 };
 
