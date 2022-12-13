@@ -12,6 +12,7 @@ import {
   fetchOrdersByOrganization,
   fetchOrderById,
   updateOrder,
+  fetchUsedTimes,
 } from '../controllers/order.controller';
 
 const router = express.Router();
@@ -40,5 +41,10 @@ router.get('/:id', isAdminOrInOrg, fetchOrderById);
  * A PUT request to update a new order by id.
  */
 router.put('/:id', isAdminOrInOrg, updateOrder);
+
+/**
+ * A GET request to get avalible times to schedule an order.
+ */
+router.get('/settings/times', fetchUsedTimes);
 
 export default router;

@@ -15,6 +15,7 @@ import {
   updateOrderById,
 } from '../services/order.service';
 import { getUserByOrganization } from '../services/user.service';
+import { ISettings, Settings } from '../models/settings.model';
 
 /**
  * Create a new order in the database
@@ -148,10 +149,67 @@ const updateOrder = async (
     });
 };
 
+const fetchUsedTimes = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  try {
+    // get the lead time from settings
+    const settings: ISettings | null = await Settings.findOne();
+    if (!settings) {
+      next(ApiError.internal('Unable to fetch settings.'));
+      return;
+    }
+    const { leadTime } = settings;
+
+    const orders: IOrder[] = await getAllOrders();
+    // filter orders by pickup time such that pickup time is greater than current time + lead time and less than current time + lead time + 14 days
+    const currentTime = new Date();
+    const currentTimePlusLeadTime = new Date(
+      currentTime.getTime() + leadTime * 24 * 60 * 60 * 1000,
+    );
+    const currentTimePlusLeadTimePlusTwoWeeks = new Date(
+      currentTime.getTime() +
+        leadTime * 24 * 60 * 60 * 1000 +
+        14 * 24 * 60 * 60 * 1000,
+    );
+    orders.filter(
+      (order) =>
+        order.pickup > currentTimePlusLeadTime &&
+        order.pickup < currentTimePlusLeadTimePlusTwoWeeks,
+    );
+
+    // make a map of every possible date from currentTimePlusLeadTime to currentTimePlusLeadTimePlusTwoWeeks and initialize all values to empty array
+    const possibleTimes = new Map();
+    for (
+      let d = currentTimePlusLeadTime;
+      d <= currentTimePlusLeadTimePlusTwoWeeks;
+      d.setDate(d.getDate() + 1)
+    ) {
+      possibleTimes.set(d.toLocaleDateString(), []);
+    }
+
+    // for each order in orders, add the order's pickup time to the map based on date
+    orders.forEach((order) => {
+      const date = new Date(order.pickup);
+      date.setHours(0, 0, 0, 0);
+      const times = possibleTimes.get(date.toLocaleDateString());
+      if (times) {
+        times.push(order.pickup.toLocaleTimeString());
+      }
+    });
+    res.status(StatusCode.OK).send(Object.fromEntries(possibleTimes));
+  } catch (err) {
+    next(ApiError.internal('Unable to fetch times.'));
+  }
+};
+
 export {
   createOrder,
   fetchAllOrders,
   fetchOrdersByOrganization,
   fetchOrderById,
   updateOrder,
+  fetchUsedTimes,
 };
