@@ -53,7 +53,7 @@ function UserTable() {
     const { _id, firstName, lastName, organization, email, enabled } = user;
     return {
       key: _id,
-      org: organization || ' ',
+      org: organization || 'Hack4Impact',
       first: firstName,
       last: lastName,
       email,

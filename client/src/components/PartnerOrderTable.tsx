@@ -2,12 +2,15 @@
  * A file that contains all the components and logic for the table of users
  * in the AdminDashboardPage.
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 
 import { PaginationTable, TColumn } from './PaginationTable';
 import IOrder from '../util/types/order';
+import { selectUser } from '../util/redux/userSlice';
+import { useData } from '../util/api';
+import { useAppSelector } from '../util/redux/hooks';
 
 interface PartnerOrderTableRow {
   key: string;
@@ -55,11 +58,20 @@ function PartnerOrderTable() {
       dry: dry.count,
       vito: vito.count,
       retail: retailRescue.length,
-      view: <Button variant="contained">View Order</Button>,
+      view: (
+        <Button variant="contained" color="secondary">
+          View Order
+        </Button>
+      ),
     };
   }
 
+  const user = useAppSelector(selectUser);
+  const allOrders = useData(`order/${user.organization}/all`);
   const [orderList, setOrderList] = useState<IOrder[]>([]);
+  useEffect(() => {
+    setOrderList(allOrders?.data);
+  }, [allOrders]);
 
   // need to create the viewOrderButton as well
   // if the orderlist is not yet populated, display a loading spinner

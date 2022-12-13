@@ -9,6 +9,7 @@ import {
   MenuItem,
   Button,
   FormControl,
+  FormLabel,
 } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -84,25 +85,73 @@ function NewOrderForm() {
   ));
 
   return (
-    <FormGrid>
-      <FormCol>
-        <Grid item container justifyContent="center">
+    <Grid
+      container
+      sx={{
+        paddingTop: '30px',
+        paddingBottom: '30px',
+      }}
+      justifyContent="space-evenly"
+      alignItems="center"
+      rowSpacing={2}
+    >
+      <FormControl>
+        <Grid item>
           <Typography variant="h2">New Order Form</Typography>
         </Grid>
-        <Grid
-          justifyContent="flex-start"
-          alignItems="center"
-          spacing={2}
-          direction="row"
-          container
-        >
-          <Grid xs={2} item>
-            <InputLabel id="demo-simple-select-label">Meat</InputLabel>
+        <Grid container item direction="column">
+          <Grid item>
+            <FormLabel>Produce</FormLabel>
+          </Grid>
+          <Grid item>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
+              value={values.produce}
+              autoWidth
+              onChange={(e) => setValue('produce', e.target.value as string)}
+            >
+              {dropDownOptions}
+            </Select>
+          </Grid>
+        </Grid>
+        <Grid container item direction="column">
+          <Grid item>
+            <FormLabel>Dry Goods</FormLabel>
+          </Grid>
+          <Grid item>
+            <Select
+              value={values.dryGoods}
+              autoWidth
+              onChange={(e) => setValue('dryGoods', e.target.value as string)}
+            >
+              {dropDownOptions}
+            </Select>
+          </Grid>
+        </Grid>
+
+        <Grid container item direction="column">
+          <Grid item>
+            <FormLabel>Vito</FormLabel>
+          </Grid>
+          <Grid item>
+            <Select
+              value={values.vitoPallets}
+              autoWidth
+              onChange={(e) =>
+                setValue('vitoPallets', e.target.value as string)
+              }
+            >
+              {dropDownOptions}
+            </Select>
+          </Grid>
+        </Grid>
+
+        <Grid container item direction="column">
+          <Grid item>
+            <FormLabel>Meat</FormLabel>
+          </Grid>
+          <Grid item>
+            <Select
               value={values.meat}
-              label="Meat"
               autoWidth
               onChange={(e) => setValue('meat', e.target.value as string)}
             >
@@ -111,50 +160,8 @@ function NewOrderForm() {
           </Grid>
         </Grid>
         <FormRow>
-          <Grid xs={2} item>
-            <InputLabel id="demo-simple-select-label">Dry Goods</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={values.dryGoods}
-              label="Dry Goods"
-              onChange={(e) => setValue('dryGoods', e.target.value)}
-            >
-              {dropDownOptions}
-            </Select>
-          </Grid>
-        </FormRow>
-        <FormRow>
-          <Grid item width=".25">
-            <InputLabel id="demo-simple-select-label">Produce</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={values.produce}
-              label="Produce"
-              onChange={(e) => setValue('produce', e.target.value)}
-            >
-              {dropDownOptions}
-            </Select>
-          </Grid>
-        </FormRow>
-        <FormRow>
-          <Grid item>
-            <InputLabel id="demo-simple-select-label">Vito</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={values.vitoPallets}
-              label="Vito Pallets"
-              onChange={(e) => setValue('vitoPallets', e.target.value)}
-            >
-              {dropDownOptions}
-            </Select>
-          </Grid>
-        </FormRow>
-        <FormRow>
           <Grid item container justifyContent="center">
-            <Typography>Retail Rescue Items</Typography>
+            <FormLabel>Retail Rescue Items</FormLabel>
           </Grid>
         </FormRow>
         {retailItems.map((item, index) => (
@@ -162,6 +169,9 @@ function NewOrderForm() {
             <Grid
               spacing={1}
               container
+              sx={{
+                paddingTop: '10px',
+              }}
               justifyContent="flex-start"
               alignItems="center"
             >
@@ -171,8 +181,6 @@ function NewOrderForm() {
                     Retail Rescure Item
                   </InputLabel>
                   <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
                     label="Retail Rescure Item"
                     value={retailItems[index].name}
                     placeholder="Select"
@@ -189,7 +197,6 @@ function NewOrderForm() {
               <Grid xs={4} item>
                 <TextField
                   fullWidth
-                  size="medium"
                   type="text"
                   label="Comments"
                   onChange={(e) =>
@@ -199,7 +206,7 @@ function NewOrderForm() {
               </Grid>
               <Grid xs={2} item>
                 <Button
-                  size="large"
+                  color="error"
                   variant="contained"
                   onClick={() => removeRetailItem(index)}
                 >
@@ -209,17 +216,28 @@ function NewOrderForm() {
             </Grid>
           </FormRow>
         ))}
+
         <FormRow>
-          <Button onClick={addRetailItem}>Add Retail Rescue Item</Button>
+          <Grid
+            sx={{
+              paddingTop: '10px',
+            }}
+            item
+          >
+            <Button variant="contained" onClick={addRetailItem}>
+              Add Retail Rescue Item
+            </Button>
+          </Grid>
         </FormRow>
         <FormRow>
           <Grid item container justifyContent="center">
-            <Typography>Order Comments</Typography>
+            <FormLabel>Order Comments</FormLabel>
           </Grid>
         </FormRow>
         <FormRow>
           <Grid item width="1">
             <TextField
+              sx={{ width: '40vw' }}
               fullWidth
               id="outlined-multiline-static"
               multiline
@@ -232,7 +250,7 @@ function NewOrderForm() {
         </FormRow>
         <FormRow>
           <Grid item container justifyContent="center">
-            <Typography>Pickup</Typography>
+            <FormLabel>Pickup</FormLabel>
           </Grid>
         </FormRow>
         <FormRow>
@@ -246,14 +264,21 @@ function NewOrderForm() {
           </LocalizationProvider>
         </FormRow>
         <FormRow>
-          <Grid>
-            <Button type="submit" variant="contained" color="primary" fullWidth>
-              Submit
-            </Button>
+          <Grid item container direction="row" justifyContent="flex-end">
+            <Grid item>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+              >
+                Submit
+              </Button>
+            </Grid>
           </Grid>
         </FormRow>
-      </FormCol>
-    </FormGrid>
+      </FormControl>
+    </Grid>
   );
 }
 

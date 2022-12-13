@@ -55,6 +55,7 @@ export default function RetailRescueItems(props: RetailRescueItemsProps) {
             return (
               <ListItem key={data.key}>
                 <Chip
+                  color="primary"
                   icon={icon}
                   label={data.label}
                   onDelete={handleDelete(data)}

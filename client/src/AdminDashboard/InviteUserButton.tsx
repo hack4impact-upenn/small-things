@@ -43,7 +43,7 @@ function InviteUserButton() {
   };
 
   return (
-    <div>
+    <div style={{ marginBottom: '10px' }}>
       <Button variant="contained" onClick={handleClickOpen}>
         Invite User
       </Button>

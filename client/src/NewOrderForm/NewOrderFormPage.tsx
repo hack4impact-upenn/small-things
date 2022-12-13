@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@mui/material';
+import { Box, Link, Paper } from '@mui/material';
 import NewOrderForm from './NewOrderForm';
 
 /**
@@ -8,20 +8,33 @@ import NewOrderForm from './NewOrderForm';
  */
 function NewOrderFormPage() {
   return (
-    <Grid
-      item
-      container
-      xs={12}
-      sx={{
-        overflow: 'flex',
-        paddingTop: '30px',
-        paddingBottom: '30px',
-      }}
-      justifyContent="space-evenly"
-      alignItems="center"
-    >
-      <NewOrderForm />
-    </Grid>
+    <div style={{ backgroundColor: '#D9D9D9', minHeight: '100vh' }}>
+      <Box
+        sx={{
+          paddingTop: '7vh',
+          paddingBottom: '20px',
+        }}
+      >
+        <Paper
+          sx={{
+            margin: 'auto',
+            width: '50vw',
+            borderRadius: '25px',
+          }}
+        >
+          <Box
+            sx={{
+              paddingLeft: '5vw',
+              paddingTop: '5vh',
+            }}
+          >
+            <Link href="/home"> {'<'} Back to Orders Page</Link>
+          </Box>
+
+          <NewOrderForm />
+        </Paper>
+      </Box>
+    </div>
   );
 }
 

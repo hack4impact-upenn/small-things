@@ -72,8 +72,17 @@ function LoginPage() {
     firstName: string,
     lastName: string,
     admin: boolean,
+    organization: string,
   ) {
-    dispatch(loginRedux({ email: userEmail, firstName, lastName, admin }));
+    dispatch(
+      loginRedux({
+        email: userEmail,
+        firstName,
+        lastName,
+        admin,
+        organization,
+      }),
+    );
   }
 
   const clearErrorMessages = () => {
@@ -118,6 +127,7 @@ function LoginPage() {
             user.firstName!,
             user.lastName!,
             user.admin!,
+            user.organization!,
           );
           navigate('/home');
         })

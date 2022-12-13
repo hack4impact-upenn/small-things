@@ -15,18 +15,16 @@ function AdminDashboardPage() {
       <Navbar />
 
       <ScreenGrid>
-        <Grid
-          item
-          direction="column"
-          justifyContent="flex-start"
-          alignItems="stretch"
-        >
+        <Grid item>
           <Typography variant="h2">Welcome to the Admin Dashboard</Typography>
-
+        </Grid>
+        <Grid item container width="60vw" justifyContent="flex-end">
+          <InviteUserButton />
+        </Grid>
+        <Grid item>
           <div style={{ height: '60vh', width: '60vw' }}>
             <UserTable />
           </div>
-          <InviteUserButton />
         </Grid>
       </ScreenGrid>
     </>
