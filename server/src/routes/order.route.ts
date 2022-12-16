@@ -13,6 +13,9 @@ import {
   fetchOrderById,
   updateOrder,
   fetchUsedTimes,
+  approveOrder,
+  modifyOrder,
+  rejectOrder,
 } from '../controllers/order.controller';
 
 const router = express.Router();
@@ -46,5 +49,20 @@ router.put('/:id', isAdminOrInOrg, updateOrder);
  * A GET request to get avalible times to schedule an order.
  */
 router.get('/settings/times', fetchUsedTimes);
+
+/**
+ * A PUT request to approve an order.
+ */
+router.put('/:id/approve', isAdmin, approveOrder);
+
+/**
+ * A PUT request to modify an order.
+ */
+router.put('/:id/modify', isAdmin, modifyOrder);
+
+/**
+ * A PUT request to reject an order.
+ */
+router.put('/:id/reject', isAdmin, rejectOrder);
 
 export default router;

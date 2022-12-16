@@ -3,6 +3,7 @@
  */
 import 'dotenv/config';
 import SGmail, { MailDataRequired } from '@sendgrid/mail';
+import { IOrder } from '../models/order.model';
 
 const appName = 'Small Things'; // Replace with a relevant project name
 const senderName = 'Small Things'; // Replace with a relevant project sender
@@ -84,4 +85,58 @@ const emailInviteLink = async (email: string, token: string) => {
   await SGmail.send(mailSettings);
 };
 
-export { emailVerificationLink, emailResetPasswordLink, emailInviteLink };
+const emailApproveOrder = async (email: string, order: IOrder) => {
+  const mailSettings: MailDataRequired = {
+    from: {
+      email: process.env.SENDGRID_EMAIL_ADDRESS || 'missing@mail.com',
+      name: senderName,
+    },
+    to: email,
+    subject: 'Order Approval',
+    html:
+      `<h1>Your order has been approved</h1>` +
+      `<h2>Your order summary:</h2>` +
+      `<div>Organization: ${order.organization}</div>` +
+      `<div>Produce: ${order.produce}</div>` +
+      `<div>Meat: ${order.meat}</div>` +
+      `<div>Vito: ${order.vito}</div>` +
+      `<div>Dry: ${order.dry}</div>` +
+      `<div>Retail Rescue: ${order.retailRescue}</div>` +
+      `<div>Status: ${order.status}</div>` +
+      `<div>Pickup: ${order.pickup}</div>`,
+  };
+  // Send the email and propogate the error up if one exists
+  await SGmail.send(mailSettings);
+};
+
+const emailRejectOrder = async (email: string, order: IOrder) => {
+  const mailSettings: MailDataRequired = {
+    from: {
+      email: process.env.SENDGRID_EMAIL_ADDRESS || 'missing@mail.com',
+      name: senderName,
+    },
+    to: email,
+    subject: 'Order Rejection',
+    html:
+      `<h1>Your order has been rejected</h1>` +
+      `<h2>Your order summary:</h2>` +
+      `<div>Organization: ${order.organization}</div>` +
+      `<div>Produce: ${order.produce}</div>` +
+      `<div>Meat: ${order.meat}</div>` +
+      `<div>Vito: ${order.vito}</div>` +
+      `<div>Dry: ${order.dry}</div>` +
+      `<div>Retail Rescue: ${order.retailRescue}</div>` +
+      `<div>Status: ${order.status}</div>` +
+      `<div>Pickup: ${order.pickup}</div>`,
+  };
+  // Send the email and propogate the error up if one exists
+  await SGmail.send(mailSettings);
+};
+
+export {
+  emailVerificationLink,
+  emailResetPasswordLink,
+  emailInviteLink,
+  emailApproveOrder,
+  emailRejectOrder,
+};

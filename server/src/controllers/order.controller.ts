@@ -14,6 +14,7 @@ import {
   getOrderById,
   updateOrderById,
 } from '../services/order.service';
+import { emailApproveOrder, emailRejectOrder } from '../services/mail.service';
 import { getUserByOrganization } from '../services/user.service';
 import { ISettings, Settings } from '../models/settings.model';
 
@@ -205,6 +206,170 @@ const fetchUsedTimes = async (
   }
 };
 
+const approveOrder = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  const order = req.body;
+  if (!order) {
+    next(ApiError.missingFields(['status']));
+  }
+  const currentOrder: IOrder | null = await getOrderById(id);
+  if (!currentOrder) {
+    next(ApiError.notFound('Order not found'));
+    return;
+  }
+
+  if (currentOrder.status !== 'PENDING') {
+    next(ApiError.notFound('Order not pending'));
+    return;
+  }
+
+  currentOrder.status = 'APPROVED';
+
+  const organizationUser: IUser | null = await getUserByOrganization(
+    currentOrder.organization,
+  );
+
+  if (!organizationUser) {
+    next(ApiError.notFound('User/Organization not found'));
+    return;
+  }
+
+  updateOrderById(id, currentOrder)
+    .then(() => {
+      res.sendStatus(StatusCode.OK);
+    })
+    .catch(() => {
+      next(ApiError.internal('Unable to approve order.'));
+    });
+
+  emailApproveOrder(organizationUser.email, currentOrder)
+    .then(() =>
+      res.status(StatusCode.CREATED).send({
+        message: `Email has been sent to ${organizationUser.email}`,
+      }),
+    )
+    .catch(() => {
+      next(ApiError.internal('Failed to send approved order email.'));
+    });
+};
+
+const modifyOrder = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  const order = req.body;
+  if (!order) {
+    next(
+      ApiError.missingFields([
+        'organization',
+        'produce',
+        'meat',
+        'vito',
+        'dry',
+        'status',
+        'pickup',
+      ]),
+    );
+  }
+
+  const currentOrder: IOrder | null = await getOrderById(id);
+  if (!currentOrder) {
+    next(ApiError.notFound('Order not found'));
+    return;
+  }
+
+  if (currentOrder.status !== 'PENDING') {
+    next(ApiError.notFound('Order not pending'));
+    return;
+  }
+
+  order.status = 'APPROVED';
+
+  const organizationUser: IUser | null = await getUserByOrganization(
+    order.organization,
+  );
+
+  if (!organizationUser) {
+    next(ApiError.notFound('User/Organization not found'));
+    return;
+  }
+
+  updateOrderById(id, order)
+    .then(() => {
+      res.sendStatus(StatusCode.OK);
+    })
+    .catch(() => {
+      next(ApiError.internal('Unable to approve order.'));
+    });
+
+  emailApproveOrder(organizationUser.email, order)
+    .then(() =>
+      res.status(StatusCode.CREATED).send({
+        message: `Email has been sent to ${organizationUser.email}`,
+      }),
+    )
+    .catch(() => {
+      next(ApiError.internal('Failed to send approved order email.'));
+    });
+};
+
+const rejectOrder = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  const order = req.body;
+  if (!order) {
+    next(ApiError.missingFields(['status']));
+  }
+  const currentOrder: IOrder | null = await getOrderById(id);
+  if (!currentOrder) {
+    next(ApiError.notFound('Order not found'));
+    return;
+  }
+
+  if (currentOrder.status !== 'PENDING') {
+    next(ApiError.notFound('Order not pending'));
+    return;
+  }
+
+  currentOrder.status = 'COMPLETED';
+
+  const organizationUser: IUser | null = await getUserByOrganization(
+    currentOrder.organization,
+  );
+
+  if (!organizationUser) {
+    next(ApiError.notFound('User/Organization not found'));
+    return;
+  }
+
+  updateOrderById(id, currentOrder)
+    .then(() => {
+      res.sendStatus(StatusCode.OK);
+    })
+    .catch(() => {
+      next(ApiError.internal('Unable to reject order.'));
+    });
+
+  emailRejectOrder(organizationUser.email, currentOrder)
+    .then(() =>
+      res.status(StatusCode.CREATED).send({
+        message: `Email has been sent to ${organizationUser.email}`,
+      }),
+    )
+    .catch(() => {
+      next(ApiError.internal('Failed to send approved order email.'));
+    });
+};
+
 export {
   createOrder,
   fetchAllOrders,
@@ -212,4 +377,7 @@ export {
   fetchOrderById,
   updateOrder,
   fetchUsedTimes,
+  approveOrder,
+  modifyOrder,
+  rejectOrder,
 };
