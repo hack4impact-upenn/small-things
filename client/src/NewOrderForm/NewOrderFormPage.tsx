@@ -1,12 +1,20 @@
-import React from 'react';
-import { Box, Link, Paper } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, CircularProgress, Link, Paper } from '@mui/material';
 import NewOrderForm from './NewOrderForm';
+import ISettings from '../util/types/settings';
+import { useData } from '../util/api';
 
-/**
- * A page only accessible to admins that displays all users in a table and allows
- * Admin to delete users from admin and promote users to admin.
- */
 function NewOrderFormPage() {
+  const [settings, setSettings] = useState<ISettings>();
+  const [dates, setDates] = useState();
+
+  const currentSettings = useData('admin/settings');
+  const currentDates = useData('order/settings/times');
+  useEffect(() => {
+    setSettings(currentSettings?.data);
+    setDates(currentDates?.data);
+  }, [currentSettings, currentDates]);
+
   return (
     <div style={{ backgroundColor: '#D9D9D9', minHeight: '100vh' }}>
       <Box
@@ -30,8 +38,13 @@ function NewOrderFormPage() {
           >
             <Link href="/home"> {'<'} Back to Orders Page</Link>
           </Box>
-
-          <NewOrderForm />
+          {!settings || !dates ? (
+            <div style={{ width: '0', margin: 'auto' }}>
+              <CircularProgress size={80} />
+            </div>
+          ) : (
+            <NewOrderForm settings={settings} dates={dates} />
+          )}
         </Paper>
       </Box>
     </div>

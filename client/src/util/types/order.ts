@@ -25,4 +25,4 @@ interface IOrder {
   pickup: Date;
 }
 
-export default IOrder;
+export type { IOrder, IRetailRescueItem };

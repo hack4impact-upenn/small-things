@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 
 import { PaginationTable, TColumn } from '../components/PaginationTable';
 import { useData } from '../util/api';
-import IOrder from '../util/types/order';
+import { IOrder } from '../util/types/order';
 
 interface AdminOrderTableProps {
   propStatus: string;

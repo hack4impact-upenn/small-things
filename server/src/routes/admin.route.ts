@@ -75,9 +75,9 @@ router.put('/settings', isAuthenticated, isAdmin, updateSettings);
 
 /**
  * A GET route to get current settings. Checks first if the requestor is a
- * authenticated and is an admin.
+ * authenticated
  */
-router.get('/settings', isAuthenticated, isAdmin, getSettings);
+router.get('/settings', isAuthenticated, getSettings);
 
 /**
  * A GET route to get status of user by id. Checks first if the requestor is a

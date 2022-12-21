@@ -11,47 +11,28 @@ import {
   FormControl,
   FormLabel,
 } from '@mui/material';
-import dayjs, { Dayjs } from 'dayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { useNavigate } from 'react-router-dom';
 import FormRow from '../components/form/FormRow';
 import ISettings from '../util/types/settings';
-import { postData } from '../util/api';
-import { IRetailRescueItem } from '../util/types/order';
-import { useAppSelector } from '../util/redux/hooks';
-import { selectUser } from '../util/redux/userSlice';
-
-interface Date {
-  [key: string]: string[];
-}
+import { IOrder, IRetailRescueItem } from '../util/types/order';
 
 interface NewOrderFormProps {
   settings: ISettings;
-  dates: Date;
+  order: IOrder;
 }
 
-function NewOrderForm({ settings, dates }: NewOrderFormProps) {
-  const defaultValues = {
-    meat: 0,
-    dryGoods: 0,
-    produce: 0,
-    vitoPallets: 0,
+function ModifyOrderForm({ settings, order }: NewOrderFormProps) {
+  const originalValues = {
+    meat: order.meat.count,
+    dryGoods: order.dry.count,
+    produce: order.produce.count,
+    vitoPallets: order.vito.count,
   };
 
-  const user = useAppSelector(selectUser);
-
-  const [values, setValueState] = useState(defaultValues);
-  const [retailItems, setRetailItems] = useState<IRetailRescueItem[]>([]);
-  const [orderComments, setOrderComments] = useState('');
-  const [date, setDate] = useState<Dayjs | null>(dayjs());
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-
-  const handleDateChange = (newValue: Dayjs | null) => {
-    setDate(newValue);
-  };
+  const [values, setValueState] = useState(originalValues);
+  const [retailItems, setRetailItems] = useState<IRetailRescueItem[]>(
+    order.retailRescue,
+  );
+  const [orderComments, setOrderComments] = useState(order.comment);
 
   const addRetailItem = () => {
     setRetailItems([...retailItems, { item: '', comment: '' }]);
@@ -81,30 +62,6 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
     }));
   };
 
-  const submitOrder = () => {
-    setLoading(true);
-    const order = {
-      organization: user.organization,
-      produce: { count: values.produce },
-      meat: { count: values.meat },
-      vito: { count: values.vitoPallets },
-      dry: { count: values.dryGoods },
-      retailRescue: retailItems,
-      comment: orderComments,
-      pickup: date,
-    };
-    postData('order/create', order)
-      .then((res) => {
-        if (res.error) {
-          console.log(res.error.message);
-        } else {
-          setLoading(false);
-          navigate('/home');
-        }
-      })
-      .catch((error) => console.log(error));
-  };
-
   return (
     <Grid
       container
@@ -112,14 +69,9 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
         paddingTop: '30px',
         paddingBottom: '30px',
       }}
-      justifyContent="space-evenly"
-      alignItems="center"
       rowSpacing={2}
     >
       <FormControl>
-        <Grid item>
-          <Typography variant="h2">New Order Form</Typography>
-        </Grid>
         <Grid container item direction="column">
           <Grid item>
             <FormLabel>Produce</FormLabel>
@@ -232,6 +184,9 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
                     {settings.retailRescueItems.map((rrItem: string) => (
                       <MenuItem value={rrItem}>{rrItem}</MenuItem>
                     ))}
+                    {retailItems.map((rrObj) => (
+                      <MenuItem value={rrObj.item}>{rrObj.item}</MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Grid>
@@ -289,47 +244,9 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
             />
           </Grid>
         </FormRow>
-        <FormRow>
-          <Grid item container justifyContent="center">
-            <FormLabel>Pickup</FormLabel>
-          </Grid>
-        </FormRow>
-        <FormRow>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateTimePicker
-              minDate={dayjs(Object.keys(dates).at(0))}
-              maxDate={dayjs(Object.keys(dates).at(-1))}
-              label="Schedule Pick-up"
-              value={date}
-              onChange={handleDateChange}
-              renderInput={(params) => <TextField {...params} />}
-              shouldDisableTime={(timeValue, clockType) => {
-                if (clockType === 'minutes' && timeValue % 30) {
-                  return true;
-                }
-                return false;
-              }}
-            />
-          </LocalizationProvider>
-        </FormRow>
-        <FormRow>
-          <Grid item container direction="row" justifyContent="flex-end">
-            <Grid item>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth
-                onClick={submitOrder}
-              >
-                Submit
-              </Button>
-            </Grid>
-          </Grid>
-        </FormRow>
       </FormControl>
     </Grid>
   );
 }
 
-export default NewOrderForm;
+export default ModifyOrderForm;

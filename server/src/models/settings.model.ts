@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { retailRescueItem } from './order.model';
 
 const SettingsSchema = new mongoose.Schema({
   maxNumOfMeat: {
@@ -50,7 +49,7 @@ interface ISettings extends mongoose.Document {
   maxNumOfVito: number;
   maxNumOfDryGoods: number;
   leadTime: number;
-  retailRescueItems: Array<retailRescueItem>;
+  retailRescueItems: Array<string>;
   advanced: boolean;
   dryGoodOptions: Array<string>;
   vitoOptions: Array<string>;

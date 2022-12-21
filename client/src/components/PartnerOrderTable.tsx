@@ -7,9 +7,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 
 import { PaginationTable, TColumn } from './PaginationTable';
-import IOrder from '../util/types/order';
-import { selectUser } from '../util/redux/userSlice';
+import { IOrder } from '../util/types/order';
 import { useData } from '../util/api';
+import { selectUser } from '../util/redux/userSlice';
 import { useAppSelector } from '../util/redux/hooks';
 
 interface PartnerOrderTableRow {
