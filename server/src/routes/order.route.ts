@@ -3,6 +3,7 @@
  * relating to authentication.
  */
 import express from 'express';
+import cron = require('node-cron');
 import { isAuthenticated } from '../controllers/auth.middleware';
 import { isAdmin } from '../controllers/admin.middleware';
 import { isAdminOrInOrg } from '../controllers/order.middleware';
@@ -14,8 +15,35 @@ import {
   updateOrder,
   fetchUsedTimes,
 } from '../controllers/order.controller';
+import { Order } from '../models/order.model';
 
 const router = express.Router();
+
+// update each order status at midnight EST daily
+cron.schedule(
+  '0 0 0 * * *',
+  () => {
+    console.log('updating order status');
+    Order.find().then((orders) => {
+      for (let i = 0; i < orders.length; i += 1) {
+        const order = orders[i];
+        if (order.pickup.getDate() - Date.now() < 0) {
+          // marks orders with past pickups as completed
+          order.status = 'COMPLETED';
+        } else if (order.pickup.getDate() - Date.now() < 3) {
+          // marks orders to be picked up in three days as released
+          order.status = 'RELEASED';
+        }
+
+        order.save();
+      }
+    });
+  },
+  {
+    scheduled: true,
+    timezone: 'America/New_York',
+  },
+);
 
 /**
  * A POST request to create a new order.
