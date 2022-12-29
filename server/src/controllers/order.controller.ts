@@ -108,11 +108,15 @@ const fetchOrderById = async (
   next: express.NextFunction,
 ) => {
   const { id } = req.params;
+  const user: IUser | null = req.user as IUser;
   try {
     const order: IOrder | null = await getOrderById(id);
     if (!order) {
       next(ApiError.notFound('Order not found'));
       return;
+    }
+    if (order.organization !== user.organization && !user.admin) {
+      next(ApiError.notFound('Not part of order Orgnaization'));
     }
     res.status(StatusCode.OK).send(order);
   } catch (err) {

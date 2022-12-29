@@ -51,7 +51,10 @@ function PartnerOrderTable() {
     return {
       key: _id,
       pickupDate: myDate.toDateString(),
-      pickupTime: myDate.toLocaleTimeString(),
+      pickupTime: myDate.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
       status,
       produce: produce.count,
       meat: meat.count,
@@ -59,7 +62,7 @@ function PartnerOrderTable() {
       vito: vito.count,
       retail: retailRescue.length,
       view: (
-        <Button variant="contained" color="secondary">
+        <Button variant="contained" color="secondary" href={`order/${_id}`}>
           View Order
         </Button>
       ),
@@ -84,7 +87,13 @@ function PartnerOrderTable() {
   }
   return (
     <PaginationTable
-      rows={orderList.map((order: IOrder) => createPartnerOrderTableRow(order))}
+      rows={orderList
+        .sort((a, b) => {
+          const aDate = new Date(a.pickup);
+          const bDate = new Date(b.pickup);
+          return bDate.valueOf() - aDate.valueOf();
+        })
+        .map((order: IOrder) => createPartnerOrderTableRow(order))}
       columns={columns}
     />
   );

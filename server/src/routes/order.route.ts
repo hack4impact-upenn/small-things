@@ -35,7 +35,7 @@ router.get('/:org/all', isAdminOrInOrg, fetchOrdersByOrganization);
 /**
  * A GET request to a specific order by id.
  */
-router.get('/:id', isAdminOrInOrg, fetchOrderById);
+router.get('/:id', isAuthenticated, fetchOrderById);
 
 /**
  * A PUT request to update a new order by id.
