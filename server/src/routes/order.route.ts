@@ -3,7 +3,7 @@
  * relating to authentication.
  */
 import express from 'express';
-import cron = require('node-cron');
+import cron from 'node-cron';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import { isAdmin } from '../controllers/admin.middleware';
 import { isAdminOrInOrg } from '../controllers/order.middleware';
@@ -23,7 +23,6 @@ const router = express.Router();
 cron.schedule(
   '0 0 0 * * *',
   () => {
-    console.log('updating order status');
     Order.find().then((orders) => {
       for (let i = 0; i < orders.length; i += 1) {
         const order = orders[i];
