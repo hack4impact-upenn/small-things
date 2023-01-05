@@ -6,6 +6,7 @@ import {
   Paper,
   Box,
   Button,
+  Link,
 } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { Stack } from '@mui/system';
@@ -77,10 +78,10 @@ function OrderPage() {
   const pickUpDate = new Date(order.pickup);
   return (
     <div style={{ backgroundColor: '#D9D9D9', minHeight: '100vh' }}>
-      <Navbar />
+      {admin && <Navbar />}
       <Box
         sx={{
-          marginTop: '5vh',
+          paddingTop: '5vh',
           paddingBottom: '10px',
         }}
       >
@@ -98,6 +99,7 @@ function OrderPage() {
               justifyContent: 'center',
             }}
           >
+            <Link href="/home">{'<'} Back to Orders</Link>
             <Typography variant="h5">Order Information</Typography>
             <Typography variant="h6">Organization:</Typography>
             <Typography variant="body1">{order.organization}</Typography>
@@ -159,7 +161,7 @@ function OrderPage() {
             </Typography>
             <Box sx={{ marginTop: '15px' }}>
               <Stack spacing={2} direction="row">
-                <Button variant="contained">Approve</Button>
+                {admin && <Button variant="contained">Approve</Button>}
                 {admin ? (
                   <>
                     <Button
@@ -174,9 +176,18 @@ function OrderPage() {
                     </Button>
                   </>
                 ) : (
-                  <Button variant="contained" color="error">
-                    Cancel
-                  </Button>
+                  <>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => setModifying(true)}
+                    >
+                      Modify Order
+                    </Button>
+                    <Button variant="contained" color="error">
+                      Cancel Order
+                    </Button>
+                  </>
                 )}
               </Stack>
             </Box>

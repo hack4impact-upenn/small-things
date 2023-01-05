@@ -10,18 +10,22 @@ import {
   Button,
   FormControl,
   FormLabel,
+  TextFieldProps,
 } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { useNavigate } from 'react-router-dom';
+import { DesktopDatePicker } from '@mui/lab';
+import { DatePicker } from '@mui/x-date-pickers';
 import FormRow from '../components/form/FormRow';
 import ISettings from '../util/types/settings';
 import { postData } from '../util/api';
 import { IRetailRescueItem } from '../util/types/order';
 import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
+import useAlert from '../util/hooks/useAlert';
 
 interface Date {
   [key: string]: string[];
@@ -41,13 +45,18 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
   };
 
   const user = useAppSelector(selectUser);
+  const { setAlert } = useAlert();
 
   const [values, setValueState] = useState(defaultValues);
   const [retailItems, setRetailItems] = useState<IRetailRescueItem[]>([]);
-  const [orderComments, setOrderComments] = useState('');
-  const [date, setDate] = useState<Dayjs | null>(dayjs());
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [orderComments, setOrderComments] = useState<string>('');
+  const [date, setDate] = React.useState<Dayjs | null>(null);
   const [loading, setLoading] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(false);
   const navigate = useNavigate();
+
+  const [val, setVal] = React.useState(new Date('04/01/2022 12:00:00'));
 
   const handleDateChange = (newValue: Dayjs | null) => {
     setDate(newValue);
@@ -55,15 +64,21 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
 
   const addRetailItem = () => {
     setRetailItems([...retailItems, { item: '', comment: '' }]);
+    setSelectedItem(true);
   };
 
   const removeRetailItem = (index: number) => {
     setRetailItems(retailItems.filter((item, i) => i !== index));
+    setSelectedItems(selectedItems.filter((item, i) => i !== index));
   };
 
   const updateRetailItemName = (index: number, value: string) => {
+    const newSelectedItems = [...selectedItems];
+    newSelectedItems[index] = value;
+    setSelectedItems(newSelectedItems);
     const newRetailItems = [...retailItems];
     newRetailItems[index].item = value;
+    setSelectedItem(false);
     setRetailItems(newRetailItems);
   };
 
@@ -96,13 +111,14 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
     postData('order/create', order)
       .then((res) => {
         if (res.error) {
-          console.log(res.error.message);
+          setAlert(res.error.message, 'error');
         } else {
           setLoading(false);
+          setAlert('Order Created', 'success');
           navigate('/home');
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => setAlert(error, 'error'));
   };
 
   return (
@@ -206,7 +222,7 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
           </Grid>
         </FormRow>
         {retailItems.map((item, index) => (
-          <FormRow>
+          <FormRow key={item.item}>
             <Grid
               spacing={1}
               container
@@ -229,9 +245,20 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
                       updateRetailItemName(index, e.target.value)
                     }
                   >
-                    {settings.retailRescueItems.map((rrItem: string) => (
-                      <MenuItem value={rrItem}>{rrItem}</MenuItem>
-                    ))}
+                    {settings.retailRescueItems
+                      .filter((rrItem: string) => {
+                        return (
+                          !selectedItems.includes(rrItem) ||
+                          selectedItems[index] === rrItem
+                        );
+                      })
+                      .map((rrItem: string) => {
+                        return (
+                          <MenuItem key={rrItem} value={rrItem}>
+                            {rrItem}
+                          </MenuItem>
+                        );
+                      })}
                   </Select>
                 </FormControl>
               </Grid>
@@ -265,7 +292,14 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
             }}
             item
           >
-            <Button variant="contained" onClick={addRetailItem}>
+            <Button
+              variant="contained"
+              onClick={addRetailItem}
+              disabled={
+                selectedItem ||
+                selectedItems.length === settings.retailRescueItems.length
+              }
+            >
               Add Retail Rescue Item
             </Button>
           </Grid>
@@ -296,19 +330,11 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
         </FormRow>
         <FormRow>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateTimePicker
-              minDate={dayjs(Object.keys(dates).at(0))}
-              maxDate={dayjs(Object.keys(dates).at(-1))}
-              label="Schedule Pick-up"
+            <DatePicker
+              label="Basic example"
               value={date}
               onChange={handleDateChange}
               renderInput={(params) => <TextField {...params} />}
-              shouldDisableTime={(timeValue, clockType) => {
-                if (clockType === 'minutes' && timeValue % 30) {
-                  return true;
-                }
-                return false;
-              }}
             />
           </LocalizationProvider>
         </FormRow>
@@ -321,6 +347,7 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
                 color="primary"
                 fullWidth
                 onClick={submitOrder}
+                disabled={loading}
               >
                 Submit
               </Button>
