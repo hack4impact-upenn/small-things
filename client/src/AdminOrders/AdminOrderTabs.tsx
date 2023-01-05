@@ -47,7 +47,7 @@ function AdminOrderTabs() {
   const { setAlert } = useAlert();
   const [value, setValue] = useState(0);
   const [orders, setOrders] = useState<IOrder[]>([]);
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(true);
   const allOrders = useData('order/all');
   useEffect(() => {
     if (allOrders?.data) {
@@ -55,39 +55,46 @@ function AdminOrderTabs() {
       setOrders(allOrders?.data);
     }
     if (allOrders?.error) {
-      setAlert('Could not fetch orders', 'error')
+      setAlert('Could not fetch orders', 'error');
     }
-    
   }, [allOrders]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  return (
-    loading ? <CircularProgress size={80} /> : (<Box sx={{ width: '100%' }}>
-    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-      <Tabs
-        value={value}
-        onChange={handleChange}
-        aria-label="order tabs"
-        centered
-      >
-        <Tab label="Pending" {...a11yProps(0)} />
-        <Tab label="Approved" {...a11yProps(1)} />
-        <Tab label="Released" {...a11yProps(2)} />
-      </Tabs>
+  return loading ? (
+    <CircularProgress size={80} />
+  ) : (
+    <Box sx={{ width: '100%' }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="order tabs"
+          centered
+        >
+          <Tab label="Pending" {...a11yProps(0)} />
+          <Tab label="Approved" {...a11yProps(1)} />
+          <Tab label="Released" {...a11yProps(2)} />
+        </Tabs>
+      </Box>
+      <TabPanel value={value} index={0}>
+        <AdminOrderTable
+          orders={orders.filter((order) => order.status === 'PENDING')}
+        />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        <AdminOrderTable
+          orders={orders.filter((order) => order.status === 'APPROVED')}
+        />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <AdminOrderTable
+          orders={orders.filter((order) => order.status === 'RELEASED')}
+        />
+      </TabPanel>
     </Box>
-    <TabPanel value={value} index={0}>
-      <AdminOrderTable orders={orders.filter((order) => order.status === "PENDING")} />
-    </TabPanel>
-    <TabPanel value={value} index={1}>
-      <AdminOrderTable orders={orders.filter((order) => order.status === "APPROVED")} />
-    </TabPanel>
-    <TabPanel value={value} index={2}>
-      <AdminOrderTable orders={orders.filter((order) => order.status === "RELEASED")} />
-    </TabPanel>
-  </Box>)
   );
 }
 
