@@ -1,10 +1,14 @@
 /* eslint-disable */
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import AdminOrderTable from './AdminOrderTable';
+import { IOrder } from '../util/types/order';
+import { useData } from '../util/api';
+import useAlert from '../util/hooks/useAlert';
+import { CircularProgress } from '@mui/material';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -40,13 +44,28 @@ function a11yProps(index: number) {
 }
 
 function AdminOrderTabs() {
-  const [value, setValue] = React.useState(0);
+  const { setAlert } = useAlert();
+  const [value, setValue] = useState(0);
+  const [orders, setOrders] = useState<IOrder[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const allOrders = useData('order/all');
+  useEffect(() => {
+    if (allOrders?.data) {
+      setLoading(false);
+      setOrders(allOrders?.data);
+    }
+    if (allOrders?.error) {
+      setAlert('Could not fetch orders', 'error');
+    }
+  }, [allOrders]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  return (
+  return loading ? (
+    <CircularProgress size={80} />
+  ) : (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
@@ -61,13 +80,19 @@ function AdminOrderTabs() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <AdminOrderTable propStatus="PENDING" />
+        <AdminOrderTable
+          orders={orders.filter((order) => order.status === 'PENDING')}
+        />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <AdminOrderTable propStatus="APPROVED" />
+        <AdminOrderTable
+          orders={orders.filter((order) => order.status === 'APPROVED')}
+        />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <AdminOrderTable propStatus="RELEASED" />
+        <AdminOrderTable
+          orders={orders.filter((order) => order.status === 'RELEASED')}
+        />
       </TabPanel>
     </Box>
   );
