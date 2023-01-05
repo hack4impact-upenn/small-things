@@ -13,7 +13,6 @@ function AdminDashboardPage() {
   return (
     <>
       <Navbar />
-
       <ScreenGrid>
         <Grid item>
           <Typography variant="h2">Welcome to the Admin Dashboard</Typography>

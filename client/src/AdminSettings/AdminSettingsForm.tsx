@@ -16,6 +16,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import RetailRescueItems from './RetailRescueItems';
 import ISettings from '../util/types/settings';
 import { putData } from '../util/api';
+import useAlert from '../util/hooks/useAlert';
 
 const SETTING_MAXIMUMS = {
   dryGoods: 10,
@@ -30,6 +31,8 @@ interface SettingsFormProp {
 }
 
 function AdminSettingsForm({ settings }: SettingsFormProp) {
+  const { setAlert } = useAlert();
+
   const [advancedSettings, setAdvancedSettings] = React.useState(
     settings.advanced,
   );
@@ -88,7 +91,9 @@ function AdminSettingsForm({ settings }: SettingsFormProp) {
     };
     putData('admin/settings', newSettings).then((res) => {
       if (res.error) {
-        console.log(res.error.message);
+        setAlert(res.error.message, 'error');
+      } else {
+        setAlert('Settings saved', 'success');
       }
       setLoading(false);
     });

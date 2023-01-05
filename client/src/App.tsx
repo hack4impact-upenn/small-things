@@ -25,6 +25,7 @@ import InviteRegisterPage from './Authentication/InviteRegisterPage';
 import AdminSettingsPage from './AdminSettings/AdminSettingsPage';
 import NewOrderFormPage from './NewOrderForm/NewOrderFormPage';
 import OrderPage from './OrderPage/OrderPage';
+import AlertPopup from './components/AlertPopup';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <PersistGate loading={null} persistor={persistor}>
             <ThemeProvider theme={theme}>
               <CssBaseline>
+                <AlertPopup />
                 <Routes>
                   {/* Routes accessed only if user is not authenticated */}
                   <Route element={<UnauthenticatedRoutesWrapper />}>

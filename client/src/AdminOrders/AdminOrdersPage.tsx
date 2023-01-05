@@ -13,11 +13,15 @@ function AdminOrdersPage() {
     <>
       <Navbar />
       <ScreenGrid>
-        <Grid item justifyContent="flex-start" alignItems="stretch">
-          <Typography variant="h2">Orders</Typography>
-          <div style={{ height: '60vh', width: '60vw' }}>
-            <AdminOrderTabs />
-          </div>
+        <Grid justifyContent="flex-start" alignItems="stretch">
+          <Grid>
+            <Typography variant="h2">Orders</Typography>
+          </Grid>
+          <Grid>
+            <div style={{ height: '60vh', width: '60vw' }}>
+              <AdminOrderTabs />
+            </div>
+          </Grid>
         </Grid>
       </ScreenGrid>
     </>
