@@ -93,7 +93,6 @@ const fetchAllCompletedOrders = async (
   next: express.NextFunction,
 ) => {
   try {
-    console.log('fetching all completed orders');
     const orders: IOrder[] = await getAllCompletedOrders();
     res.status(StatusCode.OK).send(orders);
   } catch (err) {

@@ -26,6 +26,7 @@ import AdminSettingsPage from './AdminSettings/AdminSettingsPage';
 import NewOrderFormPage from './NewOrderForm/NewOrderFormPage';
 import OrderPage from './OrderPage/OrderPage';
 import AlertPopup from './components/AlertPopup';
+import HistoricOrderPage from './HistoricOrderPage/HistoricOrderPage';
 
 function App() {
   return (
@@ -64,6 +65,12 @@ function App() {
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>
                     <Route path="/order/new" element={<NewOrderFormPage />} />
+                  </Route>
+                  <Route element={<AdminRoutesWrapper />}>
+                    <Route
+                      path="/orders/past"
+                      element={<HistoricOrderPage />}
+                    />
                   </Route>
                   <Route element={<ProtectedRoutesWrapper />}>
                     <Route path="/order/:id" element={<OrderPage />} />
