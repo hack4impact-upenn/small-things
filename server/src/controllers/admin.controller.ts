@@ -135,6 +135,7 @@ const updateSettings = async (
     })
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .catch((e) => {
+      console.log(e);
       next(ApiError.internal('Unable to update settings'));
     });
 };

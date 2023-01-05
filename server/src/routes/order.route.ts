@@ -3,6 +3,7 @@
  * relating to authentication.
  */
 import express from 'express';
+import cron from 'node-cron';
 import { isAuthenticated } from '../controllers/auth.middleware';
 import { isAdmin } from '../controllers/admin.middleware';
 import { isAdminOrInOrg } from '../controllers/order.middleware';
@@ -13,9 +14,39 @@ import {
   fetchOrderById,
   updateOrder,
   fetchAllCompletedOrders,
+  fetchUsedTimes,
+  approveOrder,
+  modifyOrder,
+  rejectOrder,
 } from '../controllers/order.controller';
+import { Order } from '../models/order.model';
 
 const router = express.Router();
+
+// update each order status at midnight EST daily
+cron.schedule(
+  '0 0 0 * * *',
+  () => {
+    Order.find().then((orders) => {
+      for (let i = 0; i < orders.length; i += 1) {
+        const order = orders[i];
+        if (order.pickup.getDate() - Date.now() < 0) {
+          // marks orders with past pickups as completed
+          order.status = 'COMPLETED';
+        } else if (order.pickup.getDate() - Date.now() < 3) {
+          // marks orders to be picked up in three days as released
+          order.status = 'RELEASED';
+        }
+
+        order.save();
+      }
+    });
+  },
+  {
+    scheduled: true,
+    timezone: 'America/New_York',
+  },
+);
 
 /**
  * A POST request to create a new order.
@@ -40,11 +71,31 @@ router.get('/:org/all', isAdminOrInOrg, fetchOrdersByOrganization);
 /**
  * A GET request to a specific order by id.
  */
-router.get('/:id', isAdminOrInOrg, fetchOrderById);
+router.get('/:id', isAuthenticated, fetchOrderById);
 
 /**
  * A PUT request to update a new order by id.
  */
 router.put('/:id', isAdminOrInOrg, updateOrder);
+
+/**
+ * A GET request to get avalible times to schedule an order.
+ */
+router.get('/settings/times', fetchUsedTimes);
+
+/**
+ * A PUT request to approve an order.
+ */
+router.put('/:id/approve', isAdmin, approveOrder);
+
+/**
+ * A PUT request to modify an order.
+ */
+router.put('/:id/modify', isAdmin, modifyOrder);
+
+/**
+ * A PUT request to reject an order.
+ */
+router.put('/:id/reject', isAdmin, rejectOrder);
 
 export default router;

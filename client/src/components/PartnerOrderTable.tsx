@@ -2,12 +2,15 @@
  * A file that contains all the components and logic for the table of users
  * in the AdminDashboardPage.
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 
 import { PaginationTable, TColumn } from './PaginationTable';
-import IOrder from '../util/types/order';
+import { IOrder } from '../util/types/order';
+import { useData } from '../util/api';
+import { selectUser } from '../util/redux/userSlice';
+import { useAppSelector } from '../util/redux/hooks';
 
 interface PartnerOrderTableRow {
   key: string;
@@ -48,18 +51,30 @@ function PartnerOrderTable() {
     return {
       key: _id,
       pickupDate: myDate.toDateString(),
-      pickupTime: myDate.toLocaleTimeString(),
+      pickupTime: myDate.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
       status,
       produce: produce.count,
       meat: meat.count,
       dry: dry.count,
       vito: vito.count,
       retail: retailRescue.length,
-      view: <Button variant="contained">View Order</Button>,
+      view: (
+        <Button variant="contained" color="secondary" href={`order/${_id}`}>
+          View Order
+        </Button>
+      ),
     };
   }
 
+  const user = useAppSelector(selectUser);
+  const allOrders = useData(`order/${user.organization}/all`);
   const [orderList, setOrderList] = useState<IOrder[]>([]);
+  useEffect(() => {
+    setOrderList(allOrders?.data);
+  }, [allOrders]);
 
   // need to create the viewOrderButton as well
   // if the orderlist is not yet populated, display a loading spinner
@@ -72,7 +87,13 @@ function PartnerOrderTable() {
   }
   return (
     <PaginationTable
-      rows={orderList.map((order: IOrder) => createPartnerOrderTableRow(order))}
+      rows={orderList
+        .sort((a, b) => {
+          const aDate = new Date(a.pickup);
+          const bDate = new Date(b.pickup);
+          return bDate.valueOf() - aDate.valueOf();
+        })
+        .map((order: IOrder) => createPartnerOrderTableRow(order))}
       columns={columns}
     />
   );

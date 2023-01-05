@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { retailRescueItem } from './order.model';
 
 const SettingsSchema = new mongoose.Schema({
   maxNumOfMeat: {
@@ -26,6 +25,22 @@ const SettingsSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  advanced: {
+    type: Boolean,
+    required: true,
+  },
+  dryGoodOptions: {
+    type: [String],
+    required: true,
+  },
+  vitoOptions: {
+    type: [String],
+    required: true,
+  },
+  meatOptions: {
+    type: [String],
+    required: true,
+  },
 });
 
 interface ISettings extends mongoose.Document {
@@ -34,7 +49,11 @@ interface ISettings extends mongoose.Document {
   maxNumOfVito: number;
   maxNumOfDryGoods: number;
   leadTime: number;
-  retailRescueItems: Array<retailRescueItem>;
+  retailRescueItems: Array<string>;
+  advanced: boolean;
+  dryGoodOptions: Array<string>;
+  vitoOptions: Array<string>;
+  meatOptions: Array<string>;
 }
 
 const Settings = mongoose.model<ISettings>('Settings', SettingsSchema);
