@@ -4,7 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import AdminOrderTable from './AdminOrderTable';
+import AdminOrderTable from '../components/AdminOrderTable';
 import { IOrder } from '../util/types/order';
 import { useData } from '../util/api';
 import useAlert from '../util/hooks/useAlert';

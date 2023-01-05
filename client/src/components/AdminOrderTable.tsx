@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 
-import { PaginationTable, TColumn } from '../components/PaginationTable';
+import { PaginationTable, TColumn } from './PaginationTable';
 import { IOrder } from '../util/types/order';
 
 interface AdminOrderTableProps {
