@@ -53,6 +53,15 @@ const getOrderById = async (id: string) => {
 
 const getAllOrders = async () => {
   const orders = await Order.find({}).sort({ pickup: -1 }).exec();
+  console.log(orders);
+  return orders;
+};
+
+const getAllCompletedOrders = async () => {
+  console.log('first');
+  const orders = await Order.find({ status: 'COMPLETED' }).exec();
+  console.log('here');
+  console.log(orders);
   return orders;
 };
 
@@ -83,6 +92,7 @@ export {
   createNewOrder,
   getOrderByTimeSlot,
   getAllOrders,
+  getAllCompletedOrders,
   getAllOrdersForOrganization,
   getOrderById,
   updateOrderById,

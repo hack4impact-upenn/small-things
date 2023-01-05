@@ -12,6 +12,7 @@ import {
   fetchOrdersByOrganization,
   fetchOrderById,
   updateOrder,
+  fetchAllCompletedOrders,
 } from '../controllers/order.controller';
 
 const router = express.Router();
@@ -25,6 +26,11 @@ router.post('/create', isAuthenticated, createOrder);
  * A GET request to fetch all orders for an admin.
  */
 router.get('/all', isAuthenticated, isAdmin, fetchAllOrders);
+
+/**
+ * A GET request to fetch all orders that are completed for an admin.
+ */
+router.get('/completed', isAuthenticated, isAdmin, fetchAllCompletedOrders);
 
 /**
  * A GET request to fetch all orders for an organization.

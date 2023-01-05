@@ -13,6 +13,7 @@ import {
   getAllOrdersForOrganization,
   getOrderById,
   updateOrderById,
+  getAllCompletedOrders,
 } from '../services/order.service';
 import { getUserByOrganization } from '../services/user.service';
 
@@ -87,6 +88,20 @@ const fetchAllOrders = async (
   }
 };
 
+const fetchAllCompletedOrders = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  try {
+    console.log('fetching all completed orders');
+    const orders: IOrder[] = await getAllCompletedOrders();
+    res.status(StatusCode.OK).send(orders);
+  } catch (err) {
+    next(ApiError.internal('Unable to fetch all completed orders.'));
+  }
+};
+
 const fetchOrdersByOrganization = async (
   req: express.Request,
   res: express.Response,
@@ -151,6 +166,7 @@ const updateOrder = async (
 export {
   createOrder,
   fetchAllOrders,
+  fetchAllCompletedOrders,
   fetchOrdersByOrganization,
   fetchOrderById,
   updateOrder,
