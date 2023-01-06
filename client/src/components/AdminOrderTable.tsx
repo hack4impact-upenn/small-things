@@ -6,12 +6,11 @@ import React, { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 
-import { PaginationTable, TColumn } from '../components/PaginationTable';
-import { useData } from '../util/api';
+import { PaginationTable, TColumn } from './PaginationTable';
 import { IOrder } from '../util/types/order';
 
 interface AdminOrderTableProps {
-  propStatus: string;
+  orders: IOrder[];
 }
 
 interface AdminOrderTableRow {
@@ -31,9 +30,8 @@ interface AdminOrderTableRow {
  * The standalone table component for holding information about the orders in
  * the database and allowing organizations to view orders themselves.
  */
-function AdminOrderTable({ propStatus }: AdminOrderTableProps) {
+function AdminOrderTable({ orders }: AdminOrderTableProps) {
   // define columns for the table
-  const allOrders = useData('order/all');
   const columns: TColumn[] = [
     { id: 'pickupDate', label: 'Pick-up Date' },
     { id: 'pickupTime', label: 'Pick-up Time' },
@@ -77,14 +75,11 @@ function AdminOrderTable({ propStatus }: AdminOrderTableProps) {
     };
   }
 
-  const [orderList, setOrderList] = useState<IOrder[]>([]);
+  const [orderList, setOrderList] = useState<IOrder[]>(orders);
   useEffect(() => {
-    setOrderList(
-      allOrders?.data.filter((order: IOrder) => order.status === propStatus),
-    );
-  }, [allOrders, propStatus]);
+    setOrderList(orderList);
+  }, [orderList]);
 
-  // need to create the viewOrderButton as well
   // if the orderlist is not yet populated, display a loading spinner
   if (!orderList) {
     return (

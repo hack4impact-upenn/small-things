@@ -13,6 +13,7 @@ import {
   getAllOrdersForOrganization,
   getOrderById,
   updateOrderById,
+  getAllCompletedOrders,
 } from '../services/order.service';
 import { emailApproveOrder, emailRejectOrder } from '../services/mail.service';
 import { ISettings, Settings } from '../models/settings.model';
@@ -83,6 +84,19 @@ const fetchAllOrders = async (
     res.status(StatusCode.OK).send(orders);
   } catch (err) {
     next(ApiError.internal('Unable to fetch all orders.'));
+  }
+};
+
+const fetchAllCompletedOrders = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  try {
+    const orders: IOrder[] = await getAllCompletedOrders();
+    res.status(StatusCode.OK).send(orders);
+  } catch (err) {
+    next(ApiError.internal('Unable to fetch all completed orders.'));
   }
 };
 
@@ -362,6 +376,7 @@ const rejectOrder = async (
 export {
   createOrder,
   fetchAllOrders,
+  fetchAllCompletedOrders,
   fetchOrdersByOrganization,
   fetchOrderById,
   updateOrder,
