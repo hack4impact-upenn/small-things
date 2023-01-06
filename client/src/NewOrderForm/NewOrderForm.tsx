@@ -10,12 +10,10 @@ import {
   Button,
   FormControl,
   FormLabel,
-  TextFieldProps,
 } from '@mui/material';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { useNavigate } from 'react-router-dom';
 import { DesktopDatePicker } from '@mui/lab';
 import { DatePicker } from '@mui/x-date-pickers';
@@ -56,7 +54,7 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
   const [selectedItem, setSelectedItem] = useState(false);
   const navigate = useNavigate();
 
-  const [val, setVal] = React.useState(new Date('04/01/2022 12:00:00'));
+  const canSubmit = !(date !== null);
 
   const handleDateChange = (newValue: Dayjs | null) => {
     setDate(newValue);
@@ -331,13 +329,23 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
         <FormRow>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-              label="Basic example"
+              label="Pick-up Date"
               value={date}
               onChange={handleDateChange}
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
         </FormRow>
+        {date && (
+          <>
+            <FormRow>
+              <Grid item container justifyContent="center">
+                <FormLabel>Pickup Time</FormLabel>
+              </Grid>
+            </FormRow>
+            <p>Times here</p>
+          </>
+        )}
         <FormRow>
           <Grid item container direction="row" justifyContent="flex-end">
             <Grid item>
@@ -347,7 +355,7 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
                 color="primary"
                 fullWidth
                 onClick={submitOrder}
-                disabled={loading}
+                disabled={canSubmit}
               >
                 Submit
               </Button>
