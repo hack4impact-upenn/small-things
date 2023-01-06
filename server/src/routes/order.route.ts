@@ -18,6 +18,7 @@ import {
   approveOrder,
   modifyOrder,
   rejectOrder,
+  fetchPickSheet,
 } from '../controllers/order.controller';
 import { Order } from '../models/order.model';
 
@@ -97,5 +98,10 @@ router.put('/:id/modify', isAdmin, modifyOrder);
  * A PUT request to reject an order.
  */
 router.put('/:id/reject', isAdmin, rejectOrder);
+
+/**
+ * A POST request to fetch all orders that are "APPROVED" and set to be picked up in a set data range.
+ */
+router.post('/picksheet', isAuthenticated, isAdmin, fetchPickSheet);
 
 export default router;

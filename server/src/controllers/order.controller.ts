@@ -14,6 +14,7 @@ import {
   getOrderById,
   updateOrderById,
   getAllCompletedOrders,
+  getAllApprovedOrders,
 } from '../services/order.service';
 import { emailApproveOrder, emailRejectOrder } from '../services/mail.service';
 import { ISettings, Settings } from '../models/settings.model';
@@ -373,6 +374,68 @@ const rejectOrder = async (
     });
 };
 
+const fetchPickSheet = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const dates = req.body;
+  if (!dates) {
+    next(ApiError.missingFields(['date range']));
+  }
+
+  const startDate = new Date(dates.startDate);
+  const endDate = new Date(dates.endDate);
+  console.log(startDate);
+  console.log(endDate);
+
+  if (!startDate) {
+    next(ApiError.missingFields(['start date']));
+  }
+
+  if (!endDate) {
+    next(ApiError.missingFields(['end date']));
+  }
+
+  const startTime = startDate.getTime();
+  const endTime = endDate.getTime();
+
+  try {
+    let orders: IOrder[] = await getAllApprovedOrders();
+    orders = orders.filter(
+      (order) =>
+        order.pickup.getTime() <= endTime &&
+        order.pickup.getTime() >= startTime,
+    );
+    const result = Object.create(null);
+
+    for (let loopTime = startTime; loopTime < endTime; loopTime += 86400000) {
+      const loopDay = new Date(loopTime);
+      const picks = orders.filter(
+        (order) =>
+          order.pickup.getDate() === loopDay.getDate() &&
+          order.pickup.getMonth() === loopDay.getMonth() &&
+          order.pickup.getFullYear() === loopDay.getFullYear(),
+      );
+      const month = loopDay.getMonth() + 1;
+      let entry = '';
+      entry = entry.concat(
+        month.toString(),
+        '/',
+        loopDay.getDate().toString(),
+        '/',
+        loopDay.getFullYear().toString(),
+      );
+
+      result[entry] = picks;
+    }
+
+    res.status(StatusCode.OK).send(result);
+  } catch (err) {
+    next(ApiError.internal('Unable to fetch all orders.'));
+  }
+};
+
 export {
   createOrder,
   fetchAllOrders,
@@ -384,4 +447,5 @@ export {
   approveOrder,
   modifyOrder,
   rejectOrder,
+  fetchPickSheet,
 };
