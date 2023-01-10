@@ -6,7 +6,7 @@
   "private": true,
   "engines": {
     "node": "16.13.1"
-  }
+  },
   "workspaces": [
     "client",
     "server"
