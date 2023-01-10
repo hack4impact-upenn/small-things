@@ -26,6 +26,7 @@
     "express-session": "^1.17.2",
     "googleapis": "^108.0.0",
     "jsonwebtoken": "^8.5.1",
+    "mongodb-memory-server": "^8.11.0",
     "mongoose": "^6.1.10",
     "node-cron": "^3.0.2",
     "passport": "^0.6.0",
