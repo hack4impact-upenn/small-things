@@ -1,1 +1,1 @@
-web: cd server && yarn start
+web:ts-node/client/src/index.ts
