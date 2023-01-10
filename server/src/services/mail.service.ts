@@ -7,7 +7,10 @@ import { IOrder } from '../models/order.model';
 
 const appName = 'Small Things'; // Replace with a relevant project name
 const senderName = 'Small Things'; // Replace with a relevant project sender
-const baseUrl = 'http://localhost:3000'; // TODO: figure out better place to put this
+const baseUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://small-things-orders.herokuapp.com/'
+    : 'http://localhost:3000'; // TODO: figure out better place to put this
 
 // eslint-disable-next-line no-useless-concat
 SGmail.setApiKey(`${process.env.SENDGRID_API_KEY}`);
