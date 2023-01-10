@@ -10,13 +10,14 @@ import {
   Button,
   FormControl,
   FormLabel,
+  TextFieldProps,
 } from '@mui/material';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useNavigate } from 'react-router-dom';
-import { DesktopDatePicker } from '@mui/lab';
-import { DatePicker } from '@mui/x-date-pickers';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import moment from 'moment';
 import FormRow from '../components/form/FormRow';
 import ISettings from '../util/types/settings';
 import { postData } from '../util/api';
@@ -24,6 +25,7 @@ import { IRetailRescueItem } from '../util/types/order';
 import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
 import useAlert from '../util/hooks/useAlert';
+import { weekendTimes, weekTimes } from '../util/constants';
 
 interface Date {
   [key: string]: string[];
@@ -49,12 +51,20 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
   const [retailItems, setRetailItems] = useState<IRetailRescueItem[]>([]);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [orderComments, setOrderComments] = useState<string>('');
-  const [date, setDate] = React.useState<Dayjs | null>(null);
+  const [date, setDate] = useState<Dayjs | null>(null);
+  const [time, setTime] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState(false);
   const navigate = useNavigate();
 
-  const canSubmit = !(date !== null);
+  const canSubmit =
+    date !== null &&
+    time !== '' &&
+    (values.meat !== 0 ||
+      values.dryGoods !== 0 ||
+      values.produce !== 0 ||
+      values.vitoPallets !== 0 ||
+      (retailItems.length > 0 && retailItems[0].item !== ''));
 
   const handleDateChange = (newValue: Dayjs | null) => {
     setDate(newValue);
@@ -95,6 +105,15 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
   };
 
   const submitOrder = () => {
+    if (!date) {
+      setAlert('Please choose a date.', 'error');
+      return;
+    }
+    const formatedTime = moment(time, 'LT');
+    const pickup = date
+      .set('hour', formatedTime.hour())
+      .set('minutes', formatedTime.minute());
+
     setLoading(true);
     const order = {
       organization: user.organization,
@@ -104,7 +123,7 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
       dry: { count: values.dryGoods },
       retailRescue: retailItems,
       comment: orderComments,
-      pickup: date,
+      pickup,
     };
     postData('order/create', order)
       .then((res) => {
@@ -139,19 +158,21 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
             <FormLabel>Produce</FormLabel>
           </Grid>
           <Grid item>
-            <Select
-              value={values.produce}
-              autoWidth
-              onChange={(e) => setValue('produce', e.target.value as string)}
-            >
-              {Array.from(Array(settings.maxNumOfProduce + 1).keys()).map(
-                (x) => (
-                  <MenuItem key={x} value={x}>
-                    {x}
-                  </MenuItem>
-                ),
-              )}
-            </Select>
+            <FormControl>
+              <Select
+                value={values.produce}
+                autoWidth
+                onChange={(e) => setValue('produce', e.target.value as string)}
+              >
+                {Array.from(Array(settings.maxNumOfProduce + 1).keys()).map(
+                  (x) => (
+                    <MenuItem key={x} value={x}>
+                      {x}
+                    </MenuItem>
+                  ),
+                )}
+              </Select>
+            </FormControl>
           </Grid>
         </Grid>
         <Grid container item direction="column">
@@ -159,19 +180,21 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
             <FormLabel>Dry Goods</FormLabel>
           </Grid>
           <Grid item>
-            <Select
-              value={values.dryGoods}
-              autoWidth
-              onChange={(e) => setValue('dryGoods', e.target.value as string)}
-            >
-              {Array.from(Array(settings.maxNumOfDryGoods + 1).keys()).map(
-                (x) => (
-                  <MenuItem key={x} value={x}>
-                    {x}
-                  </MenuItem>
-                ),
-              )}
-            </Select>
+            <FormControl>
+              <Select
+                value={values.dryGoods}
+                autoWidth
+                onChange={(e) => setValue('dryGoods', e.target.value as string)}
+              >
+                {Array.from(Array(settings.maxNumOfDryGoods + 1).keys()).map(
+                  (x) => (
+                    <MenuItem key={x} value={x}>
+                      {x}
+                    </MenuItem>
+                  ),
+                )}
+              </Select>
+            </FormControl>
           </Grid>
         </Grid>
 
@@ -180,19 +203,23 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
             <FormLabel>Vito</FormLabel>
           </Grid>
           <Grid item>
-            <Select
-              value={values.vitoPallets}
-              autoWidth
-              onChange={(e) =>
-                setValue('vitoPallets', e.target.value as string)
-              }
-            >
-              {Array.from(Array(settings.maxNumOfVito + 1).keys()).map((x) => (
-                <MenuItem key={x} value={x}>
-                  {x}
-                </MenuItem>
-              ))}
-            </Select>
+            <FormControl>
+              <Select
+                value={values.vitoPallets}
+                autoWidth
+                onChange={(e) =>
+                  setValue('vitoPallets', e.target.value as string)
+                }
+              >
+                {Array.from(Array(settings.maxNumOfVito + 1).keys()).map(
+                  (x) => (
+                    <MenuItem key={x} value={x}>
+                      {x}
+                    </MenuItem>
+                  ),
+                )}
+              </Select>
+            </FormControl>
           </Grid>
         </Grid>
 
@@ -201,17 +228,21 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
             <FormLabel>Meat</FormLabel>
           </Grid>
           <Grid item>
-            <Select
-              value={values.meat}
-              autoWidth
-              onChange={(e) => setValue('meat', e.target.value as string)}
-            >
-              {Array.from(Array(settings.maxNumOfMeat + 1).keys()).map((x) => (
-                <MenuItem key={x} value={x}>
-                  {x}
-                </MenuItem>
-              ))}
-            </Select>
+            <FormControl>
+              <Select
+                value={values.meat}
+                autoWidth
+                onChange={(e) => setValue('meat', e.target.value as string)}
+              >
+                {Array.from(Array(settings.maxNumOfMeat + 1).keys()).map(
+                  (x) => (
+                    <MenuItem key={x} value={x}>
+                      {x}
+                    </MenuItem>
+                  ),
+                )}
+              </Select>
+            </FormControl>
           </Grid>
         </Grid>
         <FormRow>
@@ -261,14 +292,16 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
                 </FormControl>
               </Grid>
               <Grid xs={4} item>
-                <TextField
-                  fullWidth
-                  type="text"
-                  label="Comments"
-                  onChange={(e) =>
-                    updateRetailItemComments(index, e.target.value)
-                  }
-                />
+                <FormControl>
+                  <TextField
+                    fullWidth
+                    type="text"
+                    label="Comments"
+                    onChange={(e) =>
+                      updateRetailItemComments(index, e.target.value)
+                    }
+                  />
+                </FormControl>
               </Grid>
               <Grid xs={2} item>
                 <Button
@@ -328,11 +361,16 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
         </FormRow>
         <FormRow>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
+            <DesktopDatePicker
               label="Pick-up Date"
               value={date}
               onChange={handleDateChange}
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params: TextFieldProps) => (
+                <TextField {...params} />
+              )}
+              minDate={dayjs(Object.keys(dates).at(0))}
+              maxDate={dayjs(Object.keys(dates).at(-1))}
+              shouldDisableDate={(day: Dayjs) => day.day() === 0}
             />
           </LocalizationProvider>
         </FormRow>
@@ -343,7 +381,56 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
                 <FormLabel>Pickup Time</FormLabel>
               </Grid>
             </FormRow>
-            <p>Times here</p>
+            <FormRow>
+              <FormControl fullWidth>
+                <InputLabel id="pickup-time-select-label">
+                  Pick-up Time
+                </InputLabel>
+                {date.day() === 6 ? (
+                  <Select
+                    label="Pick-up Time"
+                    labelId="pickup-time-select-label"
+                    id="pickup-time-select"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                  >
+                    {weekendTimes
+                      .filter(
+                        (pickupTime: string) =>
+                          !dates[date.format('M/DD/YYYY').toString()].includes(
+                            moment(pickupTime, 'LT').format('LTS'),
+                          ),
+                      )
+                      .map((pickupTime: string) => (
+                        <MenuItem key={pickupTime} value={pickupTime}>
+                          {pickupTime}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                ) : (
+                  <Select
+                    label="Pick-up Time"
+                    labelId="pickup-time-select-label"
+                    id="pickup-time-select"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                  >
+                    {weekTimes
+                      .filter(
+                        (pickupTime: string) =>
+                          !dates[date.format('M/DD/YYYY').toString()].includes(
+                            moment(pickupTime, 'LT').format('LTS'),
+                          ),
+                      )
+                      .map((pickupTime: string) => (
+                        <MenuItem key={pickupTime} value={pickupTime}>
+                          {pickupTime}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                )}
+              </FormControl>
+            </FormRow>
           </>
         )}
         <FormRow>
@@ -355,7 +442,7 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
                 color="primary"
                 fullWidth
                 onClick={submitOrder}
-                disabled={canSubmit}
+                disabled={!canSubmit || loading}
               >
                 Submit
               </Button>

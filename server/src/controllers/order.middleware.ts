@@ -17,7 +17,7 @@ const isAdminOrInOrg = (
 ) => {
   // Get User
   const user: IUser | null = req.user as IUser;
-  const { org } = req.params;
+  const org = req.params.org || req.body.organization;
   // Check is user exists and is valid
   if (!user) {
     next(ApiError.unauthorized('Not a valid user.')); // TODO: see if this is the correct message

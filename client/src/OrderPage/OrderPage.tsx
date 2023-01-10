@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import {
   Typography,
-  Grid,
   CircularProgress,
   Paper,
   Box,
   Button,
   Link,
 } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Stack } from '@mui/system';
-import { useData } from '../util/api';
+import { putData, useData } from '../util/api';
 import { IOrder } from '../util/types/order';
 import Navbar from '../components/NavBar';
 import { selectUser } from '../util/redux/userSlice';
 import { useAppSelector } from '../util/redux/hooks';
 import ModifyOrderForm from './ModifyOrderForm';
 import ISettings from '../util/types/settings';
+import useAlert from '../util/hooks/useAlert';
+
 /**
  * A page only accessible to admins that displays all users in a table and allows
  * Admin to delete users from admin and promote users to admin.
@@ -50,9 +51,47 @@ function OrderPage() {
   const [isLoading, setLoading] = useState(true);
   const [isModifying, setModifying] = useState(false);
   const [settings, setSettings] = useState<ISettings>();
+  const [dates, setDates] = useState();
+  const { setAlert } = useAlert();
+  const navigate = useNavigate();
+
+  const handleCancel = () => {
+    putData(`order/${id}/reject`, { organization: order.organization })
+      .then((res) => {
+        if (res.error) {
+          setAlert(res.error.message, 'error');
+        } else {
+          setLoading(false);
+          setAlert('Order Cancled', 'success');
+          navigate('/home');
+        }
+      })
+      .catch((error) => setAlert(error, 'error'));
+  };
+
+  const handleModification = (newOrder: IOrder | undefined) => {
+    console.log(newOrder);
+    setLoading(true);
+    // eslint-disable-next-line no-underscore-dangle
+    putData(`order/${order._id}/modify`, newOrder)
+      .then((res) => {
+        if (res.error) {
+          setAlert(res.error.message, 'error');
+        } else {
+          setLoading(false);
+          if (newOrder) {
+            setOrder(newOrder);
+          }
+          setAlert('Order Modifed', 'success');
+          setModifying(false);
+        }
+      })
+      .catch((error) => setAlert(error, 'error'));
+  };
 
   const currentOrder = useData(`order/${id}`);
   const currentSettings = useData('admin/settings');
+  const currentDates = useData('order/settings/times');
 
   useEffect(() => {
     if (currentOrder) {
@@ -60,7 +99,10 @@ function OrderPage() {
       setSettings(currentSettings?.data);
       setLoading(false);
     }
-  }, [currentOrder, currentSettings]);
+    if (currentDates) {
+      setDates(currentDates?.data);
+    }
+  }, [currentOrder, currentSettings, currentDates]);
 
   if (isLoading) {
     <div style={{ width: '0', margin: 'auto' }}>
@@ -111,8 +153,14 @@ function OrderPage() {
               }}
             >
               <Typography variant="h5">Order Details:</Typography>
-              {isModifying ? (
-                <ModifyOrderForm order={order} settings={settings} />
+              {isModifying && dates && settings && order ? (
+                <ModifyOrderForm
+                  order={order}
+                  settings={settings}
+                  dates={dates}
+                  handelSave={handleModification}
+                  cancel={() => setModifying(false)}
+                />
               ) : (
                 <>
                   <Typography variant="h6">Produce:</Typography>
@@ -133,63 +181,65 @@ function OrderPage() {
                       {item.item} {item.comment ? `- ${item.comment}` : ''}
                     </Typography>
                   ))}
+                  <Typography variant="h6">Order Comments:</Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      paddingBottom: '30px',
+                    }}
+                  >
+                    {order.comment}
+                  </Typography>
+                  <Typography variant="h6">Scheduled Pick-up:</Typography>
+                  <Typography variant="body1">
+                    {pickUpDate.toLocaleDateString('en-US', {
+                      weekday: 'long',
+                    })}
+                    {', '}
+                    {pickUpDate.toLocaleDateString()} at{' '}
+                    {pickUpDate.toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </Typography>
+                  <Box sx={{ marginTop: '15px' }}>
+                    <Stack spacing={2} direction="row">
+                      {admin && <Button variant="contained">Approve</Button>}
+                      {admin ? (
+                        <>
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => setModifying(true)}
+                          >
+                            Modify
+                          </Button>
+                          <Button variant="contained" color="error">
+                            Reject
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => setModifying(true)}
+                          >
+                            Modify Order
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="error"
+                            onClick={handleCancel}
+                          >
+                            Cancel Order
+                          </Button>
+                        </>
+                      )}
+                    </Stack>
+                  </Box>
                 </>
               )}
-
-              <Typography variant="h6">Order Comments:</Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  paddingBottom: '30px',
-                }}
-              >
-                {order.comment}
-              </Typography>
-            </Box>
-
-            <Typography variant="h6">Scheduled Pick-up:</Typography>
-            <Typography variant="body1">
-              {pickUpDate.toLocaleDateString('en-US', {
-                weekday: 'long',
-              })}
-              {', '}
-              {pickUpDate.toLocaleDateString()} at{' '}
-              {pickUpDate.toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </Typography>
-            <Box sx={{ marginTop: '15px' }}>
-              <Stack spacing={2} direction="row">
-                {admin && <Button variant="contained">Approve</Button>}
-                {admin ? (
-                  <>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={() => setModifying(true)}
-                    >
-                      Modify
-                    </Button>
-                    <Button variant="contained" color="error">
-                      Reject
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={() => setModifying(true)}
-                    >
-                      Modify Order
-                    </Button>
-                    <Button variant="contained" color="error">
-                      Cancel Order
-                    </Button>
-                  </>
-                )}
-              </Stack>
             </Box>
           </Box>
         </Paper>

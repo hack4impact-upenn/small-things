@@ -91,11 +91,11 @@ router.put('/:id/approve', isAdmin, approveOrder);
 /**
  * A PUT request to modify an order.
  */
-router.put('/:id/modify', isAdmin, modifyOrder);
+router.put('/:id/modify', isAdminOrInOrg, modifyOrder);
 
 /**
  * A PUT request to reject an order.
  */
-router.put('/:id/reject', isAdmin, rejectOrder);
+router.put('/:id/reject', isAdminOrInOrg, rejectOrder);
 
 export default router;

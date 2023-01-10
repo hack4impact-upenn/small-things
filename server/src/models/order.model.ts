@@ -62,6 +62,10 @@ const OrderSchema = new mongoose.Schema({
     type: [retailRescueItemSchema],
     required: false,
   },
+  comment: {
+    type: String,
+    required: false,
+  },
   status: {
     type: String,
     required: true,
@@ -82,6 +86,7 @@ interface IOrder extends mongoose.Document {
   vito: menuItem;
   dry: menuItem;
   retailRescue: Array<retailRescueItem>;
+  comment: string;
   status: string;
   pickup: Date;
 }
