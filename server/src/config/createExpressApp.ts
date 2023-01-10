@@ -60,10 +60,10 @@ const createExpressApp = (sessionStore: MongoStore): express.Express => {
 
   // Serving static files
   if (process.env.NODE_ENV === 'production') {
-    const root = path.join(__dirname, '..', 'client', 'build');
+    const root = path.join(__dirname, '../../../', 'client', 'build');
 
     app.use(express.static(root));
-    app.get('*', (_: any, res: any) => {
+    app.get('/*', (_: any, res: any) => {
       res.sendFile('index.html', { root });
     });
   }
