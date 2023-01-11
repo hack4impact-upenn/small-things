@@ -233,52 +233,49 @@ function OrderPage() {
                     })}
                   </Typography>
                   <Box sx={{ marginTop: '15px' }}>
-                    {order.status === 'PENDING' ||
-                      (order.status === 'APPROVED' && (
-                        <Stack spacing={2} direction="row">
-                          {admin ? (
-                            <>
-                              <Button
-                                variant="contained"
-                                onClick={handleApprove}
-                              >
-                                Approve
-                              </Button>
-                              <Button
-                                variant="contained"
-                                color="secondary"
-                                onClick={() => setModifying(true)}
-                              >
-                                Modify
-                              </Button>
-                              <Button
-                                variant="contained"
-                                color="error"
-                                onClick={handleReject}
-                              >
-                                Reject
-                              </Button>
-                            </>
-                          ) : (
-                            <>
-                              <Button
-                                variant="contained"
-                                color="secondary"
-                                onClick={() => setModifying(true)}
-                              >
-                                Modify Order
-                              </Button>
-                              <Button
-                                variant="contained"
-                                color="error"
-                                onClick={handleCancel}
-                              >
-                                Cancel Order
-                              </Button>
-                            </>
-                          )}
-                        </Stack>
-                      ))}
+                    {(order.status === 'PENDING' ||
+                      order.status === 'APPROVED') && (
+                      <Stack spacing={2} direction="row">
+                        {admin ? (
+                          <>
+                            <Button variant="contained" onClick={handleApprove}>
+                              Approve
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              onClick={() => setModifying(true)}
+                            >
+                              Modify
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="error"
+                              onClick={handleReject}
+                            >
+                              Reject
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              onClick={() => setModifying(true)}
+                            >
+                              Modify Order
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="error"
+                              onClick={handleCancel}
+                            >
+                              Cancel Order
+                            </Button>
+                          </>
+                        )}
+                      </Stack>
+                    )}
                   </Box>
                 </>
               )}
