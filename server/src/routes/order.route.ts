@@ -18,6 +18,8 @@ import {
   approveOrder,
   modifyOrder,
   rejectOrder,
+  cancelOrder,
+  modifyAndApproveOrder,
 } from '../controllers/order.controller';
 import { Order } from '../models/order.model';
 
@@ -89,13 +91,23 @@ router.get('/settings/times', fetchUsedTimes);
 router.put('/:id/approve', isAdmin, approveOrder);
 
 /**
+ * A PUT request to modify and approve an order.
+ */
+router.put('/:id/admin/modify', isAdmin, modifyAndApproveOrder);
+
+/**
  * A PUT request to modify an order.
  */
-router.put('/:id/modify', isAdmin, modifyOrder);
+router.put('/:id/modify', isAdminOrInOrg, modifyOrder);
 
 /**
  * A PUT request to reject an order.
  */
 router.put('/:id/reject', isAdmin, rejectOrder);
+
+/**
+ * A PUT request to cancel an order.
+ */
+router.put('/:id/cancel', isAdminOrInOrg, cancelOrder);
 
 export default router;
