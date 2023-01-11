@@ -56,13 +56,13 @@ function OrderPage() {
   const navigate = useNavigate();
 
   const handleCancel = () => {
-    putData(`order/${id}/reject`, { organization: order.organization })
+    putData(`order/${id}/cancel`, { organization: order.organization })
       .then((res) => {
         if (res.error) {
           setAlert(res.error.message, 'error');
         } else {
           setLoading(false);
-          setAlert('Order Cancled', 'success');
+          setAlert('Order Canceled', 'success');
           navigate('/home');
         }
       })
@@ -70,10 +70,9 @@ function OrderPage() {
   };
 
   const handleModification = (newOrder: IOrder | undefined) => {
-    console.log(newOrder);
     setLoading(true);
-    // eslint-disable-next-line no-underscore-dangle
-    putData(`order/${order._id}/modify`, newOrder)
+    const url = admin ? `order/${id}/admin/modify` : `order/${id}/modify`;
+    putData(url, newOrder)
       .then((res) => {
         if (res.error) {
           setAlert(res.error.message, 'error');
@@ -84,6 +83,37 @@ function OrderPage() {
           }
           setAlert('Order Modifed', 'success');
           setModifying(false);
+          if (admin) {
+            navigate('/orders');
+          }
+        }
+      })
+      .catch((error) => setAlert(error, 'error'));
+  };
+
+  const handleApprove = () => {
+    putData(`order/${id}/approve`)
+      .then((res) => {
+        if (res.error) {
+          setAlert(res.error.message, 'error');
+        } else {
+          setLoading(false);
+          setAlert('Order Approved', 'success');
+          navigate('/orders');
+        }
+      })
+      .catch((error) => setAlert(error, 'error'));
+  };
+
+  const handleReject = () => {
+    putData(`order/${id}/reject`)
+      .then((res) => {
+        if (res.error) {
+          setAlert(res.error.message, 'error');
+        } else {
+          setLoading(false);
+          setAlert('Order Rejected', 'success');
+          navigate('/orders');
         }
       })
       .catch((error) => setAlert(error, 'error'));
@@ -203,40 +233,52 @@ function OrderPage() {
                     })}
                   </Typography>
                   <Box sx={{ marginTop: '15px' }}>
-                    <Stack spacing={2} direction="row">
-                      {admin && <Button variant="contained">Approve</Button>}
-                      {admin ? (
-                        <>
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            onClick={() => setModifying(true)}
-                          >
-                            Modify
-                          </Button>
-                          <Button variant="contained" color="error">
-                            Reject
-                          </Button>
-                        </>
-                      ) : (
-                        <>
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            onClick={() => setModifying(true)}
-                          >
-                            Modify Order
-                          </Button>
-                          <Button
-                            variant="contained"
-                            color="error"
-                            onClick={handleCancel}
-                          >
-                            Cancel Order
-                          </Button>
-                        </>
-                      )}
-                    </Stack>
+                    {order.status === 'PENDING' ||
+                      (order.status === 'APPROVED' && (
+                        <Stack spacing={2} direction="row">
+                          {admin ? (
+                            <>
+                              <Button
+                                variant="contained"
+                                onClick={handleApprove}
+                              >
+                                Approve
+                              </Button>
+                              <Button
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => setModifying(true)}
+                              >
+                                Modify
+                              </Button>
+                              <Button
+                                variant="contained"
+                                color="error"
+                                onClick={handleReject}
+                              >
+                                Reject
+                              </Button>
+                            </>
+                          ) : (
+                            <>
+                              <Button
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => setModifying(true)}
+                              >
+                                Modify Order
+                              </Button>
+                              <Button
+                                variant="contained"
+                                color="error"
+                                onClick={handleCancel}
+                              >
+                                Cancel Order
+                              </Button>
+                            </>
+                          )}
+                        </Stack>
+                      ))}
                   </Box>
                 </>
               )}
