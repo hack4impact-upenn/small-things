@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Switch from '@mui/material/Switch';
+import useAlert from '../util/hooks/useAlert';
 
 interface EnableUserSwitchProps {
   admin: boolean;
@@ -18,8 +19,14 @@ interface EnableUserSwitchProps {
  */
 function EnableUserSwitch({ admin, email, enableUser }: EnableUserSwitchProps) {
   const [checked, setChecked] = useState(true);
+  const { setAlert } = useAlert();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (checked) {
+      setAlert('User Disabled', 'success');
+    } else {
+      setAlert('User Enabled', 'success');
+    }
     setChecked(event.target.checked);
     enableUser(email);
   };
