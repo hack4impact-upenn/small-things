@@ -1,6 +1,7 @@
 import React from 'react';
 import { AppBar, Toolbar, CssBaseline, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
+import LogOutButton from './buttons/LogOutButton';
 
 function Navbar() {
   return (
@@ -22,6 +23,7 @@ function Navbar() {
         <Button color="inherit" href="/settings">
           Settings
         </Button>
+        <LogOutButton />
       </Toolbar>
     </AppBar>
   );

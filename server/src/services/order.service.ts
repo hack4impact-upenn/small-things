@@ -25,6 +25,7 @@ const createNewOrder = async (
   dry: menuItem,
   retailRescue: Array<retailRescueItem>,
   status: string,
+  comment: string,
   pickup: Date,
 ) => {
   const newOrder = new Order({
@@ -34,6 +35,7 @@ const createNewOrder = async (
     vito,
     dry,
     retailRescue,
+    comment,
     status,
     pickup,
   });

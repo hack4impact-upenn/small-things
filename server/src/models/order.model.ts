@@ -62,10 +62,21 @@ const OrderSchema = new mongoose.Schema({
     type: [retailRescueItemSchema],
     required: false,
   },
+  comment: {
+    type: String,
+    required: false,
+  },
   status: {
     type: String,
     required: true,
-    enum: ['PENDING', 'APPROVED', 'RELEASED', 'COMPLETED'],
+    enum: [
+      'PENDING',
+      'APPROVED',
+      'RELEASED',
+      'COMPLETED',
+      'CANCELED',
+      'REJECTED',
+    ],
     default: 'PENDING',
   },
   pickup: {
@@ -82,6 +93,7 @@ interface IOrder extends mongoose.Document {
   vito: menuItem;
   dry: menuItem;
   retailRescue: Array<retailRescueItem>;
+  comment: string;
   status: string;
   pickup: Date;
 }

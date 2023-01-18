@@ -28,8 +28,16 @@ const createOrder = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const { organization, produce, meat, vito, dry, pickup, retailRescue } =
-    req.body;
+  const {
+    organization,
+    produce,
+    meat,
+    vito,
+    dry,
+    pickup,
+    retailRescue,
+    comment,
+  } = req.body;
   if (!organization || !produce || !meat || !vito || !dry || !pickup) {
     next(
       ApiError.missingFields([
@@ -66,6 +74,7 @@ const createOrder = async (
       dry,
       retailRescue,
       'PENDING',
+      comment,
       pickup,
     );
     order.save();
@@ -269,7 +278,7 @@ const approveOrder = async (
     });
 };
 
-const modifyOrder = async (
+const modifyAndApproveOrder = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
@@ -327,6 +336,60 @@ const modifyOrder = async (
     });
 };
 
+const modifyOrder = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  const order = req.body;
+  if (!order) {
+    next(
+      ApiError.missingFields([
+        'organization',
+        'produce',
+        'meat',
+        'vito',
+        'dry',
+        'status',
+        'pickup',
+      ]),
+    );
+  }
+
+  const currentOrder: IOrder | null = await getOrderById(id);
+  if (!currentOrder) {
+    next(ApiError.notFound('Order not found'));
+    return;
+  }
+
+  if (currentOrder.status !== 'PENDING') {
+    next(
+      ApiError.notFound('Order status is not pending so it cannot be modfied'),
+    );
+    return;
+  }
+
+  const organizationUser: IUser | null = req.user as IUser;
+
+  if (!organizationUser) {
+    next(ApiError.notFound('User/Organization not found'));
+    return;
+  }
+
+  order.status = 'PENDING';
+
+  updateOrderById(id, order)
+    .then(() => {
+      res.status(StatusCode.CREATED).send({
+        message: 'Order has been modified',
+      });
+    })
+    .catch(() => {
+      next(ApiError.internal('Unable to modify order.'));
+    });
+};
+
 const rejectOrder = async (
   req: express.Request,
   res: express.Response,
@@ -348,7 +411,7 @@ const rejectOrder = async (
     return;
   }
 
-  currentOrder.status = 'COMPLETED';
+  currentOrder.status = 'REJECTED';
 
   const organizationUser: IUser | null = req.user as IUser;
 
@@ -374,6 +437,47 @@ const rejectOrder = async (
     });
 };
 
+const cancelOrder = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { id } = req.params;
+  const order = req.body;
+  if (!order) {
+    next(ApiError.missingFields(['status']));
+  }
+  const currentOrder: IOrder | null = await getOrderById(id);
+  if (!currentOrder) {
+    next(ApiError.notFound('Order not found'));
+    return;
+  }
+
+  if (currentOrder.status !== 'PENDING') {
+    next(ApiError.notFound('Order status is not pending'));
+    return;
+  }
+
+  currentOrder.status = 'CANCELED';
+
+  const organizationUser: IUser | null = req.user as IUser;
+
+  if (!organizationUser) {
+    next(ApiError.notFound('User/Organization not found'));
+    return;
+  }
+
+  updateOrderById(id, currentOrder)
+    .then(() => {
+      res.status(StatusCode.OK).send({
+        message: `Order has been sent to canceled`,
+      });
+    })
+    .catch(() => {
+      next(ApiError.internal('Unable to cancel order.'));
+    });
+};
+
 const fetchPickSheet = async (
   req: express.Request,
   res: express.Response,
@@ -386,8 +490,6 @@ const fetchPickSheet = async (
 
   const startDate = new Date(dates.startDate);
   const endDate = new Date(dates.endDate);
-  console.log(startDate);
-  console.log(endDate);
 
   if (!startDate) {
     next(ApiError.missingFields(['start date']));
@@ -445,7 +547,9 @@ export {
   updateOrder,
   fetchUsedTimes,
   approveOrder,
+  modifyAndApproveOrder,
   modifyOrder,
   rejectOrder,
   fetchPickSheet,
+  cancelOrder,
 };

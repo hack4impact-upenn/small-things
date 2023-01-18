@@ -7,12 +7,15 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import { createInvite } from './api';
+import useAlert from '../util/hooks/useAlert';
 
 function InviteUserButton() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const { setAlert } = useAlert();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -34,6 +37,7 @@ function InviteUserButton() {
         setOpen(false);
       }
       setLoading(false);
+      setAlert(`${email} successfully invited!`, 'success');
     });
   };
 

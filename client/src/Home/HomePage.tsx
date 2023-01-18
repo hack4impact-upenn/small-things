@@ -5,6 +5,7 @@ import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
 import ScreenGrid from '../components/ScreenGrid';
 import PartnerOrderTable from '../components/PartnerOrderTable';
+import LogOutButton from '../components/buttons/LogOutButton';
 
 /**
  * The HomePage of the user dashboard. Displays a welcome message, a logout button and a button to promote the user to admin if they are not already an admin. If the user is an admin, the button will navigate them to the admin dashboard. This utilizes redux to access the current user's information.
@@ -24,6 +25,9 @@ function HomePage() {
             minHeight: '80vh',
           }}
         >
+          <Grid item container justifyContent="flex-end">
+            <LogOutButton />
+          </Grid>
           <Paper
             sx={{
               margin: 'auto',

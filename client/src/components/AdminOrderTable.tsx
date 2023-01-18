@@ -60,7 +60,10 @@ function AdminOrderTable({ orders }: AdminOrderTableProps) {
     return {
       key: _id,
       pickupDate: myDate.toDateString(),
-      pickupTime: myDate.toLocaleTimeString(),
+      pickupTime: myDate.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
       organization,
       produce: produce.count,
       meat: meat.count,
