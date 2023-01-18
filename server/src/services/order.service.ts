@@ -63,6 +63,11 @@ const getAllCompletedOrders = async () => {
   return orders;
 };
 
+const getAllApprovedOrders = async () => {
+  const orders = await Order.find({ status: 'APPROVED' }).exec();
+  return orders;
+};
+
 const getAllOrdersForOrganization = async (org: string) => {
   const orders = await Order.find({ organization: org }).exec();
   return orders;
@@ -94,4 +99,5 @@ export {
   getAllOrdersForOrganization,
   getOrderById,
   updateOrderById,
+  getAllApprovedOrders,
 };

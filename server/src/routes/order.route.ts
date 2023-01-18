@@ -18,6 +18,7 @@ import {
   approveOrder,
   modifyOrder,
   rejectOrder,
+  fetchPickSheet,
   cancelOrder,
   modifyAndApproveOrder,
 } from '../controllers/order.controller';
@@ -104,6 +105,11 @@ router.put('/:id/modify', isAdminOrInOrg, modifyOrder);
  * A PUT request to reject an order.
  */
 router.put('/:id/reject', isAdmin, rejectOrder);
+
+/**
+ * A POST request to fetch all orders that are "APPROVED" and set to be picked up in a set data range.
+ */
+router.post('/picksheet', isAuthenticated, isAdmin, fetchPickSheet);
 
 /**
  * A PUT request to cancel an order.
