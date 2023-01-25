@@ -395,12 +395,11 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
                     onChange={(e) => setTime(e.target.value)}
                   >
                     {weekendTimes
-                      .filter(
-                        (pickupTime: string) =>
-                          !dates[date.format('M/DD/YYYY').toString()].includes(
-                            moment(pickupTime, 'LT').format('LTS'),
-                          ),
-                      )
+                      .filter((pickupTime: string) => {
+                        return !dates[
+                          date.format('M/D/YYYY').toString()
+                        ].includes(moment(pickupTime, 'LT').format('LTS'));
+                      })
                       .map((pickupTime: string) => (
                         <MenuItem key={pickupTime} value={pickupTime}>
                           {pickupTime}
@@ -418,7 +417,7 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
                     {weekTimes
                       .filter(
                         (pickupTime: string) =>
-                          !dates[date.format('M/DD/YYYY').toString()].includes(
+                          !dates[date.format('M/D/YYYY').toString()].includes(
                             moment(pickupTime, 'LT').format('LTS'),
                           ),
                       )
