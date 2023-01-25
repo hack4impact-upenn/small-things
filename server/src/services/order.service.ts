@@ -44,8 +44,8 @@ const createNewOrder = async (
 };
 
 const getOrderByTimeSlot = async (pickup: Date) => {
-  const user = await Order.findOne({ pickup }).exec();
-  return user;
+  const orders = await Order.find({ pickup }).exec();
+  return orders;
 };
 
 const getOrderById = async (id: string) => {

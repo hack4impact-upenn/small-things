@@ -50,18 +50,18 @@ const createOrder = async (
       ]),
     );
   }
-  const existingTimeSlot: IOrder | null = await getOrderByTimeSlot(pickup);
-  if (existingTimeSlot) {
+  const existingTimeSlot: IOrder[] = await getOrderByTimeSlot(pickup);
+  if (existingTimeSlot.length > 1) {
     next(
       ApiError.badRequest(
-        `An order is already scheduled at ${pickup}, please select another time`,
+        `There are no more available pick-up at ${pickup}, please select another time`,
       ),
     );
     return;
   }
   const organizationUser: IUser | null = req.user as IUser;
 
-  if (!organizationUser) {
+  if (!organizationUser || organizationUser.organization !== organization) {
     next(ApiError.badRequest(`${organization} does not exist`));
     return;
   }
