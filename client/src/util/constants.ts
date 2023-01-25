@@ -1,4 +1,4 @@
-const weekTimes = [
+const weekendTimes = [
   '7:30 AM',
   '8:00 AM',
   '8:30 AM',
@@ -10,7 +10,7 @@ const weekTimes = [
   '11:30 AM',
 ];
 
-const weekendTimes = [
+const weekTimes = [
   '9:00 AM',
   '9:30 AM',
   '10:00 AM',

@@ -9,7 +9,7 @@ const appName = 'Small Things'; // Replace with a relevant project name
 const senderName = 'Small Things'; // Replace with a relevant project sender
 const baseUrl =
   process.env.NODE_ENV === 'production'
-    ? 'https://small-things-orders.herokuapp.com'
+    ? process.env.PUBLIC_URL
     : 'http://localhost:3000'; // TODO: figure out better place to put this
 
 // eslint-disable-next-line no-useless-concat
