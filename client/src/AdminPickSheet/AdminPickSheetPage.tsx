@@ -1,14 +1,14 @@
 import React from 'react';
 import { Typography, Grid, Box, Paper } from '@mui/material';
 import ScreenGrid from '../components/ScreenGrid';
-import AdminOrderTabs from './AdminOrderTabs';
 import Navbar from '../components/NavBar';
+import PickSheetTabs from './PickSheetTabs';
 
 /**
  * A page only accessible to admins that displays all users in a table and allows
  * Admin to delete users from admin and promote users to admin.
  */
-function AdminOrdersPage() {
+function AdminPickSheetPage() {
   return (
     <div style={{ backgroundColor: '#D9D9D9' }}>
       <Navbar />
@@ -28,11 +28,11 @@ function AdminOrdersPage() {
             }}
           >
             <Grid item>
-              <Typography variant="h2">Orders</Typography>
+              <Typography variant="h2">Pick Sheets</Typography>
             </Grid>
             <Grid item>
-              <div style={{ minHeight: '60vh', width: '60vw' }}>
-                <AdminOrderTabs />
+              <div style={{ height: '60vh', width: '60vw' }}>
+                <PickSheetTabs />
               </div>
             </Grid>
           </Paper>
@@ -42,4 +42,4 @@ function AdminOrdersPage() {
   );
 }
 
-export default AdminOrdersPage;
+export default AdminPickSheetPage;

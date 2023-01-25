@@ -14,6 +14,9 @@ function Navbar() {
         <Button color="inherit" href="/orders">
           Orders
         </Button>
+        <Button color="inherit" href="/picksheet">
+          Pick Sheet
+        </Button>
         <Button color="inherit" href="/orders/past">
           Past Orders
         </Button>

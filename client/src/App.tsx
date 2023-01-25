@@ -27,6 +27,7 @@ import NewOrderFormPage from './NewOrderForm/NewOrderFormPage';
 import OrderPage from './OrderPage/OrderPage';
 import AlertPopup from './components/AlertPopup';
 import HistoricOrderPage from './HistoricOrderPage/HistoricOrderPage';
+import AdminPickSheetPage from './AdminPickSheet/AdminPickSheetPage';
 
 function App() {
   return (
@@ -77,6 +78,9 @@ function App() {
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/users" element={<AdminDashboardPage />} />
+                  </Route>
+                  <Route element={<AdminRoutesWrapper />}>
+                    <Route path="/picksheet" element={<AdminPickSheetPage />} />
                   </Route>
                   <Route element={<AdminRoutesWrapper />}>
                     <Route path="/orders" element={<AdminOrdersPage />} />
