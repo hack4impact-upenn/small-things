@@ -15,6 +15,7 @@ import {
   updateOrderById,
   getAllCompletedOrders,
   getAllApprovedOrders,
+  getAllActiveOrdersInDateRange,
 } from '../services/order.service';
 import { emailApproveOrder, emailRejectOrder } from '../services/mail.service';
 import { ISettings, Settings } from '../models/settings.model';
@@ -188,41 +189,46 @@ const fetchUsedTimes = async (
       return;
     }
     const { leadTime } = settings;
-
-    const orders: IOrder[] = await getAllOrders();
     // filter orders by pickup time such that pickup time is greater than current time + lead time and less than current time + lead time + 14 days
     const currentTime = new Date();
-    const currentTimePlusLeadTime = new Date(
-      currentTime.getTime() + leadTime * 24 * 60 * 60 * 1000,
+    const leadTimeMS = leadTime * 24 * 60 * 60 * 1000;
+    const twoWeekTimeMs = 14 * 24 * 60 * 60 * 1000;
+    const startDate = new Date(currentTime.getTime() + leadTimeMS);
+    const endDate = new Date(
+      currentTime.getTime() + leadTimeMS + twoWeekTimeMs,
     );
-    const currentTimePlusLeadTimePlusTwoWeeks = new Date(
-      currentTime.getTime() +
-        leadTime * 24 * 60 * 60 * 1000 +
-        14 * 24 * 60 * 60 * 1000,
-    );
-    orders.filter(
-      (order) =>
-        order.pickup > currentTimePlusLeadTime &&
-        order.pickup < currentTimePlusLeadTimePlusTwoWeeks,
-    );
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setHours(23, 59, 59);
 
+    const orders: IOrder[] = await getAllActiveOrdersInDateRange(
+      startDate,
+      endDate,
+    );
     // make a map of every possible date from currentTimePlusLeadTime to currentTimePlusLeadTimePlusTwoWeeks and initialize all values to empty array
     const possibleTimes = new Map();
-    for (
-      let d = currentTimePlusLeadTime;
-      d <= currentTimePlusLeadTimePlusTwoWeeks;
-      d.setDate(d.getDate() + 1)
-    ) {
+    const bookedTimes = new Map();
+    for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
       possibleTimes.set(d.toLocaleDateString(), []);
+      bookedTimes.set(d.toLocaleDateString(), []);
     }
 
     // for each order in orders, add the order's pickup time to the map based on date
     orders.forEach((order) => {
       const date = new Date(order.pickup);
-      date.setHours(0, 0, 0, 0);
-      const times = possibleTimes.get(date.toLocaleDateString());
-      if (times) {
-        times.push(order.pickup.toLocaleTimeString());
+      const fullTimes = possibleTimes.get(date.toLocaleDateString());
+      if (fullTimes) {
+        // time has been seen twice
+        if (
+          bookedTimes
+            .get(date.toLocaleDateString())
+            .includes(order.pickup.toLocaleTimeString())
+        ) {
+          fullTimes.push(order.pickup.toLocaleTimeString());
+        } else {
+          bookedTimes
+            .get(date.toLocaleDateString())
+            .push(order.pickup.toLocaleTimeString());
+        }
       }
     });
     res.status(StatusCode.OK).send(Object.fromEntries(possibleTimes));
