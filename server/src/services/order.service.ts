@@ -44,8 +44,8 @@ const createNewOrder = async (
 };
 
 const getOrderByTimeSlot = async (pickup: Date) => {
-  const user = await Order.findOne({ pickup }).exec();
-  return user;
+  const orders = await Order.find({ pickup }).exec();
+  return orders;
 };
 
 const getOrderById = async (id: string) => {
@@ -65,6 +65,14 @@ const getAllCompletedOrders = async () => {
 
 const getAllApprovedOrders = async () => {
   const orders = await Order.find({ status: 'APPROVED' }).exec();
+  return orders;
+};
+
+const getAllActiveOrdersInDateRange = async (start: Date, end: Date) => {
+  const orders = await Order.find({
+    status: { $nin: ['COMPLETED', 'CANCELED', 'REJECTED'] },
+    pickup: { $gte: start, $lte: end },
+  }).exec();
   return orders;
 };
 
@@ -100,4 +108,5 @@ export {
   getOrderById,
   updateOrderById,
   getAllApprovedOrders,
+  getAllActiveOrdersInDateRange,
 };
