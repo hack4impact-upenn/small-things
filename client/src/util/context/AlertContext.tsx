@@ -1,4 +1,3 @@
-// AuthContext.js
 import React, { createContext, useMemo, useState } from 'react';
 import { AnyChildren } from '../types/generic';
 

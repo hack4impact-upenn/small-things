@@ -31,7 +31,7 @@ function AdminOrdersPage() {
               <Typography variant="h2">Orders</Typography>
             </Grid>
             <Grid item>
-              <div style={{ height: '60vh', width: '60vw' }}>
+              <div style={{ minHeight: '60vh', width: '60vw' }}>
                 <AdminOrderTabs />
               </div>
             </Grid>

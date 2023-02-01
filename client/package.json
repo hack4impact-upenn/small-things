@@ -32,7 +32,10 @@
     ]
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
     "@material-ui/icons": "^4.11.2",
+    "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.110",
     "@mui/material": "^5.10.11",
     "@mui/system": "^5.5.2",
@@ -47,6 +50,7 @@
     "react-redux": "^8.0.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "react-to-print": "^2.14.11",
     "redux": "^4.1.2",
     "redux-persist": "^6.0.0",
     "styled-components": "^5.3.5",

@@ -68,6 +68,14 @@ const getAllApprovedOrders = async () => {
   return orders;
 };
 
+const getAllApprovedOrdersInDateRange = async (start: Date, end: Date) => {
+  const orders = await Order.find({
+    status: { $in: ['APPROVED', 'RELEASED'] },
+    pickup: { $gte: start, $lte: end },
+  }).exec();
+  return orders;
+};
+
 const getAllActiveOrdersInDateRange = async (start: Date, end: Date) => {
   const orders = await Order.find({
     status: { $nin: ['COMPLETED', 'CANCELED', 'REJECTED'] },
@@ -109,4 +117,5 @@ export {
   updateOrderById,
   getAllApprovedOrders,
   getAllActiveOrdersInDateRange,
+  getAllApprovedOrdersInDateRange,
 };
