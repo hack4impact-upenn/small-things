@@ -2,9 +2,7 @@
  * A file that contains all the components and logic for the table of users
  * in the AdminDashboardPage.
  */
-import React, { useEffect, useState } from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
-import Button from '@mui/material/Button';
+import React from 'react';
 
 import {
   Paper,
@@ -15,40 +13,14 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import { PaginationTable, TColumn } from '../components/PaginationTable';
+import dayjs from 'dayjs';
 import { IOrder } from '../util/types/order';
 
 interface PickSheetTableProps {
-  orders?: IOrder[];
+  orders: IOrder[];
 }
 
-interface PickSheetTableRow {
-  key: string;
-  pickupDate: string;
-  pickupTime: string;
-  organization: string;
-  produce: number;
-  meat: number;
-  dry: number;
-  vito: number;
-  retail: number;
-}
-
-/**
- * The standalone table component for holding information about the orders in
- * the database and allowing organizations to view orders themselves.
- */
 function PickSheetTable({ orders }: PickSheetTableProps) {
-  const [orderList, setOrderList] = useState<IOrder[]>([]);
-
-  // if the orderlist is not yet populated, display a loading spinner
-  if (!orderList) {
-    return (
-      <div style={{ width: '0', margin: 'auto' }}>
-        <CircularProgress size={80} />
-      </div>
-    );
-  }
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -64,22 +36,45 @@ function PickSheetTable({ orders }: PickSheetTableProps) {
             <TableCell>Comments</TableCell>
           </TableRow>
         </TableHead>
-        {/* <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody> */}
+        <TableBody>
+          {orders
+            .sort(
+              (a: IOrder, b: IOrder) =>
+                dayjs(a.pickup).unix() - dayjs(b.pickup).unix(),
+            )
+            .map((row) => {
+              const newDate = new Date(row.pickup);
+              return (
+                // eslint-disable-next-line no-underscore-dangle
+                <TableRow key={row._id}>
+                  <TableCell component="th" scope="row">
+                    {newDate.toLocaleString([], {
+                      year: 'numeric',
+                      month: 'numeric',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </TableCell>
+                  <TableCell align="right">{row.organization}</TableCell>
+                  <TableCell align="right">{row.dry.count}</TableCell>
+                  <TableCell align="right">{row.produce.count}</TableCell>
+                  <TableCell align="right">{row.vito.count}</TableCell>
+                  <TableCell>{row.meat.count}</TableCell>
+                  <TableCell style={{ minWidth: 200 }}>
+                    {row.retailRescue.map((rrItem) => {
+                      return (
+                        <div key={rrItem.item}>
+                          {rrItem.item} - {rrItem.comment} <br />
+                        </div>
+                      );
+                    })}
+                  </TableCell>
+                  <TableCell>{row.comment}</TableCell>
+                </TableRow>
+              );
+            })}
+        </TableBody>
       </Table>
     </TableContainer>
   );

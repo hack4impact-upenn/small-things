@@ -14,8 +14,8 @@ import {
   getOrderById,
   updateOrderById,
   getAllCompletedOrders,
-  getAllApprovedOrders,
   getAllActiveOrdersInDateRange,
+  getAllApprovedOrdersInDateRange,
 } from '../services/order.service';
 import { emailApproveOrder, emailRejectOrder } from '../services/mail.service';
 import { ISettings, Settings } from '../models/settings.model';
@@ -489,13 +489,7 @@ const fetchPickSheet = async (
   res: express.Response,
   next: express.NextFunction,
 ) => {
-  const dates = req.body;
-  if (!dates) {
-    next(ApiError.missingFields(['date range']));
-  }
-
-  const startDate = new Date(dates.startDate);
-  const endDate = new Date(dates.endDate);
+  const { startDate, endDate } = req.body;
 
   if (!startDate) {
     next(ApiError.missingFields(['start date']));
@@ -505,42 +499,18 @@ const fetchPickSheet = async (
     next(ApiError.missingFields(['end date']));
   }
 
-  const startTime = startDate.getTime();
-  const endTime = endDate.getTime();
+  const startDateObj = new Date(startDate);
+  const endDateObj = new Date(endDate);
 
   try {
-    let orders: IOrder[] = await getAllApprovedOrders();
-    orders = orders.filter(
-      (order) =>
-        order.pickup.getTime() <= endTime &&
-        order.pickup.getTime() >= startTime,
+    const orders: IOrder[] = await getAllApprovedOrdersInDateRange(
+      startDateObj,
+      endDateObj,
     );
-    const result = Object.create(null);
 
-    for (let loopTime = startTime; loopTime < endTime; loopTime += 86400000) {
-      const loopDay = new Date(loopTime);
-      const picks = orders.filter(
-        (order) =>
-          order.pickup.getDate() === loopDay.getDate() &&
-          order.pickup.getMonth() === loopDay.getMonth() &&
-          order.pickup.getFullYear() === loopDay.getFullYear(),
-      );
-      const month = loopDay.getMonth() + 1;
-      let entry = '';
-      entry = entry.concat(
-        month.toString(),
-        '/',
-        loopDay.getDate().toString(),
-        '/',
-        loopDay.getFullYear().toString(),
-      );
-
-      result[entry] = picks;
-    }
-
-    res.status(StatusCode.OK).send(result);
+    res.status(StatusCode.OK).send(orders);
   } catch (err) {
-    next(ApiError.internal('Unable to fetch all orders.'));
+    next(ApiError.internal('Unable to fetch orders for pick sheets.'));
   }
 };
 

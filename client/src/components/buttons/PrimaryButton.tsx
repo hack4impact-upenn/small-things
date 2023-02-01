@@ -5,7 +5,7 @@ import COLORS from '../../assets/colors';
 /**
  * The {@link Button} used for most action items.
  */
-const PrimaryButton = styled(Button)<ButtonProps>(({ theme }) => ({
+const PrimaryButton = styled(Button)<ButtonProps>(() => ({
   cursor: 'pointer',
   boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
   borderRadius: '5px',
