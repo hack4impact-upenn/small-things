@@ -41,6 +41,10 @@ const SettingsSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  disabledDates: {
+    type: [Date],
+    required: false,
+  },
 });
 
 interface ISettings extends mongoose.Document {
@@ -54,6 +58,7 @@ interface ISettings extends mongoose.Document {
   dryGoodOptions: Array<string>;
   vitoOptions: Array<string>;
   meatOptions: Array<string>;
+  disabledDates: Array<Date>;
 }
 
 const Settings = mongoose.model<ISettings>('Settings', SettingsSchema);
