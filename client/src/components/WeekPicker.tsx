@@ -21,7 +21,6 @@ interface WeekPickerProps {
 function WeekPicker({ selectedDate, updateDate }: WeekPickerProps) {
   const handleDateChange = (newValue: Dayjs | null) => {
     if (newValue) {
-      //   setSelectedDate(newValue.day(1));
       updateDate(newValue);
     }
   };

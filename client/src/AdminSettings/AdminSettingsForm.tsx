@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable react/jsx-props-no-spreading */
+import React, { useState } from 'react';
 import {
   Typography,
   FormControl,
@@ -9,10 +10,20 @@ import {
   Grid,
   Button,
   FormLabel,
+  TextField,
+  TextFieldProps,
 } from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import {
+  DesktopDatePicker,
+  LocalizationProvider,
+  PickersDay,
+  PickersDayProps,
+} from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { Dayjs } from 'dayjs';
 import RetailRescueItems from './RetailRescueItems';
 import ISettings from '../util/types/settings';
 import { putData } from '../util/api';
@@ -54,7 +65,8 @@ function AdminSettingsForm({ settings }: SettingsFormProp) {
     settings.retailRescueItems,
   );
   const [loading, setLoading] = React.useState(false);
-
+  const [disabledDates, setDisabledDates] = useState(settings.disabledDates);
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const handleDryGoodsChange = (event: SelectChangeEvent) => {
     setDryGoodsMax(Number(event.target.value));
   };
@@ -75,6 +87,41 @@ function AdminSettingsForm({ settings }: SettingsFormProp) {
     setLeadTime(Number(event.target.value));
   };
 
+  const dateDisabled = (date: Date) => {
+    return disabledDates.some((disabledDate: Date) => {
+      const disabledDateFormated = new Date(disabledDate);
+      return disabledDateFormated.getTime() === date.getTime();
+    });
+  };
+
+  const handleDisableDate = () => {
+    if (selectedDate && !dateDisabled(selectedDate.toDate())) {
+      const newDisabledDates = disabledDates;
+      newDisabledDates.push(selectedDate.toDate());
+      setDisabledDates(newDisabledDates);
+      setSelectedDate(null);
+      setAlert('Date disabled, make sure to save.', 'success');
+    } else {
+      setAlert('Please select a date to disable', 'error');
+    }
+  };
+
+  const handleEnableDate = () => {
+    if (selectedDate && dateDisabled(selectedDate.toDate())) {
+      const newDisabledDates = disabledDates.filter((disabledDate: Date) => {
+        const disabledDateFormated = new Date(disabledDate);
+        return (
+          disabledDateFormated.getTime() !== selectedDate.toDate().getTime()
+        );
+      });
+      setDisabledDates(newDisabledDates);
+      setSelectedDate(null);
+      setAlert('Date enabled, make sure to save.', 'success');
+    } else {
+      setAlert('Please Select a date to enable', 'error');
+    }
+  };
+
   const handleSave = () => {
     setLoading(true);
     const newSettings: ISettings = {
@@ -88,6 +135,7 @@ function AdminSettingsForm({ settings }: SettingsFormProp) {
       dryGoodOptions: dryGoodsAdvanced,
       vitoOptions: vitoAdvanced,
       meatOptions: meatAdvanced,
+      disabledDates,
     };
     putData('admin/settings', newSettings).then((res) => {
       if (res.error) {
@@ -279,6 +327,49 @@ function AdminSettingsForm({ settings }: SettingsFormProp) {
               itemArray={rescueItems}
               parentCallback={setRescueItems}
             />
+          </Grid>
+          <Grid item container direction="column" spacing={1}>
+            <Grid item>
+              <FormLabel>Disable Pick-up Dates</FormLabel>
+            </Grid>
+            <Grid item>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DesktopDatePicker
+                  label="Select Date to Disable"
+                  value={selectedDate}
+                  onChange={(newValue) => {
+                    setSelectedDate(newValue);
+                  }}
+                  disablePast
+                  shouldDisableDate={(day: Dayjs) => day.day() <= 1}
+                  renderInput={(params: TextFieldProps) => (
+                    <TextField {...params} />
+                  )}
+                  renderDay={(
+                    date: Dayjs,
+                    selectedDates: Array<Dayjs | null>,
+                    pickersDayProps: PickersDayProps<Dayjs>,
+                  ) => {
+                    const isSelected = dateDisabled(date.toDate());
+                    return (
+                      <PickersDay {...pickersDayProps} selected={isSelected} />
+                    );
+                  }}
+                />
+              </LocalizationProvider>
+            </Grid>
+            <Grid item>
+              {selectedDate &&
+                (dateDisabled(selectedDate.toDate()) ? (
+                  <Button variant="contained" onClick={handleEnableDate}>
+                    Enable Date
+                  </Button>
+                ) : (
+                  <Button variant="contained" onClick={handleDisableDate}>
+                    Disable Date
+                  </Button>
+                ))}
+            </Grid>
           </Grid>
         </Grid>
         <Grid item container direction="row" justifyContent="flex-end">

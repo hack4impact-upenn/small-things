@@ -9,6 +9,7 @@ interface ISettings {
   dryGoodOptions: Array<string>;
   vitoOptions: Array<string>;
   meatOptions: Array<string>;
+  disabledDates: Array<Date>;
 }
 
 export default ISettings;

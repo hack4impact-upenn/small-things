@@ -36,7 +36,7 @@ export default function RetailRescueItems(props: RetailRescueItemsProps) {
   };
 
   return (
-    <Grid container direction="column" width="75vh" spacing={2}>
+    <Grid container direction="column" maxWidth="75vh" spacing={2}>
       <Grid item>
         <Paper
           sx={{
