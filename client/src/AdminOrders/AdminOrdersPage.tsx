@@ -3,6 +3,7 @@ import { Typography, Grid, Box, Paper } from '@mui/material';
 import ScreenGrid from '../components/ScreenGrid';
 import AdminOrderTabs from './AdminOrderTabs';
 import Navbar from '../components/NavBar';
+import Logo from '../assets/small-logo.svg';
 
 /**
  * A page only accessible to admins that displays all users in a table and allows
@@ -28,6 +29,15 @@ function AdminOrdersPage() {
             }}
           >
             <Grid item>
+              <img
+                src={Logo}
+                alt="logo"
+                style={{
+                  width: '125px',
+                  float: 'right',
+                  marginBottom: '70px',
+                }}
+              />
               <Typography variant="h2">Orders</Typography>
             </Grid>
             <Grid item>

@@ -6,6 +6,7 @@ import { selectUser } from '../util/redux/userSlice';
 import ScreenGrid from '../components/ScreenGrid';
 import PartnerOrderTable from '../components/PartnerOrderTable';
 import LogOutButton from '../components/buttons/LogOutButton';
+import Logo from '../assets/small-logo.svg';
 
 /**
  * The HomePage of the user dashboard. Displays a welcome message, a logout button and a button to promote the user to admin if they are not already an admin. If the user is an admin, the button will navigate them to the admin dashboard. This utilizes redux to access the current user's information.
@@ -37,7 +38,21 @@ function HomePage() {
             }}
           >
             <Grid item>
-              <Typography variant="h2">{user.organization} Orders</Typography>
+              <div style={{ display: 'inline' }}>
+                <img
+                  src={Logo}
+                  alt="logo"
+                  style={{
+                    width: '100px',
+                    float: 'right',
+                    marginBottom: '25px',
+                  }}
+                />
+                <Typography variant="h2">
+                  {user.organization}
+                  Orders
+                </Typography>
+              </div>
             </Grid>
             <Grid item container justifyContent="flex-end">
               <div style={{ marginBottom: '10px' }}>

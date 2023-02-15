@@ -3,6 +3,7 @@ import { Box, CircularProgress, Link, Paper } from '@mui/material';
 import NewOrderForm from './NewOrderForm';
 import ISettings from '../util/types/settings';
 import { useData } from '../util/api';
+import Logo from '../assets/small-logo.svg';
 
 function NewOrderFormPage() {
   const [settings, setSettings] = useState<ISettings>();
@@ -36,7 +37,18 @@ function NewOrderFormPage() {
               paddingTop: '5vh',
             }}
           >
-            <Link href="/home"> {'<'} Back to Orders Page</Link>
+            <div style={{ display: 'block' }}>
+              <img
+                src={Logo}
+                alt="logo"
+                style={{
+                  width: '125px',
+                  float: 'right',
+                  marginRight: '30px',
+                }}
+              />
+              <Link href="/home"> {'<'} Back to Orders Page</Link>
+            </div>
           </Box>
           {!settings || !dates ? (
             <div style={{ width: '0', margin: 'auto' }}>
