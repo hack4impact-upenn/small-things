@@ -11,6 +11,7 @@ import { loginUser } from './api';
 import AlertDialog from '../components/AlertDialog';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import ScreenGrid from '../components/ScreenGrid';
+import Logo from '../assets/small-logo.svg';
 
 /**
  * A page allowing users to input their email and password to login. The default
@@ -146,6 +147,7 @@ function LoginPage() {
             <Typography variant="h2" textAlign="center">
               Small Things Log-in
             </Typography>
+            <img src={Logo} alt="logo" style={{ width: '400px' }} />
           </Grid>
           <Grid item width="1">
             <TextField

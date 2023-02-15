@@ -8,12 +8,13 @@ import AlertDialog from '../components/AlertDialog';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import ScreenGrid from '../components/ScreenGrid';
 import FormCol from '../components/form/FormCol';
+import Logo from '../assets/small-logo.svg';
 
 /**
  * A page that allows users to reset their password by inputting a new password
  * into a form.
  */
-function ResetPasswordPage() {
+function ResetPasswordPage(): JSX.Element {
   const { token } = useParams();
   const navigate = useNavigate();
 
@@ -115,6 +116,7 @@ function ResetPasswordPage() {
         <FormCol>
           <Grid item container justifyContent="center">
             <Typography variant="h2">Excited to have you back!</Typography>
+            <img src={Logo} alt="logo" style={{ width: '400px' }} />
           </Grid>
           <Grid item width="1">
             <TextField

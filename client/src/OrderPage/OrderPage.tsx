@@ -17,6 +17,7 @@ import { useAppSelector } from '../util/redux/hooks';
 import ModifyOrderForm from './ModifyOrderForm';
 import ISettings from '../util/types/settings';
 import useAlert from '../util/hooks/useAlert';
+import Logo from '../assets/small-logo.svg';
 
 /**
  * A page only accessible to admins that displays all users in a table and allows
@@ -164,6 +165,15 @@ function OrderPage() {
               justifyContent: 'center',
             }}
           >
+            <img
+              src={Logo}
+              alt="logo"
+              style={{
+                width: '125px',
+                float: 'right',
+                marginRight: '15px',
+              }}
+            />
             <Link href="/home">{'<'} Back to Orders</Link>
             <Typography variant="h5">Order Information</Typography>
             <Typography variant="h6">Organization:</Typography>
