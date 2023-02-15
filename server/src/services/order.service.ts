@@ -1,34 +1,31 @@
-import {
-  IOrder,
-  menuItem,
-  Order,
-  retailRescueItem,
-} from '../models/order.model';
+import { IOrder, Order, retailRescueItem } from '../models/order.model';
 
 /**
  * Creates a new order in the database.
  * @param organization - string representing name of the organization creating the order
- * @param produce - {@link menuItem} of produce requested
- * @param meat - {@link menuItem} of meat requested
- * @param dry - {@link menuItem} of dry requested
- * @param vito - {@link menuItem} of vito requested
+ * @param produce - produce requested
+ * @param meat - meat requested
+ * @param dry - dry requested
+ * @param vito -  vito requested
  * @param retailRescue - array of {@link retailRescueItem} requested
- * @param status - enum ('PENDING', 'APPROVED', 'RELEASED', 'COMPLETED') representing the status of the order
+ * @param status - enum ('PENDING', 'APPROVED', 'RELEASED', 'COMPLETED', 'CANCLED', 'REJECTED') representing the status of the order
  * @param pickup - Datetime of when the order is schedueld to be picked-up
  * @returns The created {@link User}
  */
 const createNewOrder = async (
+  advanced: boolean,
   organization: string,
-  produce: menuItem,
-  meat: menuItem,
-  vito: menuItem,
-  dry: menuItem,
+  produce: number,
+  meat: number | Array<string>,
+  vito: number | Array<string>,
+  dry: number | Array<string>,
   retailRescue: Array<retailRescueItem>,
   status: string,
   comment: string,
   pickup: Date,
 ) => {
   const newOrder = new Order({
+    advanced,
     organization,
     produce,
     meat,
@@ -93,14 +90,14 @@ const getAllOrdersForOrganization = async (org: string) => {
  * A function that updates a user's status.
  * @param id The id of the user to update.
  * @param organization - string representing name of the organization creating the order
- * @param produce - {@link menuItem} of produce requested
- * @param meat - {@link menuItem} of meat requested
- * @param dry - {@link menuItem} of dry requested
- * @param vito - {@link menuItem} of vito requested
+ * @param produce - produce requested
+ * @param meat - meat requested
+ * @param dry -  dry requested
+ * @param vito - vito requested
  * @param retailRescue - array of {@link retailRescueItem} requested
  * @param status - enum ('PENDING', 'APPROVED', 'RELEASED', 'COMPLETED') representing the status of the order
  * @param pickup - Datetime of when the order is schedueld to be picked-up
- * @returns The updated {@link User}
+ * @returns The updated {@link order}
  */
 const updateOrderById = async (id: string, newOrder: IOrder) => {
   const order = await Order.findByIdAndUpdate(id, newOrder).exec();

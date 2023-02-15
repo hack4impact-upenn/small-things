@@ -3,7 +3,6 @@
  * in the AdminDashboardPage.
  */
 import React from 'react';
-
 import {
   Paper,
   Table,
@@ -14,7 +13,7 @@ import {
   TableRow,
 } from '@mui/material';
 import dayjs from 'dayjs';
-import { IOrder } from '../util/types/order';
+import { IOrder, IRetailRescueItem } from '../util/types/order';
 
 interface PickSheetTableProps {
   orders: IOrder[];
@@ -42,7 +41,7 @@ function PickSheetTable({ orders }: PickSheetTableProps) {
               (a: IOrder, b: IOrder) =>
                 dayjs(a.pickup).unix() - dayjs(b.pickup).unix(),
             )
-            .map((row) => {
+            .map((row: IOrder) => {
               const newDate = new Date(row.pickup);
               return (
                 // eslint-disable-next-line no-underscore-dangle
@@ -57,18 +56,40 @@ function PickSheetTable({ orders }: PickSheetTableProps) {
                     })}
                   </TableCell>
                   <TableCell align="right">{row.organization}</TableCell>
-                  <TableCell align="right">{row.dry.count}</TableCell>
-                  <TableCell align="right">{row.produce.count}</TableCell>
-                  <TableCell align="right">{row.vito.count}</TableCell>
-                  <TableCell>{row.meat.count}</TableCell>
+                  <TableCell align="right">
+                    {row.advanced
+                      ? row.dry.map((item: IRetailRescueItem) => (
+                          <div key={item.item}>
+                            {item.item} - {item.comment} <br />
+                          </div>
+                        ))
+                      : row.dry}
+                  </TableCell>
+                  <TableCell align="right">{row.produce}</TableCell>
+                  <TableCell align="right">
+                    {row.advanced
+                      ? row.vito.map((item: IRetailRescueItem) => (
+                          <div key={item.item}>
+                            {item.item} - {item.comment} <br />
+                          </div>
+                        ))
+                      : row.vito}
+                  </TableCell>
+                  <TableCell>
+                    {row.advanced
+                      ? row.meat.map((item: IRetailRescueItem) => (
+                          <div key={item.item}>
+                            {item.item} - {item.comment} <br />
+                          </div>
+                        ))
+                      : row.meat}
+                  </TableCell>
                   <TableCell style={{ minWidth: 200 }}>
-                    {row.retailRescue.map((rrItem) => {
-                      return (
-                        <div key={rrItem.item}>
-                          {rrItem.item} - {rrItem.comment} <br />
-                        </div>
-                      );
-                    })}
+                    {row.retailRescue.map((rrItem) => (
+                      <div key={rrItem.item}>
+                        {rrItem.item} - {rrItem.comment} <br />
+                      </div>
+                    ))}
                   </TableCell>
                   <TableCell>{row.comment}</TableCell>
                 </TableRow>

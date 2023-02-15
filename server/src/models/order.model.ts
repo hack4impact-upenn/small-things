@@ -9,11 +9,6 @@ interface retailRescueItem {
   comment?: string;
 }
 
-interface menuItem {
-  count: number;
-  comment?: string;
-}
-
 const retailRescueItemSchema = new mongoose.Schema({
   item: {
     type: String,
@@ -25,37 +20,29 @@ const retailRescueItemSchema = new mongoose.Schema({
   },
 });
 
-const menuItemSchema = new mongoose.Schema({
-  count: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
-  comment: {
-    type: String,
-    required: false,
-  },
-});
-
 const OrderSchema = new mongoose.Schema({
+  advanced: {
+    type: Boolean,
+    required: true,
+  },
   organization: {
     type: String,
     required: true,
   },
   produce: {
-    type: menuItemSchema,
+    type: Number,
     required: true,
   },
   meat: {
-    type: menuItemSchema,
+    type: mongoose.Schema.Types.Mixed,
     required: true,
   },
   vito: {
-    type: menuItemSchema,
+    type: mongoose.Schema.Types.Mixed,
     required: true,
   },
   dry: {
-    type: menuItemSchema,
+    type: mongoose.Schema.Types.Mixed,
     required: true,
   },
   retailRescue: {
@@ -87,11 +74,12 @@ const OrderSchema = new mongoose.Schema({
 
 interface IOrder extends mongoose.Document {
   _id: string;
+  advanced: boolean;
   organization: string;
-  produce: menuItem;
-  meat: menuItem;
-  vito: menuItem;
-  dry: menuItem;
+  produce: number;
+  meat: number | Array<retailRescueItem>;
+  vito: number | Array<retailRescueItem>;
+  dry: number | Array<retailRescueItem>;
   retailRescue: Array<retailRescueItem>;
   comment: string;
   status: string;
@@ -100,4 +88,4 @@ interface IOrder extends mongoose.Document {
 
 const Order = mongoose.model<IOrder>('Order', OrderSchema);
 
-export { IOrder, Order, retailRescueItem, menuItem };
+export { IOrder, Order, retailRescueItem };

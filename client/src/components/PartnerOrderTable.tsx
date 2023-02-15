@@ -56,10 +56,10 @@ function PartnerOrderTable() {
         minute: '2-digit',
       }),
       status,
-      produce: produce.count,
-      meat: meat.count,
-      dry: dry.count,
-      vito: vito.count,
+      produce,
+      meat: order.advanced ? meat.length : meat,
+      dry: order.advanced ? dry.length : dry,
+      vito: order.advanced ? vito.length : vito,
       retail: retailRescue.length,
       view: (
         <Button variant="contained" color="secondary" href={`order/${_id}`}>

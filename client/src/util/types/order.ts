@@ -1,12 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Interface for the order data type return from the backend
  */
-
-interface IMenuItem {
-  count: number;
-  comment?: string;
-}
-
 interface IRetailRescueItem {
   item: string;
   comment?: string;
@@ -14,11 +9,12 @@ interface IRetailRescueItem {
 
 interface IOrder {
   _id: string;
+  advanced: boolean;
   organization: string;
-  produce: IMenuItem;
-  meat: IMenuItem;
-  vito: IMenuItem;
-  dry: IMenuItem;
+  produce: number;
+  meat: any;
+  vito: any;
+  dry: any;
   retailRescue: Array<IRetailRescueItem>;
   comment: string;
   status: string;

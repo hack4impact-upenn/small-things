@@ -116,11 +116,12 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
 
     setLoading(true);
     const order = {
+      advanced: settings.advanced,
       organization: user.organization,
-      produce: { count: values.produce },
-      meat: { count: values.meat },
-      vito: { count: values.vitoPallets },
-      dry: { count: values.dryGoods },
+      produce: values.produce,
+      meat: values.meat,
+      vito: values.vitoPallets,
+      dry: values.dryGoods,
       retailRescue: retailItems,
       comment: orderComments,
       pickup,
@@ -128,6 +129,7 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
     postData('order/create', order)
       .then((res) => {
         if (res.error) {
+          setLoading(false);
           setAlert(res.error.message, 'error');
         } else {
           setLoading(false);
@@ -370,7 +372,12 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
               )}
               minDate={dayjs(Object.keys(dates).at(0))}
               maxDate={dayjs(Object.keys(dates).at(-1))}
-              shouldDisableDate={(day: Dayjs) => day.day() === 0}
+              shouldDisableDate={(day: Dayjs) =>
+                day.day() <= 1 ||
+                settings.disabledDates.some((disabledDate) =>
+                  dayjs(disabledDate).isSame(day),
+                )
+              }
             />
           </LocalizationProvider>
         </FormRow>
