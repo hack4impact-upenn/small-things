@@ -57,6 +57,7 @@ function AdminOrderTable({ orders }: AdminOrderTableProps) {
       retailRescue,
     } = order;
     const myDate = new Date(pickup);
+
     return {
       key: _id,
       pickupDate: myDate.toDateString(),
@@ -65,10 +66,10 @@ function AdminOrderTable({ orders }: AdminOrderTableProps) {
         minute: '2-digit',
       }),
       organization,
-      produce: produce.count,
-      meat: meat.count,
-      dry: dry.count,
-      vito: vito.count,
+      produce,
+      meat: order.advanced ? meat.length : meat,
+      dry: order.advanced ? dry.length : dry,
+      vito: order.advanced ? vito.length : vito,
       retail: retailRescue.length,
       view: (
         <Button variant="contained" href={`/order/${_id}`}>

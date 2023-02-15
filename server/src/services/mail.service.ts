@@ -3,7 +3,7 @@
  */
 import 'dotenv/config';
 import SGmail, { MailDataRequired } from '@sendgrid/mail';
-import { IOrder } from '../models/order.model';
+import { IOrder, retailRescueItem } from '../models/order.model';
 
 const appName = 'Small Things'; // Replace with a relevant project name
 const senderName = 'Small Things'; // Replace with a relevant project sender
@@ -88,6 +88,42 @@ const emailInviteLink = async (email: string, token: string) => {
   await SGmail.send(mailSettings);
 };
 
+const parseArray = (array: any) => {
+  return array
+    .map((element: retailRescueItem) => `${element.item} ${element.comment}`)
+    .join();
+};
+
+const formatOrderToEmail = (order: IOrder) => {
+  const pickupDate = new Date(order.pickup);
+  if (order.advanced) {
+    return (
+      `<h1>Your order has been approved</h1>` +
+      `<h2>Your order summary:</h2>` +
+      `<div>Organization: ${order.organization}</div>` +
+      `<div>Produce: ${order.produce}</div>` +
+      `<div>Meat: ${parseArray(order.meat)}</div>` +
+      `<div>Vito: ${parseArray(order.vito)}</div>` +
+      `<div>Dry: ${parseArray(order.dry)}</div>` +
+      `<div>Retail Rescue: ${parseArray(order.retailRescue)}</div>` +
+      `<div>Status: ${order.status}</div>` +
+      `<div>Pickup: ${pickupDate.toLocaleString()}</div>`
+    );
+  }
+  return (
+    `<h1>Your order has been approved</h1>` +
+    `<h2>Your order summary:</h2>` +
+    `<div>Organization: ${order.organization}</div>` +
+    `<div>Produce: ${order.produce}</div>` +
+    `<div>Meat: ${order.meat}</div>` +
+    `<div>Vito: ${order.vito}</div>` +
+    `<div>Dry: ${order.dry}</div>` +
+    `<div>Retail Rescue: ${parseArray(order.retailRescue)}</div>` +
+    `<div>Status: ${order.status}</div>` +
+    `<div>Pickup: ${pickupDate.toLocaleString()}</div>`
+  );
+};
+
 const emailApproveOrder = async (email: string, order: IOrder) => {
   const mailSettings: MailDataRequired = {
     from: {
@@ -97,16 +133,8 @@ const emailApproveOrder = async (email: string, order: IOrder) => {
     to: email,
     subject: 'Order Approval',
     html:
-      `<h1>Your order has been approved</h1>` +
-      `<h2>Your order summary:</h2>` +
-      `<div>Organization: ${order.organization}</div>` +
-      `<div>Produce: ${order.produce}</div>` +
-      `<div>Meat: ${order.meat}</div>` +
-      `<div>Vito: ${order.vito}</div>` +
-      `<div>Dry: ${order.dry}</div>` +
-      `<div>Retail Rescue: ${order.retailRescue}</div>` +
-      `<div>Status: ${order.status}</div>` +
-      `<div>Pickup: ${order.pickup}</div>`,
+      `<h1>Your order has been Approved</h1>` +
+      `<h2>Your order summary:</h2>${formatOrderToEmail(order)}`,
   };
   // Send the email and propogate the error up if one exists
   await SGmail.send(mailSettings);
@@ -122,15 +150,7 @@ const emailRejectOrder = async (email: string, order: IOrder) => {
     subject: 'Order Rejection',
     html:
       `<h1>Your order has been rejected</h1>` +
-      `<h2>Your order summary:</h2>` +
-      `<div>Organization: ${order.organization}</div>` +
-      `<div>Produce: ${order.produce}</div>` +
-      `<div>Meat: ${order.meat}</div>` +
-      `<div>Vito: ${order.vito}</div>` +
-      `<div>Dry: ${order.dry}</div>` +
-      `<div>Retail Rescue: ${order.retailRescue}</div>` +
-      `<div>Status: ${order.status}</div>` +
-      `<div>Pickup: ${order.pickup}</div>`,
+      `<h2>Your order summary:</h2>${formatOrderToEmail(order)}`,
   };
   // Send the email and propogate the error up if one exists
   await SGmail.send(mailSettings);

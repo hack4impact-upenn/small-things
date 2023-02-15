@@ -20,7 +20,7 @@ function AdminPickSheetPage() {
     content: () => componentRef.current,
   });
 
-  const [selectedDate, setSelectedDate] = useState(dayjs(new Date()));
+  const [selectedDate, setSelectedDate] = useState(dayjs().day(1));
   const [weekOfOrders, setWeekOfOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { setAlert } = useAlert();
@@ -32,7 +32,7 @@ function AdminPickSheetPage() {
     setIsLoading(true);
     postData('order/picksheet', {
       startDate: selectedDate.startOf('date'),
-      endDate: selectedDate.add(7, 'day').endOf('date'),
+      endDate: selectedDate.add(6, 'day').endOf('date'),
     })
       .then((resp) => {
         setIsLoading(false);

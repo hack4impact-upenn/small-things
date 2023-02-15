@@ -30,6 +30,7 @@ const createOrder = async (
   next: express.NextFunction,
 ) => {
   const {
+    advanced,
     organization,
     produce,
     meat,
@@ -39,7 +40,14 @@ const createOrder = async (
     retailRescue,
     comment,
   } = req.body;
-  if (!organization || !produce || !meat || !vito || !dry || !pickup) {
+  if (
+    !organization ||
+    produce === null ||
+    meat === null ||
+    vito === null ||
+    dry === null ||
+    !pickup
+  ) {
     next(
       ApiError.missingFields([
         'organization',
@@ -68,6 +76,7 @@ const createOrder = async (
   }
   try {
     const order = await createNewOrder(
+      advanced,
       organization,
       produce,
       meat,
@@ -369,9 +378,11 @@ const modifyOrder = async (
     return;
   }
 
-  if (currentOrder.status !== 'PENDING') {
+  if (currentOrder.status !== 'PENDING' && currentOrder.status !== 'APPROVED') {
     next(
-      ApiError.notFound('Order status is not pending so it cannot be modfied'),
+      ApiError.notFound(
+        `Order status is not ${currentOrder.status} so it cannot be modfied`,
+      ),
     );
     return;
   }

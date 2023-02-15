@@ -42,10 +42,10 @@ function ModifyOrderForm({
   cancel,
 }: ModifyOrderFormProps) {
   const originalValues = {
-    meat: order.meat.count,
-    dryGoods: order.dry.count,
-    produce: order.produce.count,
-    vitoPallets: order.vito.count,
+    meat: order.meat,
+    dryGoods: order.dry,
+    produce: order.produce,
+    vitoPallets: order.vito,
   };
 
   const { setAlert } = useAlert();
@@ -123,12 +123,13 @@ function ModifyOrderForm({
     const modifiedOrder: IOrder = {
       // eslint-disable-next-line no-underscore-dangle
       _id: order._id,
+      advanced: settings.advanced,
       organization: order.organization,
       status: order.status,
-      produce: { count: values.produce },
-      meat: { count: values.meat },
-      vito: { count: values.vitoPallets },
-      dry: { count: values.dryGoods },
+      produce: values.produce,
+      meat: values.meat,
+      vito: values.vitoPallets,
+      dry: values.dryGoods,
       retailRescue: retailItems,
       comment: orderComments,
       pickup,
@@ -289,6 +290,7 @@ function ModifyOrderForm({
               <Grid xs={4} item>
                 <FormControl>
                   <TextField
+                    value={retailItems[index].comment}
                     fullWidth
                     type="text"
                     label="Comments"

@@ -10,7 +10,7 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { Stack } from '@mui/system';
 import { putData, useData } from '../util/api';
-import { IOrder } from '../util/types/order';
+import { IOrder, IRetailRescueItem } from '../util/types/order';
 import Navbar from '../components/NavBar';
 import { selectUser } from '../util/redux/userSlice';
 import { useAppSelector } from '../util/redux/hooks';
@@ -26,19 +26,12 @@ import Logo from '../assets/small-logo.svg';
 function OrderPage() {
   const defaultOrder: IOrder = {
     _id: '',
+    advanced: false,
     organization: '',
-    produce: {
-      count: 0,
-    },
-    meat: {
-      count: 0,
-    },
-    vito: {
-      count: 0,
-    },
-    dry: {
-      count: 0,
-    },
+    produce: 0,
+    meat: 0,
+    vito: 0,
+    dry: 0,
     retailRescue: [],
     status: '',
     comment: '',
@@ -204,16 +197,43 @@ function OrderPage() {
               ) : (
                 <>
                   <Typography variant="h6">Produce:</Typography>
-                  <Typography variant="body1">{order.produce.count}</Typography>
+                  <Typography variant="body1">{order.produce}</Typography>
 
                   <Typography variant="h6">Dry Goods:</Typography>
-                  <Typography variant="body1">{order.dry.count}</Typography>
+                  <Typography variant="body1">
+                    {order.advanced
+                      ? order.dry
+                          .map(
+                            (item: IRetailRescueItem) =>
+                              `${item.item} ${item.comment}`,
+                          )
+                          .join()
+                      : order.dry}
+                  </Typography>
 
                   <Typography variant="h6">Vito:</Typography>
-                  <Typography variant="body1">{order.vito.count}</Typography>
+                  <Typography variant="body1">
+                    {order.advanced
+                      ? order.vito
+                          .map(
+                            (item: IRetailRescueItem) =>
+                              `${item.item} ${item.comment}`,
+                          )
+                          .join()
+                      : order.vito}
+                  </Typography>
 
                   <Typography variant="h6">Meat:</Typography>
-                  <Typography variant="body1">{order.meat.count}</Typography>
+                  <Typography variant="body1">
+                    {order.advanced
+                      ? order.meat
+                          .map(
+                            (item: IRetailRescueItem) =>
+                              `${item.item} ${item.comment}`,
+                          )
+                          .join()
+                      : order.meat}
+                  </Typography>
 
                   <Typography variant="h6">Retail Rescue Items:</Typography>
                   {order.retailRescue.map((item) => (
