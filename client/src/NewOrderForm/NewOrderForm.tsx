@@ -26,6 +26,7 @@ import { useAppSelector } from '../util/redux/hooks';
 import { selectUser } from '../util/redux/userSlice';
 import useAlert from '../util/hooks/useAlert';
 import { weekendTimes, weekTimes } from '../util/constants';
+import LineItem from './LineItem';
 
 interface Date {
   [key: string]: string[];
@@ -56,11 +57,17 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
   const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState(false);
   const navigate = useNavigate();
+  const [dryGoods, setDryGoods] = useState<IRetailRescueItem[]>([]);
+  const [meat, setMeat] = useState<IRetailRescueItem[]>([]);
+  const [vito, setVito] = useState<IRetailRescueItem[]>([]);
 
   const canSubmit =
     date !== null &&
     time !== '' &&
     (values.meat !== 0 ||
+      meat.length > 0 ||
+      dryGoods.length > 0 ||
+      vito.length > 0 ||
       values.dryGoods !== 0 ||
       values.produce !== 0 ||
       values.vitoPallets !== 0 ||
@@ -75,9 +82,33 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
     setSelectedItem(true);
   };
 
+  const addDryGoodsItem = () => {
+    setDryGoods([...dryGoods, { item: '', comment: '' }]);
+  };
+
+  const addVitoItem = () => {
+    setVito([...vito, { item: '', comment: '' }]);
+  };
+
+  const addMeatItem = () => {
+    setMeat([...meat, { item: '', comment: '' }]);
+  };
+
   const removeRetailItem = (index: number) => {
     setRetailItems(retailItems.filter((item, i) => i !== index));
     setSelectedItems(selectedItems.filter((item, i) => i !== index));
+  };
+
+  const removeDryGoodItem = (index: number) => {
+    setDryGoods(dryGoods.filter((item, i) => i !== index));
+  };
+
+  const removeVitoItem = (index: number) => {
+    setVito(vito.filter((item, i) => i !== index));
+  };
+
+  const removeMeatItem = (index: number) => {
+    setMeat(meat.filter((item, i) => i !== index));
   };
 
   const updateRetailItemName = (index: number, value: string) => {
@@ -90,10 +121,46 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
     setRetailItems(newRetailItems);
   };
 
+  const updateVitoSelection = (index: number, value: string) => {
+    const newSelectedItems = [...vito];
+    newSelectedItems[index].item = value;
+    setVito(newSelectedItems);
+  };
+
+  const updateDryGoodSelection = (index: number, value: string) => {
+    const newSelectedDryGoods = [...dryGoods];
+    newSelectedDryGoods[index].item = value;
+    setDryGoods(newSelectedDryGoods);
+  };
+
+  const updateMeatSelection = (index: number, value: string) => {
+    const newSelectedItems = [...meat];
+    newSelectedItems[index].item = value;
+    setMeat(newSelectedItems);
+  };
+
   const updateRetailItemComments = (index: number, value: string) => {
     const newRetailItems = [...retailItems];
     newRetailItems[index].comment = value;
     setRetailItems(newRetailItems);
+  };
+
+  const updateDryGoodComment = (index: number, value: string) => {
+    const newSelectedItems = [...dryGoods];
+    newSelectedItems[index].comment = value;
+    setDryGoods(newSelectedItems);
+  };
+
+  const updateVitoComment = (index: number, value: string) => {
+    const newSelectedItems = [...vito];
+    newSelectedItems[index].comment = value;
+    setVito(newSelectedItems);
+  };
+
+  const updateMeatComment = (index: number, value: string) => {
+    const newSelectedItems = [...meat];
+    newSelectedItems[index].comment = value;
+    setMeat(newSelectedItems);
   };
 
   // Helper functions for changing only one field in a state object
@@ -114,18 +181,18 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
       .set('hour', formatedTime.hour())
       .set('minutes', formatedTime.minute());
 
-    setLoading(true);
     const order = {
       advanced: settings.advanced,
       organization: user.organization,
       produce: values.produce,
-      meat: values.meat,
-      vito: values.vitoPallets,
-      dry: values.dryGoods,
+      meat: settings.advanced ? meat : values.meat,
+      vito: settings.advanced ? vito : values.vitoPallets,
+      dry: settings.advanced ? dryGoods : values.dryGoods,
       retailRescue: retailItems,
       comment: orderComments,
       pickup,
     };
+    setLoading(true);
     postData('order/create', order)
       .then((res) => {
         if (res.error) {
@@ -177,75 +244,186 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
             </FormControl>
           </Grid>
         </Grid>
+
         <Grid container item direction="column">
           <Grid item>
             <FormLabel>Dry Goods</FormLabel>
           </Grid>
-          <Grid item>
-            <FormControl>
-              <Select
-                value={values.dryGoods}
-                autoWidth
-                onChange={(e) => setValue('dryGoods', e.target.value as string)}
-              >
-                {Array.from(Array(settings.maxNumOfDryGoods + 1).keys()).map(
-                  (x) => (
-                    <MenuItem key={x} value={x}>
-                      {x}
-                    </MenuItem>
-                  ),
-                )}
-              </Select>
-            </FormControl>
-          </Grid>
+          {settings.advanced ? (
+            <div>
+              {dryGoods.map((dryGood: IRetailRescueItem, index: number) => (
+                <LineItem
+                  key={dryGood.item}
+                  item={dryGood.item}
+                  updateSelection={updateDryGoodSelection}
+                  updateComment={updateDryGoodComment}
+                  index={index}
+                  removeItem={removeDryGoodItem}
+                  options={settings.dryGoodOptions}
+                  selectedItems={dryGoods.map((item) => item.item)}
+                />
+              ))}
+              <FormRow>
+                <Grid
+                  sx={{
+                    paddingTop: '10px',
+                  }}
+                  item
+                >
+                  <Button
+                    variant="contained"
+                    onClick={addDryGoodsItem}
+                    disabled={
+                      dryGoods.length === settings.dryGoodOptions.length ||
+                      dryGoods.some((item) => item.item === '')
+                    }
+                  >
+                    Add Dry Good Item
+                  </Button>
+                </Grid>
+              </FormRow>
+            </div>
+          ) : (
+            <Grid item>
+              <FormControl>
+                <Select
+                  value={values.dryGoods}
+                  autoWidth
+                  onChange={(e) =>
+                    setValue('dryGoods', e.target.value as string)
+                  }
+                >
+                  {Array.from(Array(settings.maxNumOfDryGoods + 1).keys()).map(
+                    (x) => (
+                      <MenuItem key={x} value={x}>
+                        {x}
+                      </MenuItem>
+                    ),
+                  )}
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
         </Grid>
 
         <Grid container item direction="column">
           <Grid item>
             <FormLabel>Vito</FormLabel>
           </Grid>
-          <Grid item>
-            <FormControl>
-              <Select
-                value={values.vitoPallets}
-                autoWidth
-                onChange={(e) =>
-                  setValue('vitoPallets', e.target.value as string)
-                }
-              >
-                {Array.from(Array(settings.maxNumOfVito + 1).keys()).map(
-                  (x) => (
-                    <MenuItem key={x} value={x}>
-                      {x}
-                    </MenuItem>
-                  ),
-                )}
-              </Select>
-            </FormControl>
-          </Grid>
+          {settings.advanced ? (
+            <div>
+              {vito.map((vitoOption: IRetailRescueItem, index: number) => (
+                <LineItem
+                  key={vitoOption.item}
+                  item={vitoOption.item}
+                  updateSelection={updateVitoSelection}
+                  updateComment={updateVitoComment}
+                  index={index}
+                  removeItem={removeVitoItem}
+                  options={settings.vitoOptions}
+                  selectedItems={vito.map((item) => item.item)}
+                />
+              ))}
+              <FormRow>
+                <Grid
+                  sx={{
+                    paddingTop: '10px',
+                  }}
+                  item
+                >
+                  <Button
+                    variant="contained"
+                    onClick={addVitoItem}
+                    disabled={
+                      vito.length === settings.vitoOptions.length ||
+                      vito.some((item) => item.item === '')
+                    }
+                  >
+                    Add Vito Item
+                  </Button>
+                </Grid>
+              </FormRow>
+            </div>
+          ) : (
+            <Grid item>
+              <FormControl>
+                <Select
+                  value={values.vitoPallets}
+                  autoWidth
+                  onChange={(e) =>
+                    setValue('vitoPallets', e.target.value as string)
+                  }
+                >
+                  {Array.from(Array(settings.maxNumOfVito + 1).keys()).map(
+                    (x) => (
+                      <MenuItem key={x} value={x}>
+                        {x}
+                      </MenuItem>
+                    ),
+                  )}
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
         </Grid>
 
         <Grid container item direction="column">
           <Grid item>
             <FormLabel>Meat</FormLabel>
           </Grid>
-          <Grid item>
-            <FormControl>
-              <Select
-                value={values.meat}
-                autoWidth
-                onChange={(e) => setValue('meat', e.target.value as string)}
-              >
-                {Array.from(Array(settings.maxNumOfMeat + 1).keys()).map(
-                  (x) => (
-                    <MenuItem key={x} value={x}>
-                      {x}
-                    </MenuItem>
-                  ),
-                )}
-              </Select>
-            </FormControl>
-          </Grid>
+          {settings.advanced ? (
+            <div>
+              {meat.map((meatOption: IRetailRescueItem, index: number) => (
+                <LineItem
+                  key={meatOption.item}
+                  item={meatOption.item}
+                  updateSelection={updateMeatSelection}
+                  updateComment={updateMeatComment}
+                  index={index}
+                  removeItem={removeMeatItem}
+                  options={settings.meatOptions}
+                  selectedItems={meat.map((item) => item.item)}
+                />
+              ))}
+              <FormRow>
+                <Grid
+                  sx={{
+                    paddingTop: '10px',
+                  }}
+                  item
+                >
+                  <Button
+                    variant="contained"
+                    onClick={addMeatItem}
+                    disabled={
+                      meat.length === settings.meatOptions.length ||
+                      meat.some((item) => item.item === '')
+                    }
+                  >
+                    Add Meat Item
+                  </Button>
+                </Grid>
+              </FormRow>
+            </div>
+          ) : (
+            <Grid item>
+              <FormControl>
+                <Select
+                  value={values.meat}
+                  autoWidth
+                  onChange={(e) => setValue('meat', e.target.value as string)}
+                >
+                  {Array.from(Array(settings.maxNumOfMeat + 1).keys()).map(
+                    (x) => (
+                      <MenuItem key={x} value={x}>
+                        {x}
+                      </MenuItem>
+                    ),
+                  )}
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
         </Grid>
         <FormRow>
           <Grid item container justifyContent="center">
@@ -253,69 +431,15 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
           </Grid>
         </FormRow>
         {retailItems.map((item, index) => (
-          <FormRow key={item.item}>
-            <Grid
-              spacing={1}
-              container
-              sx={{
-                paddingTop: '10px',
-              }}
-              justifyContent="flex-start"
-              alignItems="center"
-            >
-              <Grid xs={6} item>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">
-                    Retail Rescure Item
-                  </InputLabel>
-                  <Select
-                    label="Retail Rescure Item"
-                    value={retailItems[index].item}
-                    placeholder="Select"
-                    onChange={(e) =>
-                      updateRetailItemName(index, e.target.value)
-                    }
-                  >
-                    {settings.retailRescueItems
-                      .filter((rrItem: string) => {
-                        return (
-                          !selectedItems.includes(rrItem) ||
-                          selectedItems[index] === rrItem
-                        );
-                      })
-                      .map((rrItem: string) => {
-                        return (
-                          <MenuItem key={rrItem} value={rrItem}>
-                            {rrItem}
-                          </MenuItem>
-                        );
-                      })}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid xs={4} item>
-                <FormControl>
-                  <TextField
-                    fullWidth
-                    type="text"
-                    label="Comments"
-                    onChange={(e) =>
-                      updateRetailItemComments(index, e.target.value)
-                    }
-                  />
-                </FormControl>
-              </Grid>
-              <Grid xs={2} item>
-                <Button
-                  color="error"
-                  variant="contained"
-                  onClick={() => removeRetailItem(index)}
-                >
-                  Remove
-                </Button>
-              </Grid>
-            </Grid>
-          </FormRow>
+          <LineItem
+            item={item.item}
+            updateSelection={updateRetailItemName}
+            updateComment={updateRetailItemComments}
+            index={index}
+            removeItem={removeRetailItem}
+            options={settings.retailRescueItems}
+            selectedItems={selectedItems}
+          />
         ))}
 
         <FormRow>

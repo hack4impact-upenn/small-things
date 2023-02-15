@@ -39,7 +39,7 @@ function TabPanel(props: TabPanelProps) {
 
 const AdminOrderTabs = React.forwardRef(
   ({ orders, loading }: PickSheetTabProps, ref) => {
-    const [value, setValue] = useState(0);
+    const [value, setValue] = useState(1);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
       setValue(newValue);
@@ -49,7 +49,6 @@ const AdminOrderTabs = React.forwardRef(
       <Box ref={ref} sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} aria-label="order tabs">
-            <Tab label="Monday" id="order-tab-1" value={0} />
             <Tab label="Tuesday" id="order-tab-2" value={1} />
             <Tab label="Wednesday" id="order-tab-3" value={2} />
             <Tab label="Thursday" id="order-tab-3" value={3} />
@@ -63,13 +62,6 @@ const AdminOrderTabs = React.forwardRef(
           </div>
         ) : (
           <>
-            <TabPanel value={value} index={0}>
-              <PickSheetTable
-                orders={orders.filter(
-                  (order: IOrder) => dayjs(order.pickup).day() === 1,
-                )}
-              />
-            </TabPanel>
             <TabPanel value={value} index={1}>
               <PickSheetTable
                 orders={orders.filter(
