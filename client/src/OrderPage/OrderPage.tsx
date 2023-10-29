@@ -191,7 +191,7 @@ function OrderPage() {
                   order={order}
                   settings={settings}
                   dates={dates}
-                  handelSave={handleModification}
+                  handleSave={handleModification}
                   cancel={() => setModifying(false)}
                 />
               ) : (

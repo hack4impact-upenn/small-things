@@ -47,8 +47,8 @@ const login = async (
       failureMessage: true,
     },
     // Callback function defined by passport strategy in configPassport.ts
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (err, user, info) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+    (err: any, user: any, info: any) => {
       if (err) {
         next(ApiError.internal('Failed to authenticate user.'));
         return;
@@ -57,7 +57,7 @@ const login = async (
         next(ApiError.unauthorized('Incorrect credentials'));
         return;
       }
-      if (!user!.verified) {
+      if (!user?.verified) {
         next(ApiError.unauthorized('Need to verify account by email'));
         return;
       }

@@ -143,11 +143,21 @@ function LoginPage() {
     <ScreenGrid>
       <FormGrid>
         <FormCol>
-          <Grid item container justifyContent="center">
-            <Typography variant="h2" textAlign="center">
-              Small Things Log-in
-            </Typography>
-            <img src={Logo} alt="logo" style={{ width: '400px' }} />
+          <Grid
+            item
+            container
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Grid item>
+              <Typography variant="h2" textAlign="center">
+                Small Things Log-in
+              </Typography>
+            </Grid>
+            <Grid item>
+              <img src={Logo} alt="logo" style={{ width: '400px' }} />
+            </Grid>
           </Grid>
           <Grid item width="1">
             <TextField

@@ -30,7 +30,7 @@ interface ModifyOrderFormProps {
   settings: ISettings;
   dates: Date;
   order: IOrder;
-  handelSave: (order: IOrder | undefined) => void;
+  handleSave: (order: IOrder | undefined) => void;
   cancel: () => void;
 }
 
@@ -38,7 +38,7 @@ function ModifyOrderForm({
   settings,
   order,
   dates,
-  handelSave,
+  handleSave,
   cancel,
 }: ModifyOrderFormProps) {
   const originalValues = {
@@ -123,7 +123,7 @@ function ModifyOrderForm({
     const modifiedOrder: IOrder = {
       // eslint-disable-next-line no-underscore-dangle
       _id: order._id,
-      advanced: settings.advanced,
+      advanced: order.advanced,
       organization: order.organization,
       status: order.status,
       produce: values.produce,
@@ -444,7 +444,7 @@ function ModifyOrderForm({
                 variant="contained"
                 color="primary"
                 fullWidth
-                onClick={() => handelSave(buildOrder())}
+                onClick={() => handleSave(buildOrder())}
                 disabled={!canSubmit}
               >
                 Save Changes

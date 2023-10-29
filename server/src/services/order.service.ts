@@ -67,7 +67,7 @@ const getAllApprovedOrders = async () => {
 
 const getAllApprovedOrdersInDateRange = async (start: Date, end: Date) => {
   const orders = await Order.find({
-    status: { $in: ['APPROVED', 'RELEASED'] },
+    status: { $in: ['APPROVED', 'RELEASED', 'COMPLETED'] },
     pickup: { $gte: start, $lte: end },
   }).exec();
   return orders;
