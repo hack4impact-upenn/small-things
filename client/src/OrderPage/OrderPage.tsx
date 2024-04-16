@@ -268,9 +268,14 @@ function OrderPage() {
                       <Stack spacing={2} direction="row">
                         {admin ? (
                           <>
-                            <Button variant="contained" onClick={handleApprove}>
-                              Approve
-                            </Button>
+                            {order.status === 'PENDING' && (
+                              <Button
+                                variant="contained"
+                                onClick={handleApprove}
+                              >
+                                Approve
+                              </Button>
+                            )}
                             <Button
                               variant="contained"
                               color="secondary"

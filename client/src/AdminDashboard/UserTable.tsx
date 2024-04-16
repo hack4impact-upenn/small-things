@@ -99,6 +99,19 @@ function UserTable() {
     );
   };
 
+  const removeAdmin = (email: string) => {
+    setUserList(
+      userList.map((entry) => {
+        if (entry.email !== email) {
+          return entry;
+        }
+        const newEntry = entry;
+        newEntry.admin = false;
+        return newEntry;
+      }),
+    );
+  };
+
   const enableUser = (email: string) => {
     setUserList(
       userList.map((entry) => {
@@ -130,6 +143,7 @@ function UserTable() {
             admin={user.admin}
             email={user.email}
             updateAdmin={updateAdmin}
+            removeAdmin={removeAdmin}
           />,
           <DeleteUserButton
             admin={user.admin}

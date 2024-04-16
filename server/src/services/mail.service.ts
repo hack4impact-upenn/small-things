@@ -60,7 +60,7 @@ const emailVerificationLink = async (email: string, token: string) => {
     html:
       `<p> Please visit the following ` +
       `<a href=${resetLink}>link</a> ` +
-      `to verify your account for ${appName} and complete registration</p>` +
+      `to verify your account for ${appName} and complete registration.</p>` +
       `<p>If you did not attempt to register an account with this email address, ` +
       `please ignore this message.</p>`,
   };
@@ -80,7 +80,7 @@ const emailInviteLink = async (email: string, token: string) => {
     html:
       `<p> Please visit the following ` +
       `<a href=${resetLink}>link</a> ` +
-      `to create your account for ${appName} and complete registration</p>` +
+      `to create your account for ${appName} and complete registration.</p>` +
       `<p>If you did not attempt to register an account with this email address, ` +
       `please ignore this message.</p>`,
   };
@@ -98,62 +98,95 @@ const formatOrderToEmail = (order: IOrder) => {
   const pickupDate = new Date(order.pickup);
   if (order.advanced) {
     return (
-      `<h1>Your order has been approved</h1>` +
-      `<h2>Your order summary:</h2>` +
-      `<div>Organization: ${order.organization}</div>` +
-      `<div>Produce: ${order.produce}</div>` +
-      `<div>Meat: ${parseArray(order.meat)}</div>` +
-      `<div>Vito: ${parseArray(order.vito)}</div>` +
-      `<div>Dry: ${parseArray(order.dry)}</div>` +
-      `<div>Retail Rescue: ${parseArray(order.retailRescue)}</div>` +
-      `<div>Status: ${order.status}</div>` +
-      `<div>Pickup: ${pickupDate.toLocaleString()}</div>`
+      `<div style="color:black;">Organization: ${order.organization}</div>` +
+      `<div style="color:black;">Produce: ${order.produce}</div>` +
+      `<div style="color:black;">Meat: ${parseArray(order.meat)}</div>` +
+      `<div style="color:black;">Vito: ${parseArray(order.vito)}</div>` +
+      `<div style="color:black;">Dry: ${parseArray(order.dry)}</div>` +
+      `<div style="color:black;"> Retail Rescue: ${parseArray(
+        order.retailRescue,
+      )}</div>` +
+      `<div style="color:black;">Status: ${order.status}</div>` +
+      `<div style="color:black;">Pickup: ${pickupDate.toLocaleString()}</div>`
     );
   }
   return (
-    `<h1>Your order has been approved</h1>` +
-    `<h2>Your order summary:</h2>` +
-    `<div>Organization: ${order.organization}</div>` +
-    `<div>Produce: ${order.produce}</div>` +
-    `<div>Meat: ${order.meat}</div>` +
-    `<div>Vito: ${order.vito}</div>` +
-    `<div>Dry: ${order.dry}</div>` +
-    `<div>Retail Rescue: ${parseArray(order.retailRescue)}</div>` +
-    `<div>Status: ${order.status}</div>` +
-    `<div>Pickup: ${pickupDate.toLocaleString()}</div>`
+    `<div style="color:black;">Organization: ${order.organization}</div>` +
+    `<div style="color:black;">Produce: ${order.produce}</div>` +
+    `<div style="color:black;">Meat: ${order.meat}</div>` +
+    `<div style="color:black;">Vito: ${order.vito}</div>` +
+    `<div style="color:black;">Dry: ${order.dry}</div>` +
+    `<div style="color:black;">Retail Rescue: ${parseArray(
+      order.retailRescue,
+    )}</div>` +
+    `<div style="color:black;">Status: ${order.status}</div>` +
+    `<div style="color:black;">Pickup: ${pickupDate.toLocaleString()}</div>`
   );
 };
 
 const emailApproveOrder = async (email: string, order: IOrder) => {
-  const mailSettings: MailDataRequired = {
+  const userEmail: MailDataRequired = {
+    from: {
+      email: process.env.SENDGRID_EMAIL_ADDRESS || 'missing@mail.com',
+      name: senderName,
+    },
+    to: order.email,
+    subject: 'Order Approval',
+    html:
+      `<h1 style="color:black;">Your order has been approved</h1>` +
+      `<h2 style="color:black;">Your order summary:</h2>${formatOrderToEmail(
+        order,
+      )}`,
+  };
+  const adminEmail: MailDataRequired = {
     from: {
       email: process.env.SENDGRID_EMAIL_ADDRESS || 'missing@mail.com',
       name: senderName,
     },
     to: email,
-    subject: 'Order Approval',
+    subject: 'Approved Order',
     html:
-      `<h1>Your order has been Approved</h1>` +
-      `<h2>Your order summary:</h2>${formatOrderToEmail(order)}`,
+      `<h1 style="color:black;">You approved an order</h1>` +
+      `<h2 style="color:black;">Order summary:</h2>${formatOrderToEmail(
+        order,
+      )}`,
   };
   // Send the email and propogate the error up if one exists
-  await SGmail.send(mailSettings);
+  await SGmail.send(userEmail);
+  await SGmail.send(adminEmail);
 };
 
 const emailRejectOrder = async (email: string, order: IOrder) => {
-  const mailSettings: MailDataRequired = {
+  const userEmail: MailDataRequired = {
+    from: {
+      email: process.env.SENDGRID_EMAIL_ADDRESS || 'missing@mail.com',
+      name: senderName,
+    },
+    to: order.email,
+    subject: 'Order Rejection',
+    html:
+      `<h1 style="color:black;">Your order has been rejected</h1>` +
+      `<h2 style="color:black;">Your order summary:</h2>${formatOrderToEmail(
+        order,
+      )}`,
+  };
+
+  const adminEmail: MailDataRequired = {
     from: {
       email: process.env.SENDGRID_EMAIL_ADDRESS || 'missing@mail.com',
       name: senderName,
     },
     to: email,
-    subject: 'Order Rejection',
+    subject: 'Rejected Order',
     html:
-      `<h1>Your order has been rejected</h1>` +
-      `<h2>Your order summary:</h2>${formatOrderToEmail(order)}`,
+      `<h1 style="color:black;">You rejected an order</h1>` +
+      `<h2 style="color:black;">Order summary:</h2>${formatOrderToEmail(
+        order,
+      )}`,
   };
   // Send the email and propogate the error up if one exists
-  await SGmail.send(mailSettings);
+  await SGmail.send(userEmail);
+  await SGmail.send(adminEmail);
 };
 
 export {

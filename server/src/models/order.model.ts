@@ -21,6 +21,10 @@ const retailRescueItemSchema = new mongoose.Schema({
 });
 
 const OrderSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+  },
   advanced: {
     type: Boolean,
     required: true,
@@ -74,6 +78,7 @@ const OrderSchema = new mongoose.Schema({
 
 interface IOrder extends mongoose.Document {
   _id: string;
+  email: string;
   advanced: boolean;
   organization: string;
   produce: number;

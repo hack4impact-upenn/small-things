@@ -55,8 +55,8 @@ function PickSheetTable({ orders }: PickSheetTableProps) {
                       minute: '2-digit',
                     })}
                   </TableCell>
-                  <TableCell align="right">{row.organization}</TableCell>
-                  <TableCell align="right">
+                  <TableCell align="left">{row.organization}</TableCell>
+                  <TableCell align="left">
                     {row.advanced
                       ? row.dry.map((item: IRetailRescueItem) => (
                           <div key={item.item}>
@@ -65,8 +65,8 @@ function PickSheetTable({ orders }: PickSheetTableProps) {
                         ))
                       : row.dry}
                   </TableCell>
-                  <TableCell align="right">{row.produce}</TableCell>
-                  <TableCell align="right">
+                  <TableCell align="left">{row.produce}</TableCell>
+                  <TableCell align="left">
                     {row.advanced
                       ? row.vito.map((item: IRetailRescueItem) => (
                           <div key={item.item}>

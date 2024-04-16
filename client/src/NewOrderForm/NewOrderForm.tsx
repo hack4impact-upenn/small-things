@@ -182,6 +182,7 @@ function NewOrderForm({ settings, dates }: NewOrderFormProps) {
       .set('minutes', formatedTime.minute());
 
     const order = {
+      email: user.email,
       advanced: settings.advanced,
       organization: user.organization,
       produce: values.produce,

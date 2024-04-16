@@ -9,6 +9,7 @@ import StatusCode from '../util/statusCode';
 import { IUser } from '../models/user.model';
 import {
   upgradeUserToAdmin,
+  downgradeUserToAdmin,
   getUserByEmail,
   getAllUsersFromDB,
   deleteUserById,
@@ -77,6 +78,37 @@ const upgradePrivilege = async (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .catch((e) => {
       next(ApiError.internal('Unable to upgrade user to admin.'));
+    });
+};
+
+const downgradePrivilege = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+  const { email } = req.body;
+  if (!email) {
+    next(ApiError.missingFields(['email']));
+    return;
+  }
+
+  const user: IUser | null = await getUserByEmail(email);
+  if (!user) {
+    next(ApiError.notFound(`User with email ${email} does not exist`));
+    return;
+  }
+  if (!user.admin) {
+    next(ApiError.badRequest(`User is not an admin`));
+    return;
+  }
+
+  downgradeUserToAdmin(user._id)
+    .then(() => {
+      res.sendStatus(StatusCode.OK);
+    })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .catch((e) => {
+      next(ApiError.internal('Unable to downgrade user to admin.'));
     });
 };
 
@@ -283,6 +315,7 @@ const getSettings = async (
 export {
   getAllUsers,
   upgradePrivilege,
+  downgradePrivilege,
   deleteUser,
   updateSettings,
   inviteUser,

@@ -24,8 +24,14 @@ async function upgradePrivilege(email: string) {
   return true;
 }
 
+async function downgradePrivilege(email: string) {
+  const res = await putData('admin/demote', { email });
+  if (res.error) return false;
+  return true;
+}
+
 function createInvite(email: string) {
   return postData('admin/invite', { email });
 }
 
-export { deleteUser, upgradePrivilege, createInvite };
+export { deleteUser, upgradePrivilege, downgradePrivilege, createInvite };

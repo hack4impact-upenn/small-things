@@ -135,6 +135,15 @@ const upgradeUserToAdmin = async (id: string) => {
   return user;
 };
 
+const downgradeUserToAdmin = async (id: string) => {
+  const user = await User.findByIdAndUpdate(
+    id,
+    { $set: { admin: false } }, // Directly set admin to false
+    { new: true }, // Option to return the updated document
+  ).exec();
+  return user;
+};
+
 const getUserByOrganization = async (organization: string) => {
   const user = await User.findOne({ organization })
     .select(removeSensitiveDataQuery)
@@ -195,6 +204,7 @@ export {
   getUserByResetPasswordToken,
   getAllUsersFromDB,
   upgradeUserToAdmin,
+  downgradeUserToAdmin,
   deleteUserById,
   updateSettingsInDB,
   updateUserById,

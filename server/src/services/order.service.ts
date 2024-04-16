@@ -13,6 +13,7 @@ import { IOrder, Order, retailRescueItem } from '../models/order.model';
  * @returns The created {@link User}
  */
 const createNewOrder = async (
+  email: string,
   advanced: boolean,
   organization: string,
   produce: number,
@@ -25,6 +26,7 @@ const createNewOrder = async (
   pickup: Date,
 ) => {
   const newOrder = new Order({
+    email,
     advanced,
     organization,
     produce,

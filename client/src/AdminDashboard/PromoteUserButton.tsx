@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from '@mui/material/Button';
-import { upgradePrivilege } from './api';
+import { upgradePrivilege, downgradePrivilege } from './api';
 import LoadingButton from '../components/buttons/LoadingButton';
 import ConfirmationModal from '../components/ConfirmationModal';
 
@@ -8,6 +8,7 @@ interface PromoteUserButtonProps {
   admin: boolean;
   email: string;
   updateAdmin: (email: string) => void;
+  removeAdmin: (email: string) => void;
 }
 
 /**
@@ -23,6 +24,7 @@ function PromoteUserButton({
   admin,
   email,
   updateAdmin,
+  removeAdmin,
 }: PromoteUserButtonProps) {
   const [isLoading, setLoading] = useState(false);
 
@@ -33,6 +35,15 @@ function PromoteUserButton({
     }
     setLoading(false);
   }
+
+  async function handleDemote() {
+    setLoading(true);
+    if (await downgradePrivilege(email)) {
+      removeAdmin(email);
+    }
+    setLoading(false);
+  }
+
   if (isLoading) {
     return <LoadingButton />;
   }
@@ -47,9 +58,12 @@ function PromoteUserButton({
     );
   }
   return (
-    <Button variant="outlined" disabled>
-      Already Admin
-    </Button>
+    <ConfirmationModal
+      buttonText="Demote User"
+      title="Are you sure you want to demote this user from admin?"
+      body="This action will remove this user's admin privileges"
+      onConfirm={() => handleDemote()}
+    />
   );
 }
 

@@ -7,6 +7,7 @@ import { isAdmin } from '../controllers/admin.middleware';
 import {
   getAllUsers,
   upgradePrivilege,
+  downgradePrivilege,
   deleteUser,
   updateSettings,
   getUserStatus,
@@ -40,6 +41,7 @@ router.get('/adminstatus', isAuthenticated, isAdmin, approve);
  * - email (string) - The email of the user to be promoted
  */
 router.put('/promote', isAuthenticated, isAdmin, upgradePrivilege);
+router.put('/demote', isAuthenticated, isAdmin, downgradePrivilege);
 
 router.get('/invite/:token', verifyToken);
 

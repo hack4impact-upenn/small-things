@@ -30,6 +30,7 @@ const createOrder = async (
   next: express.NextFunction,
 ) => {
   const {
+    email,
     advanced,
     organization,
     produce,
@@ -76,6 +77,7 @@ const createOrder = async (
   }
   try {
     const order = await createNewOrder(
+      email,
       advanced,
       organization,
       produce,
@@ -320,10 +322,12 @@ const modifyAndApproveOrder = async (
     return;
   }
 
+  /*
   if (currentOrder.status !== 'PENDING') {
     next(ApiError.notFound('Order not pending'));
     return;
   }
+  */
 
   order.status = 'APPROVED';
 
@@ -423,10 +427,12 @@ const rejectOrder = async (
     return;
   }
 
+  /*
   if (currentOrder.status !== 'PENDING') {
     next(ApiError.notFound('Order not pending'));
     return;
   }
+  */
 
   currentOrder.status = 'REJECTED';
 
