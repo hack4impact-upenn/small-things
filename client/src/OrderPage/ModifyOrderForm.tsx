@@ -49,7 +49,6 @@ function ModifyOrderForm({
   };
 
   const { setAlert } = useAlert();
-
   const [values, setValueState] = useState(originalValues);
   const [retailItems, setRetailItems] = useState<IRetailRescueItem[]>(
     order.retailRescue,
