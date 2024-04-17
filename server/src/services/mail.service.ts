@@ -107,7 +107,10 @@ const formatOrderToEmail = (order: IOrder) => {
         order.retailRescue,
       )}</div>` +
       `<div style="color:black;">Status: ${order.status}</div>` +
-      `<div style="color:black;">Pickup: ${pickupDate.toLocaleString()}</div>`
+      `<div style="color:black;">Pickup: ${pickupDate.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      })}</div>`
     );
   }
   return (
@@ -120,7 +123,10 @@ const formatOrderToEmail = (order: IOrder) => {
       order.retailRescue,
     )}</div>` +
     `<div style="color:black;">Status: ${order.status}</div>` +
-    `<div style="color:black;">Pickup: ${pickupDate.toLocaleString()}</div>`
+    `<div style="color:black;">Pickup: ${pickupDate.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    })}</div>`
   );
 };
 
