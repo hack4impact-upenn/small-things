@@ -1,7 +1,7 @@
 /**
  * For testing auth.controller.ts and auth.middleware.ts
  */
-/*
+
 import express from 'express';
 import request from 'supertest';
 import { Server } from 'http';
@@ -11,7 +11,6 @@ import createExpressApp from '../../config/createExpressApp';
 import StatusCode from '../../util/statusCode';
 import { User } from '../../models/user.model';
 import Session from '../../models/session.model';
-
 
 let dbConnection: MongoConnection;
 let sessionStore: MongoStore;
@@ -404,4 +403,3 @@ describe('testing admin routes', () => {
     });
   });
 });
-*/
