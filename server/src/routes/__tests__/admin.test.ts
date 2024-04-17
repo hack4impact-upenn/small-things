@@ -219,6 +219,7 @@ describe('testing admin routes', () => {
         // expect(newAdmin).toBeTruthy();
         expect(newAdmin!.admin).toBeTruthy();
         */
+        // bro
       });
 
       it('admin promoting non-existant user throws error', async () => {
