@@ -207,7 +207,6 @@ describe('testing admin routes', () => {
       });
     });
 
-    /*
     describe('testing GET /api/admin/adminstatus', () => {
       it('admin calling /adminstatus is true', async () => {
         // check admin status
@@ -215,7 +214,6 @@ describe('testing admin routes', () => {
         expect(response.status).toBe(StatusCode.OK);
       });
     });
-    */
 
     describe('testing PUT /api/admin/promote', () => {
       it('admin can promote user', async () => {
