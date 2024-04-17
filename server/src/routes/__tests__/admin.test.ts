@@ -207,6 +207,14 @@ describe('testing admin routes', () => {
       });
     });
 
+    describe('testing GET /api/admin/adminstatus', () => {
+      it('admin calling /adminstatus is true', async () => {
+        // check admin status
+        const response = await agent.get('/api/admin/adminstatus').send();
+        expect(response.status).toBe(StatusCode.OK);
+      });
+    });
+
     describe('testing PUT /api/admin/promote', () => {
       it('admin can promote user', async () => {
         // promote user
@@ -350,6 +358,14 @@ describe('testing admin routes', () => {
       expect(response.status).toBe(StatusCode.CREATED);
       expect(await User.findOne({ email: testEmail4 })).toBeTruthy();
       expect(await Session.countDocuments()).toBe(0);
+
+      // Login user1
+      response = await agent.post('/api/auth/login').send({
+        email: testEmail,
+        password: testPassword,
+      });
+      expect(response.status).toBe(StatusCode.OK);
+      expect(await Session.countDocuments()).toBe(1);
     });
 
     describe('testing GET /api/admin/users', () => {
@@ -364,6 +380,24 @@ describe('testing admin routes', () => {
       it('non admin calling /adminstatus throwsError', async () => {
         // check admin status
         const response = await agent.get('/api/admin/adminstatus').send();
+        expect(response.status).toBe(StatusCode.UNAUTHORIZED);
+      });
+    });
+
+    describe('testing PUT /api/admin/promote', () => {
+      it('nonadmin attempting to promote user throws error', async () => {
+        // promote user
+        const response = await agent
+          .put('/api/admin/promote')
+          .send({ email: testEmail2 });
+        expect(response.status).toBe(StatusCode.UNAUTHORIZED);
+      });
+    });
+
+    describe('testing DELETE /api/admin/:email', () => {
+      it('non admin attempting to delete user throws error', async () => {
+        // delete user
+        const response = await agent.delete(`/api/admin/${testEmail4}`).send();
         expect(response.status).toBe(StatusCode.UNAUTHORIZED);
       });
     });
