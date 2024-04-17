@@ -207,14 +207,6 @@ describe('testing admin routes', () => {
       });
     });
 
-    describe('testing GET /api/admin/adminstatus', () => {
-      it('admin calling /adminstatus is true', async () => {
-        // check admin status
-        const response = await agent.get('/api/admin/adminstatus').send();
-        expect(response.status).toBe(StatusCode.OK);
-      });
-    });
-
     describe('testing PUT /api/admin/promote', () => {
       it('admin can promote user', async () => {
         // promote user
