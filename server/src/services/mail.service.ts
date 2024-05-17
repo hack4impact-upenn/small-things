@@ -92,7 +92,11 @@ const parseArray = (array: any) => {
   return array
     .map(
       (element: retailRescueItem) =>
-        `Item: ${element.item} - Comment: ${element.comment}`,
+        `Item: ${element.item} - Comment: ${
+          element.comment === undefined || element.comment.length === 0
+            ? 'None'
+            : element.comment
+        }`,
     )
     .join(', ');
 };
@@ -126,11 +130,47 @@ const formatOrderToEmail = (order: IOrder) => {
       order.retailRescue,
     )}</div>` +
     `<div style="color:black;">Status: ${order.status}</div>` +
-    `<div style="color:black;">Pickup: ${pickupDate.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-    })}</div>`
+    `<div style="color:black;">Pickup Date: ${pickupDate.toDateString()}</div>` +
+    `<div style="color:black;">Pickup Time: ${pickupDate.toLocaleTimeString(
+      [],
+      {
+        hour: '2-digit',
+        minute: '2-digit',
+      },
+    )}</div>`
   );
+};
+
+const emailModifyApproveOrder = async (email: string, order: IOrder) => {
+  const userEmail: MailDataRequired = {
+    from: {
+      email: process.env.SENDGRID_EMAIL_ADDRESS || 'missing@mail.com',
+      name: senderName,
+    },
+    to: order.email,
+    subject: 'Order Modified/Approved',
+    html:
+      `<h1 style="color:black;">Your order has been modified and approved</h1>` +
+      `<h2 style="color:black;">Your order summary:</h2>${formatOrderToEmail(
+        order,
+      )}`,
+  };
+  const adminEmail: MailDataRequired = {
+    from: {
+      email: process.env.SENDGRID_EMAIL_ADDRESS || 'missing@mail.com',
+      name: senderName,
+    },
+    to: email,
+    subject: 'Modified/Approved Order',
+    html:
+      `<h1 style="color:black;">You modified/approved an order</h1>` +
+      `<h2 style="color:black;">Order summary:</h2>${formatOrderToEmail(
+        order,
+      )}`,
+  };
+  // Send the email and propogate the error up if one exists
+  await SGmail.send(userEmail);
+  await SGmail.send(adminEmail);
 };
 
 const emailModifyOrder = async (email: string, order: IOrder) => {
@@ -142,27 +182,13 @@ const emailModifyOrder = async (email: string, order: IOrder) => {
     to: order.email,
     subject: 'Order Modified',
     html:
-      `<h1 style="color:black;">Your order has been modified</h1>` +
+      `<h1 style="color:black;">You have modified your order</h1>` +
       `<h2 style="color:black;">Your order summary:</h2>${formatOrderToEmail(
-        order,
-      )}`,
-  };
-  const adminEmail: MailDataRequired = {
-    from: {
-      email: process.env.SENDGRID_EMAIL_ADDRESS || 'missing@mail.com',
-      name: senderName,
-    },
-    to: email,
-    subject: 'Modified Order',
-    html:
-      `<h1 style="color:black;">You modified an order</h1>` +
-      `<h2 style="color:black;">Order summary:</h2>${formatOrderToEmail(
         order,
       )}`,
   };
   // Send the email and propogate the error up if one exists
   await SGmail.send(userEmail);
-  await SGmail.send(adminEmail);
 };
 
 const emailApproveOrder = async (email: string, order: IOrder) => {
@@ -236,5 +262,6 @@ export {
   emailInviteLink,
   emailApproveOrder,
   emailRejectOrder,
+  emailModifyApproveOrder,
   emailModifyOrder,
 };

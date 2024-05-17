@@ -20,6 +20,7 @@ import {
 import {
   emailApproveOrder,
   emailRejectOrder,
+  emailModifyApproveOrder,
   emailModifyOrder,
 } from '../services/mail.service';
 import { ISettings, Settings } from '../models/settings.model';
@@ -344,7 +345,7 @@ const modifyAndApproveOrder = async (
 
   updateOrderById(id, order)
     .then(() => {
-      emailModifyOrder(organizationUser.email, order)
+      emailModifyApproveOrder(organizationUser.email, order)
         .then(() =>
           res.status(StatusCode.CREATED).send({
             message: `Email has been sent to ${organizationUser.email}`,
@@ -406,9 +407,15 @@ const modifyOrder = async (
 
   updateOrderById(id, order)
     .then(() => {
-      res.status(StatusCode.CREATED).send({
-        message: 'Order has been modified',
-      });
+      emailModifyOrder(organizationUser.email, order)
+        .then(() =>
+          res.status(StatusCode.CREATED).send({
+            message: `Email has been sent to ${organizationUser.email}`,
+          }),
+        )
+        .catch(() => {
+          next(ApiError.internal('Failed to send modify order email.'));
+        });
     })
     .catch(() => {
       next(ApiError.internal('Unable to modify order.'));
