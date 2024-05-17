@@ -102,7 +102,7 @@ const parseArray = (array: any) => {
 };
 
 const formatOrderToEmail = (order: IOrder) => {
-  const pickupDate = new Date(order.pickup);
+  let pickupDate = new Date(order.pickup);
   if (order.advanced) {
     return (
       `<div style="color:black;">Organization: ${order.organization}</div>` +
@@ -120,6 +120,11 @@ const formatOrderToEmail = (order: IOrder) => {
       })}</div>`
     );
   }
+  const adjustDateByHours = (date: Date, hoursToSubtract: number): Date => {
+    date.setHours(date.getHours() - hoursToSubtract);
+    return date;
+  };
+  pickupDate = adjustDateByHours(pickupDate, 4);
   return (
     `<div style="color:black;">Organization: ${order.organization}</div>` +
     `<div style="color:black;">Produce: ${order.produce}</div>` +
