@@ -123,6 +123,7 @@ function ModifyOrderForm({
       // eslint-disable-next-line no-underscore-dangle
       _id: order._id,
       advanced: order.advanced,
+      email: order.email,
       organization: order.organization,
       status: order.status,
       produce: values.produce,

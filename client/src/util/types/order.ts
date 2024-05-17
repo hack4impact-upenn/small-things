@@ -10,6 +10,7 @@ interface IRetailRescueItem {
 interface IOrder {
   _id: string;
   advanced: boolean;
+  email: string;
   organization: string;
   produce: number;
   meat: any;

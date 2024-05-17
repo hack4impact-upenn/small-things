@@ -28,6 +28,7 @@ function OrderPage() {
     _id: '',
     advanced: false,
     organization: '',
+    email: '',
     produce: 0,
     meat: 0,
     vito: 0,

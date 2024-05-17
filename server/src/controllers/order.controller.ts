@@ -17,7 +17,11 @@ import {
   getAllActiveOrdersInDateRange,
   getAllApprovedOrdersInDateRange,
 } from '../services/order.service';
-import { emailApproveOrder, emailRejectOrder } from '../services/mail.service';
+import {
+  emailApproveOrder,
+  emailRejectOrder,
+  emailModifyOrder,
+} from '../services/mail.service';
 import { ISettings, Settings } from '../models/settings.model';
 
 /**
@@ -340,7 +344,7 @@ const modifyAndApproveOrder = async (
 
   updateOrderById(id, order)
     .then(() => {
-      emailApproveOrder(organizationUser.email, order)
+      emailModifyOrder(organizationUser.email, order)
         .then(() =>
           res.status(StatusCode.CREATED).send({
             message: `Email has been sent to ${organizationUser.email}`,
